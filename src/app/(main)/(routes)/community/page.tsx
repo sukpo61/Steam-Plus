@@ -1,14 +1,15 @@
-'use client';
-
-import styled from '@emotion/styled';
 import { NextPage } from 'next';
+import CommunityPageScreen from '@components/community/CommunityPageScreen';
+import { CommunitySearchParams } from 'types/searchParams/community';
 
-interface CommunityPageProps {}
+interface CommunityPageProps {
+    searchParams: CommunitySearchParams;
+}
 
-const Container = styled.div``;
-
-const CommunityPage: NextPage<CommunityPageProps> = () => {
-    return <Container></Container>;
+const CommunityPage: NextPage<CommunityPageProps> = async ({ searchParams }) => {
+    const { page = '1', category = 'all' } = searchParams;
+    const mergedParams = { ...searchParams, page, category };
+    return <CommunityPageScreen searchParams={mergedParams} />;
 };
 
 export default CommunityPage;

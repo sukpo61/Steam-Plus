@@ -16,22 +16,11 @@ const Container = styled.div<{ width?: string | number | undefined }>`
     height: 40px;
 `;
 
-const IconContainer = styled.div`
-    display: flex;
-    position: absolute;
-    right: 0;
-    width: 40px;
-    height: 40px;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-`;
-
 const CusttomInput = styled.input<InputStyleProps>`
     width: 100%;
     height: 100%;
     padding: 0 40px 0 12px;
-    background-color: #192030;
+    background-color: #263245;
     box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
     font-style: normal;
@@ -44,10 +33,8 @@ const CusttomInput = styled.input<InputStyleProps>`
     ::placeholder {
         color: #777d87;
     }
-    border: ${({ errorMessage }) =>
-        errorMessage ? `1px solid red` : `1px solid ${ColorToken.text_primary}`};
     &:focus {
-        outline: 'none';
+        outline: none;
     }
 `;
 
@@ -65,10 +52,7 @@ interface CusttomInputProps extends InputProps {
 }
 
 const Input = forwardRef<HTMLInputElement, CusttomInputProps>(
-    (
-        { whiteSpace, errorMessage, width = 632, onChange, onSubmit, type = 'text', ...props },
-        ref,
-    ) => {
+    ({ whiteSpace, errorMessage, width, onChange, onSubmit, type = 'text', ...props }, ref) => {
         const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
             if (!whiteSpace) {
                 e.target.value = e.target.value.replace(/\s/gi, '');
@@ -85,9 +69,6 @@ const Input = forwardRef<HTMLInputElement, CusttomInputProps>(
                     {...props}
                     ref={ref}
                 />
-                <IconContainer>
-                    <SearchIcon size={32} />
-                </IconContainer>
                 {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
             </Container>
         );

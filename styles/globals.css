@@ -12,14 +12,14 @@ body {
     font-family: 'Pretendard Variable', sans-serif;
     width: 100%;
     height: 100%;
-    background-color: #192030;
+    background-color: var(--gpStoreDarkGrey);
     padding: 0;
     margin: 0;
     -ms-overflow-style: none;
 }
 
 ::-webkit-scrollbar {
-    width: 5px;
+    width: 12px;
     height: 5px;
     padding: 4px;
 }
@@ -62,4 +62,127 @@ ul {
     color: white;
     background: black;
   } */
+}
+
+:root {
+    --main-text-color: #dbe2e6;
+    --main-light-blue-background: #93b3c8;
+    --main-text-on-light-blue: rgb(209, 209, 209);
+    --main-top-image-bg: #1f2126;
+    --main-editor-bg-color: #363a43;
+    --main-editor-text-color: #e6e7e8;
+    --main-editor-input-bg-color: #30333b;
+    --main-editor-section-title-color: #a3a3a3;
+}
+
+:root {
+    /* ----------------- */
+    --gpSystemLightestGrey: #dcdedf;
+    --gpSystemLighterGrey: #b8bcbf;
+    --gpSystemLightGrey: #8b929a;
+    --gpSystemGrey: #67707b;
+    --gpSystemDarkGrey: #3d4450;
+    --gpSystemDarkerGrey: #23262e;
+    --gpSystemDarkestGrey: #0e141b;
+    --gpStoreLightestGrey: #ccd8e3;
+    --gpStoreLighterGrey: #a7bacc;
+    --gpStoreLightGrey: #7c8ea3;
+    --gpStoreGrey: #4e697d;
+
+    --gpStoreDarkGrey: #1b2838;
+    --gpStoreDarkerGrey: #16202d;
+    --gpStoreDarkestGrey: #000f18;
+
+    --Gradient-PostBorderTop: linear-gradient(
+        to right,
+        var(--gpColor-DustyBlue) 0%,
+        var(--gpStoreDarkGrey) 80%
+    );
+
+    --Gradient-ToggleButtonBorder: linear-gradient(
+        to bottom,
+        var(--gpColor-DustyBlue) 0%,
+        var(--gpStoreDarkestGrey) 80%
+    );
+
+    --gpColor-DustyBlue: #417a9b;
+
+    --gpGradient-StoreBackground: linear-gradient(
+        180deg,
+        var(--gpStoreDarkGrey) 0%,
+        var(--gpStoreDarkerGrey) 80%
+    );
+    --gpGradient-LibraryBackground: radial-gradient(
+        farthest-corner at 40px 40px,
+        #3d4450 0%,
+        #23262e 80%
+    );
+    /* ----------------- */
+
+    --gpColor-Blue: #1a9fff;
+    --gpColor-BlueHi: #00bbff;
+    --gpColor-Green: #5ba32b;
+    --gpColor-GreenHi: #59bf40;
+    --gpColor-Orange: #e35e1c;
+    --gpColor-Red: #d94126;
+    --gpColor-RedHi: #ee563b;
+    --gpColor-LightBlue: #b3dfff;
+    --gpColor-Yellow: #ffc82c;
+    --gpColor-ChalkyBlue: #66c0f4;
+    --gpBackground-LightSofter: #6998bb24;
+    --gpBackground-LightSoft: #3b5a7280;
+    --gpBackground-LightMedium: #678ba670;
+    --gpBackground-LightHard: #93b8d480;
+    --gpBackground-LightHarder: #aacce6a6;
+    --gpBackground-DarkSofter: #0e141b33;
+    --gpBackground-DarkSoft: #0e141b66;
+    --gpBackground-DarkMedium: #0e141b99;
+    --gpBackground-DarkHard: #0e141bcc;
+    --gpBackground-Neutral-LightSofter: rgba(235, 246, 255, 0.1);
+    --gpBackground-Neutral-LightSoft: rgba(235, 246, 255, 0.2);
+    --gpBackground-Neutral-LightMedium: rgba(235, 246, 255, 0.3);
+    --gpBackground-Neutral-LightHard: rgba(235, 246, 255, 0.4);
+    --gpBackground-Neutral-LightHarder: rgba(235, 246, 255, 0.5);
+    --gpCorner-Small: 1px;
+    --gpCorner-Medium: 2px;
+    --gpCorner-Large: 3px;
+    --gpSpace-Gutter: 24px;
+    --gpSpace-Gap: 12px;
+    --gpNavWidth: 240px;
+    --gpPaymentsNavWidth: 340px;
+    --gpDselectWidth: 340px;
+    --gpSidePanelWidth: 340px;
+    --gpGiftingPanelWidth: 280px;
+    --gpCommunityRightPanelWidth: 320px;
+    --gpVerticalResponsivePadding-Small: calc((100vw - 854px) / 60);
+    --gpVerticalResponsivePadding-Medium: calc((100vw - 854px) / 20);
+    --gpVerticalResponsivePadding-Large: calc((100vw - 854px) / 12);
+    --screen-width: 100vw;
+    --gpWidth-6colcap: calc(
+        (var(--screen-width) - (5 * var(--gpSpace-Gap)) - (2 * var(--gpSpace-Gutter))) / 6
+    );
+    --gpWidth-5colcap: calc(
+        (var(--screen-width) - (4 * var(--gpSpace-Gap)) - (2 * var(--gpSpace-Gutter))) / 5
+    );
+    --gpWidth-4colcap: calc(
+        (var(--screen-width) - (3 * var(--gpSpace-Gap)) - (2 * var(--gpSpace-Gutter))) / 4
+    );
+    --gpWidth-3colcap: calc(
+        (var(--screen-width) - (2 * var(--gpSpace-Gap)) - (2 * var(--gpSpace-Gutter))) / 3
+    );
+    --gpWidth-2colcap: calc(
+        (var(--screen-width) - (1 * var(--gpSpace-Gap)) - (2 * var(--gpSpace-Gutter))) / 2
+    );
+    --gpWidth-1colcap: calc((var(--screen-width) - (2 * var(--gpSpace-Gutter))));
+    --gpStoreMenuHeight: 58px;
+    --gpShadow-Small: 0px 2px 2px 0px #0000003d;
+    --gpShadow-Medium: 0px 3px 6px 0px #0000003d;
+    --gpShadow-Large: 0px 12px 16px 0px #0000003d;
+    --gpShadow-XLarge: 0px 24px 32px 0px #0000003d;
+    --gpText-HeadingLarge: normal 700 26px/1.4 'Motiva Sans', Arial, Sans-serif;
+    --gpText-HeadingMedium: normal 700 22px/1.4 'Motiva Sans', Arial, Sans-serif;
+    --gpText-HeadingSmall: normal 700 18px/1.4 'Motiva Sans', Arial, Sans-serif;
+    --gpText-BodyLarge: normal 400 16px/1.4 'Motiva Sans', Arial, Sans-serif;
+    --gpText-BodyMedium: normal 400 14px/1.4 'Motiva Sans', Arial, Sans-serif;
+    --gpText-BodySmall: normal 400 12px/1.4 'Motiva Sans', Arial, Sans-serif;
 }

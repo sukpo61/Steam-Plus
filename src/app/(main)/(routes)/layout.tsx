@@ -17,6 +17,9 @@ const SidebarContainer = styled.div`
 
 const Main = styled.main`
     flex: 1;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url('https://shared.steamstatic.com/store_item_assets/steam/apps/960990/page_bg_generated_v6b.jpg?t=1667468566');
 `;
 
 const ChannelLayout = ({ children }: { children: React.ReactNode }) => {
@@ -25,7 +28,7 @@ const ChannelLayout = ({ children }: { children: React.ReactNode }) => {
             <SidebarContainer>
                 <ChannelSidebar />
             </SidebarContainer>
-            <Main>{children}</Main>
+            <Main className="background">{children}</Main>
         </Container>
     );
 };

@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { API_GET_CHANNEL_SEARCH_KEY } from 'src/api/getChannelSearch';
-import getChannelSearch from 'src/api/getChannelSearch';
+import { API_GET_CHANNEL_SEARCH_KEY } from 'src/api/search/getChannelSearch';
+import getChannelSearch from 'src/api/search/getChannelSearch';
 import GameChannelBlock from './GameChannelBlock';
 import NoResult from '@components/common/NoResult';
 import { Text } from '@components/ui/Text';

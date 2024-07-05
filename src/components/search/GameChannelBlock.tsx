@@ -61,10 +61,10 @@ const GameDetailSection = styled.div`
 const GameDetail = styled.div`
     display: flex;
     width: calc(100% - 100px);
-    /* width: 400px; */
     padding-right: 12px;
     flex-direction: column;
     justify-content: space-between;
+    align-items: start;
     height: 100%;
     overflow: hidden;
 `;
@@ -73,7 +73,7 @@ const GameInfo = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    overflow: hidden; /* overflow 속성 추가 */
+    overflow: hidden;
 `;
 
 const EnterButton = styled.button`

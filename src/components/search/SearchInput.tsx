@@ -3,38 +3,66 @@ import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { useCallback } from 'react';
 import Input from '@components/ui/Input';
-import { useRouter } from 'next/navigation';
+import { useUpdateParams } from '@hooks/useUpdateParams';
+import SearchIcon from '@components/icons/navigation/Search.icon';
 
-interface CenterProps {}
+interface SearchInputProps {
+    placeholder?: string;
+    term?: string;
+}
 
 const Form = styled.form`
     display: flex;
     justify-content: center;
+    position: relative;
     width: 100%;
-    height: 100%;
+    max-width: 600px;
+`;
+
+const IconContainer = styled.button`
+    display: flex;
+    position: absolute;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
 `;
 
 export interface SearchFormValue {
-    channelName: string;
+    term: string;
 }
 
-const SearchInput: FC = () => {
-    const { replace } = useRouter();
+const SearchInput: FC<SearchInputProps> = (params) => {
+    const { placeholder, term } = params;
+    const { updateParams } = useUpdateParams();
 
     const { register, handleSubmit } = useForm<SearchFormValue>({
         defaultValues: {
-            channelName: ``,
+            term: term,
         },
     });
 
-    const onValid = useCallback(({ channelName }: SearchFormValue) => {
-        console.log('channelName', channelName);
-        replace(`/search/${channelName}`);
-    }, []);
+    const onValid = useCallback(
+        ({ term }: SearchFormValue) => {
+            updateParams({ term });
+        },
+        [updateParams],
+    );
+
+    const onSubmit = handleSubmit((data, event) => {
+        if (event) {
+            event.preventDefault();
+        }
+        onValid(data);
+    });
 
     return (
-        <Form onSubmit={handleSubmit(onValid)}>
-            <Input placeholder="영어로 입력해주세요" {...register('channelName')} />
+        <Form onSubmit={onSubmit}>
+            <Input placeholder={placeholder} {...register('term')} />
+            <IconContainer type="submit">
+                <SearchIcon size={32} />
+            </IconContainer>
         </Form>
     );
 };

@@ -5,11 +5,10 @@ import { Header } from '@components/ui/Header';
 import SearchInput from '@components/search/SearchInput';
 import QuerySuspenseErrorBoundary from '@components/hoc/QuerySuspenseErrorBoundary';
 import { SearchResult } from '@components/search/SearchResult';
+import { SearchParams } from 'types/searchParams/search';
 
-interface SearchResultPageProps {
-    params: {
-        term: string;
-    };
+interface SearchPageScreenProps {
+    searchParams: SearchParams;
 }
 
 const Container = styled.div`
@@ -29,19 +28,21 @@ const SearchResultContainer = styled.div`
     padding: 20px 20px 40px;
 `;
 
-const SearchResultPage = ({ params }: SearchResultPageProps) => {
-    const { term } = params;
+const SearchPageScreen = ({ searchParams }: SearchPageScreenProps) => {
+    const { term } = searchParams;
 
     return (
         <Container>
-            <Header centerArea={<SearchInput />} />
-            <SearchResultContainer>
-                <QuerySuspenseErrorBoundary>
-                    <SearchResult term={term} />
-                </QuerySuspenseErrorBoundary>
-            </SearchResultContainer>
+            <Header centerArea={<SearchInput placeholder="영어로 입력 해 주세요" term={term} />} />
+            {term && (
+                <SearchResultContainer>
+                    <QuerySuspenseErrorBoundary>
+                        <SearchResult term={term} />
+                    </QuerySuspenseErrorBoundary>
+                </SearchResultContainer>
+            )}
         </Container>
     );
 };
 
-export default SearchResultPage;
+export default SearchPageScreen;

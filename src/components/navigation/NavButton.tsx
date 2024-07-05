@@ -1,10 +1,12 @@
 import styled from '@emotion/styled';
 import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 interface NavButtonProps {
     item: {
         title: string;
         href: string;
+        rex: RegExp;
         icon: ({ selected }: { selected: boolean }) => JSX.Element;
         query?: {
             [key: string]: string;
@@ -35,17 +37,24 @@ const TitleText = styled.span<{ selected: boolean }>`
 `;
 
 const NavButton = ({ item }: NavButtonProps) => {
-    const { title, href, icon, query } = item;
+    const { title, href, icon, rex } = item;
     const pathname = usePathname();
-    const selected = pathname === href;
-
+    const selected = rex.test(pathname);
+    const router = useRouter();
     return (
-        <Link href={{ pathname: href, query: query }}>
-            <Container>
-                {icon({ selected })}
-                <TitleText selected={selected}>{title}</TitleText>
-            </Container>
-        </Link>
+        // <Link href={{ pathname: href }}>
+        <Container
+            onClick={() => {
+                // if (selected) {
+                //     return;
+                // }
+                router.push(href);
+            }}
+        >
+            {icon({ selected })}
+            <TitleText selected={selected}>{title}</TitleText>
+        </Container>
+        // </Link>
     );
 };
 

@@ -17,7 +17,7 @@ const Container = styled.div`
     gap: 16px;
     width: 100%;
     height: 100%;
-    background: #080c16;
+    background: var(--gpStoreDarkestGrey);
     z-index: 99;
 `;
 
@@ -52,26 +52,31 @@ const navList = [
     {
         title: '홈',
         href: '/',
+        rex: /^\/$/,
         icon: HomeIcon,
     },
     {
         title: '게임검색',
         href: '/search',
+        rex: /^\/search/,
         icon: SearchIcon,
     },
     {
         title: '커뮤니티',
-        href: '/community',
+        href: '/community?category=all&page=1',
+        rex: /^\/community/,
         icon: CommunityIcon,
     },
     {
         title: '친구',
-        href: '/',
+        href: '/friend',
+        rex: /^\/friend/,
         icon: FriendIcon,
     },
     {
         title: '화상채팅',
         href: '/channels',
+        rex: /^\/channels/,
         icon: VoiceChatIcon,
     },
 ];

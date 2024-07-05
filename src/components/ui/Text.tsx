@@ -1,14 +1,16 @@
 import styled from '@emotion/styled';
 import { CSSProperties, MouseEventHandler, useMemo } from 'react';
 
-const TextContainer = styled.div`
-    overflow: hidden;
+const TextContainer = styled.span`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     white-space: nowrap;
     text-overflow: ellipsis;
 `;
 
 export interface TextProps {
-    text: string;
+    text: string | number;
     width?: string;
     margin?: string;
     fontFamily?: string;
@@ -26,11 +28,11 @@ export interface TextProps {
 export const Text = ({
     size = 10,
     text,
-    width = '100%',
+    width,
     fontFamily = 'Google Sans',
     weight = 400,
     lineHeight = '1.1',
-    color = 'white',
+    color = '#c5c5c5',
     align,
     style,
     ellipsis = true,

@@ -1,28 +1,14 @@
-'use client';
+import { NextPage } from 'next';
+import SearchPageScreen from '@components/search/SearchPageScreen';
 
-import styled from '@emotion/styled';
-import { Header } from '@components/ui/Header';
-import SearchInput from '@components/search/SearchInput';
-
-interface SearchPageProps {
-    params: {
-        keyword: string;
+interface SearchResultPageProps {
+    searchParams: {
+        term: string;
     };
 }
 
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-`;
-
-const SearchPage = () => {
-    return (
-        <Container>
-            <Header centerArea={<SearchInput />} />
-        </Container>
-    );
+const SearchResultPage: NextPage<SearchResultPageProps> = async ({ searchParams }) => {
+    return <SearchPageScreen searchParams={searchParams} />;
 };
 
-export default SearchPage;
+export default SearchResultPage;
