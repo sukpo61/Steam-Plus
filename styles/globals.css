@@ -47,11 +47,16 @@ a {
 
 button {
     cursor: pointer;
+    padding: 0;
 }
 
 ul {
     margin: 0 auto;
     list-style: 'none';
+}
+
+svg {
+    fill: var(--gpSystemLightGrey);
 }
 
 @media (prefers-color-scheme: dark) {

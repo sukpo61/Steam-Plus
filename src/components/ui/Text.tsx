@@ -7,6 +7,7 @@ const TextContainer = styled.span`
     align-items: center;
     white-space: nowrap;
     text-overflow: ellipsis;
+    color: var(--gpSystemLightGrey);
 `;
 
 export interface TextProps {
@@ -57,9 +58,9 @@ export const Text = ({
         else return 'left';
     }, [align]);
 
-    const textColor = useMemo(() => {
-        return color;
-    }, [color]);
+    // const textColor = useMemo(() => {
+    //     return color;
+    // }, [color]);
 
     const firstLineStyles = useMemo(() => {
         if (preLine) {
@@ -86,7 +87,7 @@ export const Text = ({
                 fontFamily,
                 textAlign,
                 letterSpacing: '-0.2px',
-                color: textColor,
+                color,
                 ...style,
                 ...(ellipsis !== false && {
                     overflow: 'hidden',

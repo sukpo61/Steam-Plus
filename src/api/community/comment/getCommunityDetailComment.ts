@@ -22,7 +22,11 @@ const getCommunityDetailComment = async ({
         database,
         variableAssignment(API_GET_COMMUNITY_DETAIL_COMMENT_KEY, { postId }),
     );
-    const data = await getPaginationData<CommunityDetailCommentResponse>(commentRef, searchParams);
+    const data = await getPaginationData<CommunityDetailCommentResponse>(
+        commentRef,
+        searchParams,
+        'reply',
+    );
     return data;
 };
 

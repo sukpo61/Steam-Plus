@@ -2,7 +2,7 @@
 
 import styled from '@emotion/styled';
 import { CommunitySearchParams } from 'types/searchParams/community';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { API_GET_COMMUNITY_DETAIL_COMMENT_KEY } from 'src/api/community/comment/getCommunityDetailComment';
 import getCommunityDetailComment from 'src/api/community/comment/getCommunityDetailComment';
 import StyledPagination from '@components/ui/Pagination';
@@ -51,14 +51,12 @@ const CommunityDetailCommentList = ({ params, searchParams }: CommunityDetailCom
         updateParams({ page });
     };
 
+   
+
     const { data, refetch } = useSuspenseQuery({
         queryKey: [API_GET_COMMUNITY_DETAIL_COMMENT_KEY, params, searchParams],
         queryFn: () => getCommunityDetailComment({ params, searchParams }),
     });
-
-    if (!data) {
-        return;
-    }
 
     const { data: commentData, itemCount, pageSize } = data;
 
@@ -71,7 +69,12 @@ const CommunityDetailCommentList = ({ params, searchParams }: CommunityDetailCom
             </CommentMeta>
             <CommunityDetailCommentInput params={params} />
             {commentData.map((item) => (
-                <CommunityDetailComment key={item.id} item={item} />
+                <CommunityDetailComment
+                    key={item.id}
+                    item={item}
+                    params={params}
+                    searchParams={searchParams}
+                />
             ))}
             <StyledPagination
                 // 현제 보고있는 페이지

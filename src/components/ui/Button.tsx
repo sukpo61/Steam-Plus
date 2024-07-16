@@ -5,7 +5,7 @@ import { Color, ColorToken } from 'styles/Color';
 import { Typography } from 'styles/Typography';
 import { PropsWithCustomStyle } from 'types/common';
 
-type ButtonType = 'default' | 'primary' | 'secondary' | 'danger' | 'cancel' | 'toggle';
+type ButtonType = 'default' | 'primary' | 'secondary' | 'danger' | 'cancel' | 'reply';
 
 interface ButtonProps extends ButtonContainerProps {
     text: string | React.ReactNode;
@@ -16,7 +16,7 @@ interface ButtonContainerProps {
 }
 
 const ButtonContainer = styled.button<PropsWithCustomStyle<ButtonContainerProps>>`
-    padding: 8px 10px;
+    padding: 8px 16px;
     border: none;
     cursor: pointer;
     display: flex;
@@ -25,8 +25,6 @@ const ButtonContainer = styled.button<PropsWithCustomStyle<ButtonContainerProps>
     align-items: center;
     /* width: 80px; */
     margin: ${({ m }) => m ?? 0};
-
-    ${Typography.Button.Button2Bold};
     :disabled {
         cursor: not-allowed;
     }
@@ -36,6 +34,8 @@ const ButtonContainer = styled.button<PropsWithCustomStyle<ButtonContainerProps>
                 return filled ? FilledPrimaryButtonStyle : LinedPrimaryButtonStyle;
             case 'secondary':
                 return SecondaryButtonStyle;
+            case 'reply':
+                return ReplyButtonStyle;
             case 'cancel':
                 return CancelButtonStyle;
             case 'danger':
@@ -104,6 +104,21 @@ const SecondaryButtonStyle = css`
     :disabled {
         background: ${ColorToken.secondary};
         color: ${ColorToken.icon_blue};
+    }
+`;
+
+const ReplyButtonStyle = css`
+    color: ${ColorToken.white};
+    height: 36px;
+    border-radius: 18px;
+    :hover {
+        background: var(--gpStoreDarkGrey);
+    }
+    :active {
+        background: var(--gpStoreDarkerGrey);
+    }
+    :disabled {
+        background: ${ColorToken.white};
     }
 `;
 

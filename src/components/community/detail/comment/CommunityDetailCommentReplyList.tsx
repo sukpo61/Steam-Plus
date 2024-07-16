@@ -2,20 +2,18 @@
 
 import styled from '@emotion/styled';
 import { CommunitySearchParams } from 'types/searchParams/community';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { API_GET_COMMUNITY_DETAIL_COMMENT_KEY } from 'src/api/community/comment/getCommunityDetailComment';
 import getCommunityDetailComment from 'src/api/community/comment/getCommunityDetailComment';
-import StyledPagination from '@components/ui/Pagination';
-import CommunityDetailComment from './CommunityDetailComment';
 import { useUpdateParams } from '@hooks/useUpdateParams';
-import CommunityDetailCommentInput from './CommunityDetailCommentInput';
 import { Text } from '@components/ui/Text';
+import CommunityDetailCommentReply from './CommunityDetailCommentReply';
+import getCommunityDetailCommentReply from 'src/api/community/comment/reply/getCommunityDetailCommentReply';
+import { API_GET_COMMUNITY_DETAIL_COMMENT_REPLY_KEY } from 'src/api/community/comment/reply/getCommunityDetailCommentReply';
 
 interface CommunityDetailCommentReplyListProps {
-    searchParams: CommunitySearchParams;
-    params: {
-        id: string;
-    };
+    postId: string;
+    commentId: string;
 }
 
 export interface SearchFormValue {
@@ -26,68 +24,53 @@ export interface SearchFormValue {
 
 const Container = styled.div`
     width: 100%;
-    max-width: 948px;
-    background-color: var(--gpStoreDarkerGrey);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
-    padding: 16px 32px;
 `;
 
-const CommentMeta = styled.div`
-    display: flex;
-    width: 100%;
-    gap: 4px;
-    margin-bottom: 16px;
+const ReplyLoadButton = styled.div`
+    span {
+        cursor: pointer;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 `;
 
 const CommunityDetailCommentReplyList = ({
-    params,
-    searchParams,
+    postId,
+    commentId,
 }: CommunityDetailCommentReplyListProps) => {
-    const { page } = searchParams;
-    const { updateParams } = useUpdateParams();
-
-    const handlePageChange = (page: number) => {
-        updateParams({ page });
-    };
-
-    const { data, refetch } = useSuspenseQuery({
-        queryKey: [API_GET_COMMUNITY_DETAIL_COMMENT_KEY, params, searchParams],
-        queryFn: () => getCommunityDetailComment({ params, searchParams }),
+    const { fetchNextPage, hasNextPage, data } = useSuspenseInfiniteQuery({
+        queryKey: [API_GET_COMMUNITY_DETAIL_COMMENT_REPLY_KEY, postId, commentId],
+        queryFn: ({ pageParam: cursor }) =>
+            getCommunityDetailCommentReply({ postId, commentId, cursor }),
+        initialPageParam: 0,
+        getNextPageParam: ({ cursor }) => {
+            return cursor ?? null;
+        },
     });
 
-    if (!data) {
-        return;
-    }
+    const onObserve = () => {
+        hasNextPage && fetchNextPage();
+    };
 
-    const { data: commentData, itemCount, pageSize } = data;
+    const replyData = data.pages as any;
 
     return (
         <Container>
-            <CommentMeta>
-                <Text text={'댓글'} size={15} color="white" />
-                <Text text={itemCount} size={15} preLine={true} />
-                <Text text={'새로고침'} size={15} color="white" onClick={() => refetch()} />
-            </CommentMeta>
-            <CommunityDetailCommentInput params={params} />
-            {commentData.map((item) => (
-                <CommunityDetailComment key={item.id} item={item} />
-            ))}
-            <StyledPagination
-                // 현제 보고있는 페이지
-                activePage={Number(page)}
-                // 한페이지에 출력할 아이템수
-                itemsCountPerPage={pageSize}
-                // 총 아이템수
-                totalItemsCount={itemCount}
-                // 표시할 페이지수
-                pageRangeDisplayed={10}
-                // 함수
-                onChange={handlePageChange}
-            />
+            {replyData.map((item: any) =>
+                item.data.map((reply: any) => (
+                    <CommunityDetailCommentReply key={reply.id} item={reply} />
+                )),
+            )}
+            {hasNextPage && (
+                <ReplyLoadButton onClick={onObserve}>
+                    <Text text="더보기" size={13} />
+                </ReplyLoadButton>
+            )}
         </Container>
     );
 };

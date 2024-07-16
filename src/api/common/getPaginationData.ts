@@ -8,6 +8,7 @@ import {
     getCountFromServer,
     CollectionReference,
     DocumentData,
+    collection,
 } from 'firebase/firestore';
 import { CommunitySearchParams } from 'types/searchParams/community';
 
@@ -86,9 +87,22 @@ const getPageData = async (
     }
 };
 
+const checkSubcollectionCount = async (
+    docSnapshot: DocumentData,
+    subcollectionName?: string,
+): Promise<number | null> => {
+    if (!subcollectionName) {
+        return null;
+    }
+    const subcollectionRef = collection(docSnapshot.ref, subcollectionName);
+    const snapshot = await getCountFromServer(subcollectionRef);
+    return snapshot.data().count;
+};
+
 const getPaginationData = async <T>(
     ref: CollectionReference<DocumentData>,
     searchParams: CommunitySearchParams,
+    subcollectionName?: string,
 ): Promise<PaginationResult<T>> => {
     const itemCount = await getDataCount(ref, searchParams);
     const snapshot = await getPageData(ref, searchParams);
@@ -97,10 +111,22 @@ const getPaginationData = async <T>(
         return { data: [], itemCount: 0, pageSize: 0 };
     }
 
-    const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-    })) as T[];
+    const data = (await Promise.all(
+        snapshot.docs.map(async (doc) => {
+            const docData = {
+                id: doc.id,
+                ...doc.data(),
+            };
+            const subcollectionCount = await checkSubcollectionCount(doc, subcollectionName);
+            if (!subcollectionCount) {
+                return docData;
+            }
+            return {
+                ...docData,
+                subcollectionCount,
+            };
+        }),
+    )) as T[];
 
     return { data, itemCount, pageSize: PAGE_SIZE };
 };

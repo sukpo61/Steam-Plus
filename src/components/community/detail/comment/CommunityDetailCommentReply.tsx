@@ -19,7 +19,7 @@ const Container = styled.div`
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    margin-bottom: 32px;
+    margin-top: 16px;
 `;
 
 const ProfileImage = styled(Image)`
@@ -54,7 +54,7 @@ const ActionButtons = styled.div`
 `;
 
 const CommunityDetailCommentReply = ({ item }: CommunityDetailCommentReplyProps) => {
-    const { id, comment, username = 'user', timestamp } = item;
+    const { id, commentReply, username = 'user', timestamp } = item;
     const { push } = useRouter();
     const [isReply, setIsReply] = useState();
 
@@ -64,26 +64,21 @@ const CommunityDetailCommentReply = ({ item }: CommunityDetailCommentReplyProps)
                 <ProfileImage alt="profile_image" src={DefaultProfileThumbnail} />
                 <UserDetails>
                     <Text text={username} size={14} weight={600} />
-                    <Text text={comment} size={15} />
+                    <Text text={commentReply} size={15} />
                     <UserMeta>
                         <Text
                             text={timeFormat(timestamp, 'comment')}
                             size={13}
                             color={ColorToken.grey}
                         />
-                        <Text
-                            text="답글쓰기"
-                            size={13}
-                            color={ColorToken.grey}
-                            onClick={() => {}}
-                        />
                     </UserMeta>
                 </UserDetails>
             </ProfileContainer>
-            <ActionButtons>
+            <div></div>
+            {/* <ActionButtons>
                 <Button text="수정" />
                 <Button text="삭제" />
-            </ActionButtons>
+            </ActionButtons> */}
         </Container>
     );
 };

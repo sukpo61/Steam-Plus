@@ -1,30 +1,27 @@
 import { collection } from 'firebase/firestore';
 import { database } from 'src/firebase/firebase';
 import variableAssignment from '@utils/variableAssignment';
-import getPaginationData from 'src/api/common/getPaginationData';
-import { CommunitySearchParams } from 'types/searchParams/community';
-import { CommunityDetailCommentResponse } from 'types/community/commnitycomment';
-import { PaginationResult } from 'src/api/common/getPaginationData';
-
+import getInfiniteScrollData from 'src/api/common/getInfiniteScrollData';
 interface getCommunityDetailCommentReplyParams {
-    params: { id: string };
-    searchParams: CommunitySearchParams;
+    postId: string;
+    commentId: string;
+    cursor: any;
 }
 
-export const API_GET_COMMUNITY_DETAIL_COMMENT_KEY = 'community/{{postId}}/comment';
+export const API_GET_COMMUNITY_DETAIL_COMMENT_REPLY_KEY =
+    'community/{{postId}}/comment/{{commentId}}/reply';
 
 const getCommunityDetailCommentReply = async ({
-    searchParams,
-    params,
-}: getCommunityDetailCommentReplyParams): Promise<
-    PaginationResult<CommunityDetailCommentResponse>
-> => {
-    const { id: postId } = params;
-    const commentRef = collection(
+    postId,
+    commentId,
+    cursor,
+}: getCommunityDetailCommentReplyParams): Promise<any> => {
+    const replyRef = collection(
         database,
-        variableAssignment(API_GET_COMMUNITY_DETAIL_COMMENT_KEY, { postId }),
+        variableAssignment(API_GET_COMMUNITY_DETAIL_COMMENT_REPLY_KEY, { postId, commentId }),
     );
-    const data = await getPaginationData<CommunityDetailCommentResponse>(commentRef, searchParams);
+
+    const data = await getInfiniteScrollData<any>(replyRef, cursor);
     return data;
 };
 
