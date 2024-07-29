@@ -9,48 +9,69 @@ import {
     useRef,
     useState,
 } from 'react';
-import { ColorToken } from 'styles/Color';
 import { Text } from './Text';
+import { Typo } from 'styles/Typography';
 
 interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
     width?: string;
     margin?: string;
+    onSubmit?: any;
+    errorMessage?: string;
+    type?: 'edit';
+    cancle?: () => void;
 }
 
-const Container = styled.div<{ width: string; margin?: string }>`
-    width: ${({ width }) => width};
-    margin: ${({ margin }) => margin};
+const Container = styled.div`
+    display: flex;
+    width: 100%;
+    flex-direction: column;
 `;
 
-const TextAreaInput = styled.textarea`
+const Header = styled.div`
+    display: flex;
     width: 100%;
-    height: 100%;
-    padding: 12px 40px 0 12px;
-    background-color: #263245;
-    box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.25);
-    border-radius: 10px;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
+    justify-content: space-between;
+    margin-bottom: 8px;
+`;
+
+const LengthTextBox = styled.div`
+    display: flex;
+`;
+const TextAreaInput = styled.textarea`
+    font-family: 'Pretendard Variable', sans-serif;
+    padding: 0;
+    width: 100%;
+    flex: 1;
+    ${Typo.Body.Body1Regular}
     line-height: 22px;
     letter-spacing: -0.03em;
-    color: #d4d4d4;
+    color: var(--main-text-color);
+    background: none;
     border-style: none;
     resize: none;
     ::placeholder {
-        color: #777d87;
+        color: var(--main-text-color);
+        opacity: 50%;
     }
     &:focus {
         outline: none;
     }
 `;
 
-const LengthTextBox = styled.div`
-    text-align: right;
-`;
-
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-    ({ maxLength, onChange, onInput, width = '100%', margin, ...textareaAttributes }, ref) => {
+    (
+        {
+            maxLength = 3000,
+            onChange,
+            onInput,
+            width = '100%',
+            margin,
+            errorMessage,
+            cancle,
+            ...props
+        },
+        ref,
+    ) => {
         const inputRef = useRef<HTMLTextAreaElement | null>(null);
         const [length, setLength] = useState<number>(0);
 
@@ -90,29 +111,31 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
 
         // 초기 렌더링 시 길이 설정
         useEffect(() => {
-            if (inputRef.current && inputRef.current.value) {
+            if (inputRef.current) {
                 setLength(inputRef.current.value.length);
             }
-        }, []);
+        }, [inputRef.current?.value]);
 
         return (
-            <Container width={width} margin={margin}>
+            <Container>
+                <Header>
+                    <Text text={'user'} />
+                    <LengthTextBox>
+                        {maxLength && length !== 0 && (
+                            <Text
+                                text={`${length.toLocaleString()}/${maxLength.toLocaleString()}`}
+                                typo={Typo.Body.Body4Regular}
+                            />
+                        )}
+                    </LengthTextBox>
+                </Header>
                 <TextAreaInput
                     ref={combineRef}
                     maxLength={maxLength}
                     onChange={handleTextareaChange}
                     onInput={handleTextareaInput}
-                    {...textareaAttributes}
+                    {...props}
                 />
-                {maxLength && (
-                    <LengthTextBox>
-                        <Text
-                            text={`${length.toLocaleString()}/${maxLength.toLocaleString()} 자`}
-                            color={ColorToken.text_primary}
-                            size={15}
-                        />
-                    </LengthTextBox>
-                )}
             </Container>
         );
     },

@@ -1,16 +1,23 @@
 import { database } from 'src/firebase/firebase';
 import { collection, addDoc } from 'firebase/firestore';
-import { PostCommunityDetailParameter } from 'types/community/CommnityType';
+import { PostCommunityDetailParameter } from 'types/community/commnitydetail';
+import getImageUrl from 'src/api/common/getImageUrl';
 
-export const API_POST_COMMUNITY_DETAIL_KEY = 'community';
+interface PostCommunityDetailProps {
+    data: PostCommunityDetailParameter;
+}
 
-const postCommunityDetail = async (data: PostCommunityDetailParameter) => {
+const postCommunityDetail = async ({ data }: PostCommunityDetailProps): Promise<string> => {
+    const { image } = data;
     const timestamp = Date.now();
-    await addDoc(collection(database, API_POST_COMMUNITY_DETAIL_KEY), {
+    const imageUrl = image ? await getImageUrl(image) : null;
+    const docRef = await addDoc(collection(database, 'community'), {
         ...data,
         timestamp,
         userId: 'user',
+        ...(image && { image: imageUrl }),
     });
+    return docRef.id;
 };
 
 export default postCommunityDetail;

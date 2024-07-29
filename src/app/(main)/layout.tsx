@@ -2,6 +2,7 @@
 
 import styled from '@emotion/styled';
 import NavigationSidebar from '@components/navigation/NavigationSidebar';
+import { RecoilRoot } from 'recoil';
 
 const Container = styled.div`
     display: flex;
@@ -20,12 +21,14 @@ const Main = styled.main`
 
 const NavigationLayout = ({ children }: { children: React.ReactNode }) => {
     return (
-        <Container>
-            <SidebarContainer>
-                <NavigationSidebar />
-            </SidebarContainer>
-            <Main>{children}</Main>
-        </Container>
+        <RecoilRoot>
+            <Container>
+                <SidebarContainer>
+                    <NavigationSidebar />
+                </SidebarContainer>
+                <Main>{children}</Main>
+            </Container>
+        </RecoilRoot>
     );
 };
 

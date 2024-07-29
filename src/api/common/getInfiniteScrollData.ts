@@ -9,7 +9,6 @@ import {
     doc,
     getDoc,
 } from 'firebase/firestore';
-import { CommunitySearchParams } from 'types/searchParams/community';
 
 export interface PaginationResult<T> {
     data: T[];

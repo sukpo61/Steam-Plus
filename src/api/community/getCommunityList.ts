@@ -15,7 +15,11 @@ const getCommunityList = async ({
     searchParams,
 }: getCommunityListParams): Promise<PaginationResult<CommunityDetailResponse>> => {
     const communityRef = collection(database, API_GET_COMMUNITY_LIST_KEY);
-    const data = await getPaginationData<CommunityDetailResponse>(communityRef, searchParams);
+    const data = await getPaginationData<CommunityDetailResponse>(
+        communityRef,
+        searchParams,
+        'comment',
+    );
     return data;
 };
 

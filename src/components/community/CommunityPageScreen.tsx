@@ -10,6 +10,7 @@ import SearchInput from '@components/search/SearchInput';
 import { Text } from '@components/ui/Text';
 import { useRouter } from 'next/navigation';
 import { Button } from '@components/ui/Button';
+import { Typo } from 'styles/Typography';
 
 interface CommunityPageScreenProps {
     searchParams: CommunitySearchParams;
@@ -31,7 +32,7 @@ const SearchInputContainer = styled.div`
     width: 100%;
     padding: 8px;
     margin-bottom: 16px;
-    background-color: var(--gpBackground-Neutral-LightSofter);
+    background-color: var(--Background-Neutral-LightSofter);
 `;
 const Title = styled.div`
     display: flex;
@@ -76,7 +77,7 @@ const CommunityPageScreen = ({ searchParams }: CommunityPageScreenProps) => {
         <Container>
             <Main>
                 <Title>
-                    <Text text="커뮤니티" size={40} weight={700} color="white" />
+                    <Text text="커뮤니티" typo={Typo.Title.Header1Regular} />
                 </Title>
                 <ToggleButtonGroup
                     data={COMMUNIY_CATEGORY_LABEL}

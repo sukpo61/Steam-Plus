@@ -7,7 +7,7 @@ interface ChannelSidebarProps {}
 const Container = styled.div`
     width: 100%;
     height: 100%;
-    background: var(--gpStoreDarkerGrey);
+    background: var(--darkerGrey);
     z-index: 99;
 `;
 

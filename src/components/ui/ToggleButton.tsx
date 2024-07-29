@@ -24,14 +24,14 @@ const TextContainer = styled.div<{ selected?: boolean }>`
     padding: 0 16px;
     justify-content: center;
     align-items: center;
-    background: ${({ selected }) => selected && 'var(--gpStoreDarkestGrey)'};
+    background: ${({ selected }) => selected && 'var(--darkestGrey)'};
 `;
 
 const ToggleButton = ({ onClick, label, selected }: ToggleButtonProps) => {
     return (
         <Container onClick={onClick} selected={selected}>
             <TextContainer selected={selected}>
-                <Text text={label} color={'white'} size={16} />
+                <Text text={label} />
             </TextContainer>
         </Container>
     );

@@ -1,103 +1,54 @@
 import styled from '@emotion/styled';
-import { CSSProperties, MouseEventHandler, useMemo } from 'react';
+import { MouseEventHandler } from 'react';
+import { SerializedStyles } from '@emotion/react';
+import { Typo } from 'styles/Typography';
+import { css } from '@emotion/react';
 
-const TextContainer = styled.span`
+const TextContainer = styled.span<TextProps>`
     display: flex;
     justify-content: center;
     align-items: center;
     white-space: nowrap;
     text-overflow: ellipsis;
-    color: var(--gpSystemLightGrey);
+    color: var(--main-text-color);
+    ${({ typo }) => typo || Typo.Body.Body1Regular}
+    ${({ preLine }) =>
+        preLine &&
+        css`
+            white-space: pre-line;
+            word-break: break-all;
+        `}
+    ${({ ellipsis }) =>
+        ellipsis &&
+        css`
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        `}
+    ${({ underLine }) =>
+        underLine &&
+        css`
+            cursor: pointer;
+            &:hover {
+                text-decoration: underline;
+            }
+        `}
 `;
 
 export interface TextProps {
-    text: string | number;
-    width?: string;
+    text?: string | number;
+    typo?: SerializedStyles;
     margin?: string;
-    fontFamily?: string;
-    size?: number; // default = 10
-    weight?: number; // default = 400
-    align?: 'left' | 'center' | 'right'; // default = left
-    color?: string; // default = 'black'
-    style?: CSSProperties;
-    ellipsis?: boolean; // default = true
+    align?: 'left' | 'center' | 'right';
+    ellipsis?: boolean;
     preLine?: boolean;
-    lineHeight?: string;
+    underLine?: boolean;
     onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
-export const Text = ({
-    size = 10,
-    text,
-    width,
-    fontFamily = 'Google Sans',
-    weight = 400,
-    lineHeight = '1.1',
-    color = '#c5c5c5',
-    align,
-    style,
-    ellipsis = true,
-    preLine = false,
-    onClick,
-    margin = '0',
-    ...props
-}: TextProps) => {
-    /*
-  아래는 추가 랜더링 방지용 메모 설정. 
-  */
-    const fontSize = useMemo(() => {
-        return size;
-    }, [size]);
-
-    const fontWeight = useMemo(() => {
-        return weight;
-    }, [weight]);
-
-    const textAlign = useMemo(() => {
-        if (align) return align;
-        else return 'left';
-    }, [align]);
-
-    // const textColor = useMemo(() => {
-    //     return color;
-    // }, [color]);
-
-    const firstLineStyles = useMemo(() => {
-        if (preLine) {
-            return {
-                whiteSpace: 'pre-line' as const,
-                wordBreak: 'break-all' as const,
-                '&::firstLine': {
-                    fontWeight: 'bold' as const,
-                },
-            };
-        }
-        return {};
-    }, [preLine]);
-
+export const Text = ({ text, ellipsis = true, preLine = false, onClick, ...props }: TextProps) => {
     return (
-        <TextContainer
-            {...props}
-            style={{
-                margin,
-                width,
-                fontSize,
-                lineHeight,
-                fontWeight,
-                fontFamily,
-                textAlign,
-                letterSpacing: '-0.2px',
-                color,
-                ...style,
-                ...(ellipsis !== false && {
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                }),
-                ...firstLineStyles,
-            }}
-            onClick={onClick}
-        >
+        <TextContainer {...props} onClick={onClick}>
             {text || ''}
         </TextContainer>
     );

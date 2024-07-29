@@ -4,9 +4,14 @@ import styled from '@emotion/styled';
 import { ReactNode } from 'react';
 import { useState } from 'react';
 import DropDownIcon from '@components/icons/common/DropDown.icon';
+import { MouseEventHandler } from 'react';
+import { MouseEvent } from 'react';
 
 export interface DropDownProps {
-    component?: ReactNode;
+    component: ReactNode;
+    icon?: ReactNode;
+    onClick?: MouseEventHandler<HTMLButtonElement>;
+    isOpen?: boolean;
 }
 
 const Container = styled.div`
@@ -18,7 +23,7 @@ const DropDownContainer = styled.div`
     display: flex;
     z-index: 999;
     top: 36px;
-    right: 0;
+    left: 0;
 `;
 const IconContainer = styled.button`
     display: flex;
@@ -28,22 +33,20 @@ const IconContainer = styled.button`
     height: 30px;
     border-radius: 50%;
     &:hover {
-        background: var(--gpStoreDarkGrey);
+        background: var(--darkGrey);
     }
 `;
 
-const DropDown = ({ component }: DropDownProps) => {
+const DropDown = ({ component, onClick, icon, isOpen: isOpenProp }: DropDownProps) => {
     const [isOpen, setisOpen] = useState(false);
+    const onClickHandler = (event: MouseEvent<HTMLButtonElement>) => {
+        onClick ? onClick(event) : setisOpen((e) => !e);
+    };
+    const isOpenState = isOpenProp || isOpen;
     return (
         <Container>
-            <IconContainer
-                onClick={() => {
-                    setisOpen((e) => !e);
-                }}
-            >
-                <DropDownIcon />
-            </IconContainer>
-            {isOpen && <DropDownContainer>{component}</DropDownContainer>}
+            <IconContainer onClick={onClickHandler}>{icon || <DropDownIcon />}</IconContainer>
+            {isOpenState && <DropDownContainer>{component}</DropDownContainer>}
         </Container>
     );
 };

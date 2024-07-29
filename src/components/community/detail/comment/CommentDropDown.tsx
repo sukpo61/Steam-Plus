@@ -3,6 +3,7 @@
 import styled from '@emotion/styled';
 import { Text } from '@components/ui/Text';
 import { ReactNode } from 'react';
+import { Typo } from 'styles/Typography';
 
 export interface CommentDropDownProps {
     data: {
@@ -16,15 +17,19 @@ export interface CommentDropDownProps {
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    background: var(--gpStoreDarkGrey);
+    background: var(--darkGrey);
     border-radius: 8px;
+    overflow: hidden;
 `;
 const Option = styled.button`
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 8px;
-    padding: 12px;
+    padding: 10px;
+    &:hover {
+        background: var(--Grey);
+    }
 `;
 const IconContainer = styled.div`
     display: flex;
@@ -37,7 +42,7 @@ const CommentDropDown = ({ data }: CommentDropDownProps) => {
             {data.map(({ id, label, icon, onClick }) => (
                 <Option key={id} onClick={onClick}>
                     <IconContainer>{icon}</IconContainer>
-                    <Text text={label} size={14} />
+                    <Text text={label} typo={Typo.Body.Body2Regular} />
                 </Option>
             ))}
         </Container>

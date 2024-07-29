@@ -2,10 +2,18 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { ButtonHTMLAttributes, FC } from 'react';
 import { Color, ColorToken } from 'styles/Color';
-import { Typography } from 'styles/Typography';
+import { Typo } from 'styles/Typography';
 import { PropsWithCustomStyle } from 'types/common';
 
-type ButtonType = 'default' | 'primary' | 'secondary' | 'danger' | 'cancel' | 'reply';
+type ButtonType =
+    | 'default'
+    | 'primary'
+    | 'secondary'
+    | 'danger'
+    | 'cancel'
+    | 'reply'
+    | 'comment'
+    | 'icon';
 
 interface ButtonProps extends ButtonContainerProps {
     text: string | React.ReactNode;
@@ -23,7 +31,6 @@ const ButtonContainer = styled.button<PropsWithCustomStyle<ButtonContainerProps>
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    /* width: 80px; */
     margin: ${({ m }) => m ?? 0};
     :disabled {
         cursor: not-allowed;
@@ -40,6 +47,10 @@ const ButtonContainer = styled.button<PropsWithCustomStyle<ButtonContainerProps>
                 return CancelButtonStyle;
             case 'danger':
                 return filled ? FilledDangerButtonStyle : LinedDangerButtonStyle;
+            case 'comment':
+                return CommentButtonStyle;
+            case 'icon':
+                return IconButtonStyle;
             case 'default':
                 return DefaultButtonStyle;
         }
@@ -60,7 +71,7 @@ const DefaultButtonStyle = css`
 
 const FilledPrimaryButtonStyle = css`
     color: ${ColorToken.white};
-    background: var(--gpColor-DustyBlue);
+    background: var(--dustyBlue);
     :hover {
         background: ${ColorToken.primary_pressed};
     }
@@ -107,15 +118,48 @@ const SecondaryButtonStyle = css`
     }
 `;
 
+const CommentButtonStyle = css`
+    color: var(--main-text-color);
+    height: 36px;
+    border-radius: 4px;
+    padding: 0 8px;
+    background: var(--dustyBlue);
+    :hover {
+        /* background: var(--darkGrey); */
+    }
+    :active {
+        /* background: var(--darkerGrey); */
+    }
+    :disabled {
+        background: none;
+        opacity: 50%;
+    }
+`;
+const IconButtonStyle = css`
+    border-radius: 4px;
+    padding: 4px;
+    :hover {
+        background: var(--darkGrey);
+    }
+    :active {
+        /* background: var(--darkerGrey); */
+    }
+    :disabled {
+        background: none;
+        opacity: 50%;
+    }
+`;
+
 const ReplyButtonStyle = css`
     color: ${ColorToken.white};
     height: 36px;
     border-radius: 18px;
+    padding: 0 16px 0 8px;
     :hover {
-        background: var(--gpStoreDarkGrey);
+        background: var(--darkGrey);
     }
     :active {
-        background: var(--gpStoreDarkerGrey);
+        background: var(--darkerGrey);
     }
     :disabled {
         background: ${ColorToken.white};

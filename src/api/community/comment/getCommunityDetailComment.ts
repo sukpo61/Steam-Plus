@@ -7,20 +7,19 @@ import { CommunityDetailCommentResponse } from 'types/community/commnitycomment'
 import { PaginationResult } from 'src/api/common/getPaginationData';
 
 interface getCommunityDetailCommentParams {
-    params: { id: string };
+    params: { postId: string };
     searchParams: CommunitySearchParams;
 }
 
-export const API_GET_COMMUNITY_DETAIL_COMMENT_KEY = 'community/{{postId}}/comment';
+export const API_COMMUNITY_DETAIL_COMMENT_KEY = 'community/{{postId}}/comment';
 
 const getCommunityDetailComment = async ({
     searchParams,
     params,
 }: getCommunityDetailCommentParams): Promise<PaginationResult<CommunityDetailCommentResponse>> => {
-    const { id: postId } = params;
     const commentRef = collection(
         database,
-        variableAssignment(API_GET_COMMUNITY_DETAIL_COMMENT_KEY, { postId }),
+        variableAssignment(API_COMMUNITY_DETAIL_COMMENT_KEY, params),
     );
     const data = await getPaginationData<CommunityDetailCommentResponse>(
         commentRef,

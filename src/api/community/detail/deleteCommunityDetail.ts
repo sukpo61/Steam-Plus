@@ -1,15 +1,20 @@
 import { database } from 'src/firebase/firebase';
 import { doc, deleteDoc } from 'firebase/firestore';
 import variableAssignment from '@utils/variableAssignment';
+import { API_COMMUNITY_DETAIL_KEY } from './getCommunityDetail';
+import { CommunityDetailParams } from 'types/community/commnitydetail';
 
 interface deleteCommunityDetailParameter {
-    id: string;
+    params: CommunityDetailParams;
 }
 
-export const API_DELETE_COMMUNITY_DETAIL_KEY = '/community/{{id}}';
-
-const deleteCommunityDetail = async ({ id }: deleteCommunityDetailParameter): Promise<any> => {
-    await deleteDoc(doc(database, API_DELETE_COMMUNITY_DETAIL_KEY, id));
+const deleteCommunityDetail = async ({ params }: deleteCommunityDetailParameter): Promise<void> => {
+    try {
+        const communityDocRef = doc(database, variableAssignment(API_COMMUNITY_DETAIL_KEY, params));
+        await deleteDoc(communityDocRef);
+    } catch (error) {
+        return Promise.reject(error);
+    }
 };
 
 export default deleteCommunityDetail;

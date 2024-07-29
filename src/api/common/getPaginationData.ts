@@ -95,6 +95,7 @@ const checkSubcollectionCount = async (
         return null;
     }
     const subcollectionRef = collection(docSnapshot.ref, subcollectionName);
+
     const snapshot = await getCountFromServer(subcollectionRef);
     return snapshot.data().count;
 };
@@ -104,7 +105,8 @@ const getPaginationData = async <T>(
     searchParams: CommunitySearchParams,
     subcollectionName?: string,
 ): Promise<PaginationResult<T>> => {
-    const itemCount = await getDataCount(ref, searchParams);
+    let itemCount = await getDataCount(ref, searchParams);
+
     const snapshot = await getPageData(ref, searchParams);
 
     if (snapshot.empty) {
@@ -121,6 +123,7 @@ const getPaginationData = async <T>(
             if (!subcollectionCount) {
                 return docData;
             }
+            itemCount = itemCount + subcollectionCount;
             return {
                 ...docData,
                 subcollectionCount,

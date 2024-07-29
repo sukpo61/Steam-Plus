@@ -8,24 +8,25 @@ html {
     width: 100%;
     height: 100%;
 }
+
 body {
-    font-family: 'Pretendard Variable', sans-serif;
+    /* font-family: 'Pretendard Variable', sans-serif; */
     width: 100%;
     height: 100%;
-    background-color: var(--gpStoreDarkGrey);
+    background-color: var(--darkGrey);
     padding: 0;
     margin: 0;
     -ms-overflow-style: none;
 }
 
 ::-webkit-scrollbar {
-    width: 12px;
+    width: 6px;
     height: 5px;
     padding: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
+    border-radius: 3px;
     background-color: #666666;
     margin: 4px;
 }
@@ -44,10 +45,19 @@ a {
 * {
     box-sizing: border-box;
 }
+* {
+    box-sizing: border-box;
+    font-family: var(--main-font);
+}
 
 button {
+    /* font-family: 'Pretendard Variable', sans-serif; */
     cursor: pointer;
     padding: 0;
+}
+
+button:disabled {
+    cursor: default;
 }
 
 ul {
@@ -56,17 +66,7 @@ ul {
 }
 
 svg {
-    fill: var(--gpSystemLightGrey);
-}
-
-@media (prefers-color-scheme: dark) {
-    /* html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  } */
+    fill: var(--main-text-color);
 }
 
 :root {
@@ -81,47 +81,50 @@ svg {
 }
 
 :root {
+    --main-font: 'Pretendard Variable', sans-serif;
     /* ----------------- */
     --gpSystemLightestGrey: #dcdedf;
     --gpSystemLighterGrey: #b8bcbf;
     --gpSystemLightGrey: #8b929a;
-    --gpSystemGrey: #67707b;
-    --gpSystemDarkGrey: #3d4450;
-    --gpSystemDarkerGrey: #23262e;
-    --gpSystemDarkestGrey: #0e141b;
-    --gpStoreLightestGrey: #ccd8e3;
-    --gpStoreLighterGrey: #a7bacc;
-    --gpStoreLightGrey: #7c8ea3;
-    --gpStoreGrey: #4e697d;
 
-    --gpStoreDarkGrey: #1b2838;
-    --gpStoreDarkerGrey: #16202d;
-    --gpStoreDarkestGrey: #000f18;
+    --systemGrey: #67707b;
+    --systemDarkGrey: #3d4450;
+    --systemDarkerGrey: #23262e;
+    --systemDarkestGrey: #0e141b;
+    --storeLightestGrey: #ccd8e3;
+    --storeLighterGrey: #a7bacc;
+    --storeLightGrey: #7c8ea3;
 
-    --Gradient-PostBorderTop: linear-gradient(
-        to right,
-        var(--gpColor-DustyBlue) 0%,
-        var(--gpStoreDarkGrey) 80%
-    );
+    --White: #ffffff;
+    --Grey: #4e697d;
+    --darkGrey: #1b2838;
+    --darkerGrey: #16202d;
+    --darkestGrey: #000f18;
+
+    --Gradient-PostBorderTop: linear-gradient(to right, var(--dustyBlue) 0%, var(--darkGrey) 80%);
 
     --Gradient-ToggleButtonBorder: linear-gradient(
         to bottom,
-        var(--gpColor-DustyBlue) 0%,
-        var(--gpStoreDarkestGrey) 80%
+        var(--dustyBlue) 0%,
+        var(--darkestGrey) 80%
     );
 
-    --gpColor-DustyBlue: #417a9b;
+    --dustyBlue: #417a9b;
 
-    --gpGradient-StoreBackground: linear-gradient(
-        180deg,
-        var(--gpStoreDarkGrey) 0%,
-        var(--gpStoreDarkerGrey) 80%
-    );
+    --Gradient-Background: linear-gradient(180deg, var(--darkGrey) 0%, var(--darkerGrey) 80%);
     --gpGradient-LibraryBackground: radial-gradient(
         farthest-corner at 40px 40px,
         #3d4450 0%,
         #23262e 80%
     );
+    --Red: #d94126;
+    --RedHi: #ee563b;
+    --Background-Neutral-LightSofter: rgba(235, 246, 255, 0.1);
+    --Background-Neutral-LightSoft: rgba(235, 246, 255, 0.2);
+    --Background-Neutral-LightMedium: rgba(235, 246, 255, 0.3);
+    --Background-Neutral-LightHard: rgba(235, 246, 255, 0.4);
+    --Background-Neutral-LightHarder: rgba(235, 246, 255, 0.5);
+
     /* ----------------- */
 
     --gpColor-Blue: #1a9fff;
@@ -129,8 +132,6 @@ svg {
     --gpColor-Green: #5ba32b;
     --gpColor-GreenHi: #59bf40;
     --gpColor-Orange: #e35e1c;
-    --gpColor-Red: #d94126;
-    --gpColor-RedHi: #ee563b;
     --gpColor-LightBlue: #b3dfff;
     --gpColor-Yellow: #ffc82c;
     --gpColor-ChalkyBlue: #66c0f4;
@@ -143,11 +144,6 @@ svg {
     --gpBackground-DarkSoft: #0e141b66;
     --gpBackground-DarkMedium: #0e141b99;
     --gpBackground-DarkHard: #0e141bcc;
-    --gpBackground-Neutral-LightSofter: rgba(235, 246, 255, 0.1);
-    --gpBackground-Neutral-LightSoft: rgba(235, 246, 255, 0.2);
-    --gpBackground-Neutral-LightMedium: rgba(235, 246, 255, 0.3);
-    --gpBackground-Neutral-LightHard: rgba(235, 246, 255, 0.4);
-    --gpBackground-Neutral-LightHarder: rgba(235, 246, 255, 0.5);
     --gpCorner-Small: 1px;
     --gpCorner-Medium: 2px;
     --gpCorner-Large: 3px;

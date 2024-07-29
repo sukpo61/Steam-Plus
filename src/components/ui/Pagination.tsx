@@ -3,8 +3,6 @@ import { ReactJsPaginationProps } from 'react-js-pagination';
 import Pagination from 'react-js-pagination';
 
 const Container = styled.div`
-    padding: 16px;
-    width: 300px;
     .pagination {
         display: flex;
         justify-content: center;
@@ -38,8 +36,12 @@ const Container = styled.div`
         color: white;
     }
     ul.pagination li.active {
-        background-color: #a5a5a5;
+        border-radius: 4px;
+        background: var(--Grey);
     }
+    /* li.disabled a {
+        display: none;
+    } */
 `;
 
 const StyledPagination = (props: ReactJsPaginationProps) => {

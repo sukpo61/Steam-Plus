@@ -1,19 +1,17 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { CommunitySearchParams } from 'types/searchParams/community';
-import { useSuspenseQuery, useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { API_GET_COMMUNITY_DETAIL_COMMENT_KEY } from 'src/api/community/comment/getCommunityDetailComment';
-import getCommunityDetailComment from 'src/api/community/comment/getCommunityDetailComment';
-import { useUpdateParams } from '@hooks/useUpdateParams';
-import { Text } from '@components/ui/Text';
-import CommunityDetailCommentReply from './CommunityDetailCommentReply';
+import CommunityDetailComment from './CommunityDetailComment';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import getCommunityDetailCommentReply from 'src/api/community/comment/reply/getCommunityDetailCommentReply';
-import { API_GET_COMMUNITY_DETAIL_COMMENT_REPLY_KEY } from 'src/api/community/comment/reply/getCommunityDetailCommentReply';
-
+import { API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY } from 'src/api/community/comment/reply/getCommunityDetailCommentReply';
+import { Typo } from 'styles/Typography';
+import { Text } from '@components/ui/Text';
 interface CommunityDetailCommentReplyListProps {
-    postId: string;
-    commentId: string;
+    params: {
+        postId: string;
+        commentId: string;
+    };
 }
 
 export interface SearchFormValue {
@@ -30,23 +28,10 @@ const Container = styled.div`
     justify-content: center;
 `;
 
-const ReplyLoadButton = styled.div`
-    span {
-        cursor: pointer;
-        &:hover {
-            text-decoration: underline;
-        }
-    }
-`;
-
-const CommunityDetailCommentReplyList = ({
-    postId,
-    commentId,
-}: CommunityDetailCommentReplyListProps) => {
+const CommunityDetailCommentReplyList = ({ params }: CommunityDetailCommentReplyListProps) => {
     const { fetchNextPage, hasNextPage, data } = useSuspenseInfiniteQuery({
-        queryKey: [API_GET_COMMUNITY_DETAIL_COMMENT_REPLY_KEY, postId, commentId],
-        queryFn: ({ pageParam: cursor }) =>
-            getCommunityDetailCommentReply({ postId, commentId, cursor }),
+        queryKey: [API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY, params],
+        queryFn: ({ pageParam: cursor }) => getCommunityDetailCommentReply({ params, cursor }),
         initialPageParam: 0,
         getNextPageParam: ({ cursor }) => {
             return cursor ?? null;
@@ -57,19 +42,21 @@ const CommunityDetailCommentReplyList = ({
         hasNextPage && fetchNextPage();
     };
 
-    const replyData = data.pages as any;
+    const replyData = data.pages;
 
     return (
         <Container>
             {replyData.map((item: any) =>
                 item.data.map((reply: any) => (
-                    <CommunityDetailCommentReply key={reply.id} item={reply} />
+                    <CommunityDetailComment
+                        key={reply.id}
+                        item={reply}
+                        params={{ ...params, replyId: reply.id }}
+                    />
                 )),
             )}
             {hasNextPage && (
-                <ReplyLoadButton onClick={onObserve}>
-                    <Text text="더보기" size={13} />
-                </ReplyLoadButton>
+                <Text text="더보기" typo={Typo.Body.Body4Regular} onClick={onObserve} underLine />
             )}
         </Container>
     );

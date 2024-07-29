@@ -17,7 +17,7 @@ const Container = styled.div`
     gap: 16px;
     width: 100%;
     height: 100%;
-    background: var(--gpStoreDarkestGrey);
+    background: var(--darkestGrey);
     z-index: 99;
 `;
 

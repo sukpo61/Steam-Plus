@@ -2,22 +2,22 @@
 
 import styled from '@emotion/styled';
 import { CommunitySearchParams } from 'types/searchParams/community';
-import { useSuspenseQuery, useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { API_GET_COMMUNITY_DETAIL_COMMENT_KEY } from 'src/api/community/comment/getCommunityDetailComment';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { API_COMMUNITY_DETAIL_COMMENT_KEY } from 'src/api/community/comment/getCommunityDetailComment';
 import getCommunityDetailComment from 'src/api/community/comment/getCommunityDetailComment';
 import StyledPagination from '@components/ui/Pagination';
-import CommunityDetailComment from './CommunityDetailComment';
-import { useUpdateParams } from '@hooks/useUpdateParams';
 import CommunityDetailCommentInput from './CommunityDetailCommentInput';
+import CommunityDetailCommentContainer from './CommunityDetailCommentContainer';
+import RestartIcon from '@components/icons/common/Restart.icon';
+import { useUpdateParams } from '@hooks/useUpdateParams';
 import { Text } from '@components/ui/Text';
 
 interface CommunityDetailCommentListProps {
     searchParams: CommunitySearchParams;
     params: {
-        id: string;
+        postId: string;
     };
 }
-
 export interface SearchFormValue {
     title: string;
     category: string;
@@ -27,7 +27,7 @@ export interface SearchFormValue {
 const Container = styled.div`
     width: 100%;
     max-width: 948px;
-    background-color: var(--gpStoreDarkerGrey);
+    background-color: var(--darkerGrey);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -41,6 +41,15 @@ const CommentMeta = styled.div`
     width: 100%;
     gap: 4px;
     margin-bottom: 16px;
+    padding-left: 4px;
+`;
+const InputContainer = styled.div`
+    display: flex;
+    margin-bottom: 16px;
+    width: 100%;
+`;
+const IconContainer = styled.button`
+    display: flex;
 `;
 
 const CommunityDetailCommentList = ({ params, searchParams }: CommunityDetailCommentListProps) => {
@@ -51,10 +60,8 @@ const CommunityDetailCommentList = ({ params, searchParams }: CommunityDetailCom
         updateParams({ page });
     };
 
-   
-
     const { data, refetch } = useSuspenseQuery({
-        queryKey: [API_GET_COMMUNITY_DETAIL_COMMENT_KEY, params, searchParams],
+        queryKey: [API_COMMUNITY_DETAIL_COMMENT_KEY, params, searchParams],
         queryFn: () => getCommunityDetailComment({ params, searchParams }),
     });
 
@@ -63,16 +70,20 @@ const CommunityDetailCommentList = ({ params, searchParams }: CommunityDetailCom
     return (
         <Container>
             <CommentMeta>
-                <Text text={'댓글'} size={15} color="white" />
-                <Text text={itemCount} size={15} preLine={true} />
-                <Text text={'새로고침'} size={15} color="white" onClick={() => refetch()} />
+                <Text text={'댓글'} />
+                <Text text={itemCount || '0'} />
+                <IconContainer onClick={() => refetch()}>
+                    <RestartIcon />
+                </IconContainer>
             </CommentMeta>
-            <CommunityDetailCommentInput params={params} />
+            <InputContainer>
+                <CommunityDetailCommentInput params={params} />
+            </InputContainer>
             {commentData.map((item) => (
-                <CommunityDetailComment
+                <CommunityDetailCommentContainer
                     key={item.id}
                     item={item}
-                    params={params}
+                    params={{ ...params, commentId: item.id }}
                     searchParams={searchParams}
                 />
             ))}
@@ -87,6 +98,7 @@ const CommunityDetailCommentList = ({ params, searchParams }: CommunityDetailCom
                 pageRangeDisplayed={10}
                 // 함수
                 onChange={handlePageChange}
+                hideDisabled
             />
         </Container>
     );

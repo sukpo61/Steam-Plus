@@ -18,6 +18,7 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     width: 100%;
+    margin-bottom: 16px;
 `;
 
 const CommunityPostsContainer = styled.div`
@@ -66,6 +67,7 @@ const CommunityList = ({ searchParams }: CommunityListProps) => {
                 pageRangeDisplayed={10}
                 // 함수
                 onChange={handlePageChange}
+                hideDisabled
             />
         </>
     );

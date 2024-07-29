@@ -1,14 +1,14 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { Text } from '@components/ui/Text';
 import timeFormat from '@utils/timeFormat';
+import Image from 'next/image';
+import DefaultProfileThumbnail from 'public/images/profile/profile.png';
+import { Text } from '@components/ui/Text';
 import { CommunityDetailResponse } from 'types/community/commnitydetail';
 import { COMMUNIY_CATEGORY_LABEL } from './CommunityPageScreen';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import DefaultProfileThumbnail from 'public/images/profile/profile.png';
-import { ColorToken } from 'styles/Color';
+import { Typo } from 'styles/Typography';
 
 export interface CommunityPostProps {
     item: CommunityDetailResponse;
@@ -18,13 +18,13 @@ const Container = styled.div`
     position: relative;
     width: 100%;
     height: 340px;
-    background: var(--gpStoreDarkerGrey);
+    background: var(--darkerGrey);
     display: flex;
     flex-direction: column;
     cursor: pointer;
     z-index: 1;
     &:hover {
-        outline: 1px solid var(--gpColor-DustyBlue);
+        outline: 1px solid var(--dustyBlue);
     }
 `;
 
@@ -53,12 +53,12 @@ const TitleContainer = styled.div`
     margin-bottom: 8px;
 `;
 
-const Div1 = styled.div`
+const UserMeta = styled.div`
     display: flex;
     flex-direction: row;
     gap: 8px;
 `;
-const Div2 = styled.div`
+const Info = styled.div`
     display: flex;
     flex-direction: row;
     gap: 8px;
@@ -71,14 +71,23 @@ const ProfileImage = styled(Image)`
 `;
 const ProfileContainer = styled.div`
     width: 100%;
-    border-top: 2px solid var(--gpStoreDarkGrey);
+    border-top: 2px solid var(--darkGrey);
     display: flex;
     justify-content: space-between;
     padding: 16px;
 `;
 
 const CommunityPost = ({ item }: CommunityPostProps) => {
-    const { id, category, title, content, username = 'user', timestamp, viewcount = 0 } = item;
+    const {
+        id,
+        category,
+        title,
+        content,
+        username = 'user',
+        timestamp,
+        viewcount = 0,
+        subcollectionCount: commentCount,
+    } = item;
     const { push } = useRouter();
 
     const onClickHandler = () => {
@@ -90,24 +99,28 @@ const CommunityPost = ({ item }: CommunityPostProps) => {
             <BorderTop />
             <CommentContainer>
                 <TitleContainer>
-                    <Text text={title} size={24} color="white" />
+                    <Text text={title} typo={Typo.Title.Header3Regular} />
                     <Text
                         text={`${COMMUNIY_CATEGORY_LABEL.find((item) => item.id === category)?.label}`}
-                        size={14}
+                        typo={Typo.Body.Body2Regular}
                     />
                 </TitleContainer>
-                <Text text={timeFormat(timestamp)} size={14} />
-                <Text text={content} preLine size={15} />
+                <Text text={timeFormat(timestamp)} typo={Typo.Body.Body2Regular} />
+                <Text text={content} preLine />
             </CommentContainer>
             <ProfileContainer>
-                <Div1>
+                <UserMeta>
                     <ProfileImage alt="profile_image" src={DefaultProfileThumbnail} />
-                    <Text text={username} size={14} />
-                </Div1>
-                <Div2>
-                    <Text text={String(viewcount)} size={14} />
-                    <Text text={String(viewcount)} size={14} />
-                </Div2>
+                    <Text text={username} typo={Typo.Body.Body2Regular} />
+                </UserMeta>
+                <Info>
+                    <Text
+                        text={`댓글 ${commentCount || 0}`}
+                        typo={Typo.Body.Body2Regular}
+                        underLine
+                    />
+                    <Text text={`조회수 ${viewcount}`} typo={Typo.Body.Body2Regular} />
+                </Info>
             </ProfileContainer>
         </Container>
     );

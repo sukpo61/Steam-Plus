@@ -4,12 +4,15 @@ import styled from '@emotion/styled';
 import { Text } from '@components/ui/Text';
 import Image from 'next/image';
 import DefaultProfileThumbnail from 'public/images/profile/profile.png';
-import { ColorToken } from 'styles/Color';
 import { Button } from '@components/ui/Button';
 import timeFormat from '@utils/timeFormat';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import getCommunityDetail from 'src/api/community/detail/getCommunityDetail';
-import { API_GET_COMMUNITY_DETAIL_KEY } from 'src/api/community/detail/getCommunityDetail';
+import { API_COMMUNITY_DETAIL_KEY } from 'src/api/community/detail/getCommunityDetail';
+import { Typo } from 'styles/Typography';
+import deleteCommunityDetail from 'src/api/community/detail/deleteCommunityDetail';
+import { useRouter } from 'next/navigation';
+import { API_GET_COMMUNITY_LIST_KEY } from 'src/api/community/getCommunityList';
 
 interface CommunityDetailProps {
     params: {
@@ -25,7 +28,7 @@ export interface SearchFormValue {
 
 const Container = styled.div`
     display: flex;
-    background: var(--gpGradient-StoreBackground);
+    background: var(--Gradient-Background);
     flex-direction: column;
     align-items: start;
     max-width: 948px;
@@ -35,7 +38,7 @@ const Container = styled.div`
 
 const PostTitle = styled.div`
     width: 100%;
-    background: var(--gpSystemDarkerGrey);
+    background: var(--systemDarkerGrey);
     height: 100px;
     display: flex;
     padding: 32px;
@@ -49,7 +52,7 @@ const ProfileImage = styled(Image)`
 const Header = styled.div`
     width: 100%;
     padding: 16px;
-    background: var(--gpBackground-Neutral-LightSofter);
+    background: var(--Background-Neutral-LightSofter);
     display: flex;
     justify-content: space-between;
     margin-bottom: 32px;
@@ -58,7 +61,7 @@ const Header = styled.div`
 const Divider = styled.div`
     width: 100%;
     height: 1px;
-    background: var(--gpStoreGrey);
+    background: var(--Grey);
     margin-bottom: 20px;
 `;
 
@@ -96,45 +99,81 @@ const PostContent = styled.div`
 `;
 
 const CommunityDetail = ({ params }: CommunityDetailProps) => {
+    const { id } = params;
+
     const { data } = useSuspenseQuery({
-        queryKey: [API_GET_COMMUNITY_DETAIL_KEY, params],
-        queryFn: () => getCommunityDetail(params),
+        queryKey: [API_COMMUNITY_DETAIL_KEY, params],
+        queryFn: () => getCommunityDetail({ params }),
+    });
+
+    const queryCache = useQueryClient();
+    const { push, replace } = useRouter();
+
+    const { mutate: deleteMutate } = useMutation({
+        mutationFn: deleteCommunityDetail,
     });
 
     if (!data) {
         return;
     }
 
-    const { title, username = 'user', timestamp, viewcount, content } = data;
+    const { title, username = 'user', timestamp, viewcount, content, image } = data;
+
+    const deleteHandler = () => {
+        const userConfirmed = window.confirm('정말 삭제하시겠습니까?');
+        if (userConfirmed) {
+            deleteMutate(
+                { params },
+                {
+                    onSuccess: async () => {
+                        await queryCache.invalidateQueries({
+                            queryKey: [API_GET_COMMUNITY_LIST_KEY],
+                        });
+                        replace('/community');
+                    },
+                },
+            );
+        }
+    };
+
+    const editHandler = () => {
+        push(`/community/${id}/edit`);
+    };
 
     return (
         <>
             <PostTitle>
-                <Text text={title} size={26} preLine={true} color="white" />
+                <Text text={title} typo={Typo.Title.Header2Regular} preLine />
             </PostTitle>
             <Container>
                 <Header>
                     <ProfileContainer>
                         <ProfileImage alt="profile_image" src={DefaultProfileThumbnail} />
                         <UserDetails>
-                            <Text text={username} size={13} weight={600} />
+                            <Text text={username} typo={Typo.Body.Body2Bold} />
                             <UserMeta>
-                                <Text
-                                    text={timeFormat(timestamp)}
-                                    size={12}
-                                    color={ColorToken.grey}
-                                />
-                                <Text text={String(viewcount)} size={12} color={ColorToken.grey} />
+                                <Text text={timeFormat(timestamp)} typo={Typo.Body.Body3Regular} />
+                                <Text text={String(viewcount)} typo={Typo.Body.Body3Regular} />
                             </UserMeta>
                         </UserDetails>
                     </ProfileContainer>
                     <ActionButtons>
-                        <Button text="수정" />
-                        <Button text="삭제" />
+                        <Button text="수정" onClick={editHandler} />
+                        <Button text="삭제" onClick={deleteHandler} />
                     </ActionButtons>
                 </Header>
                 <PostContent>
-                    <Text text={content} size={15} preLine={true} />
+                    {image &&
+                        image.map(({ id, src }) => (
+                            <Image
+                                key={id}
+                                src={src}
+                                alt="communitydetailimage"
+                                width={50}
+                                height={50}
+                            />
+                        ))}
+                    <Text text={content} typo={Typo.Body.Body1Regular} preLine={true} />
                 </PostContent>
                 <Divider />
             </Container>

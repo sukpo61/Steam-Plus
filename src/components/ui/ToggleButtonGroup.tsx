@@ -26,7 +26,7 @@ const BottomLine = styled.div`
     display: flex;
     width: 100%;
     height: 6px;
-    background: var(--gpStoreDarkestGrey);
+    background: var(--darkestGrey);
 `;
 
 const ToggleButtonGroup = ({ data, onChange, activeId }: ToggleButtonGroupProps) => {

@@ -13,12 +13,6 @@ interface CommunityDetailPageScreenProps {
     };
 }
 
-export interface SearchFormValue {
-    title: string;
-    category: string;
-    content: string;
-}
-
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -37,12 +31,13 @@ const Main = styled.div`
 `;
 
 const CommunityDetailPageScreen = ({ searchParams, params }: CommunityDetailPageScreenProps) => {
+    const { id: postId } = params;
     return (
         <Container>
             <Main>
                 <QuerySuspenseErrorBoundary>
                     <CommunityDetail params={params} />
-                    <CommunityDetailCommentList searchParams={searchParams} params={params} />
+                    <CommunityDetailCommentList searchParams={searchParams} params={{ postId }} />
                 </QuerySuspenseErrorBoundary>
             </Main>
         </Container>

@@ -1,15 +1,11 @@
 import { NextPage } from 'next';
-import CommunityAddPageScreen from '@components/community/add/CommunityAddPageScreen';
-
+import CommunityAddController from '@components/community/add/CommunityAddController';
 interface CommunityAddPageProps {
-    searchParams: {
-        page: number;
-        category?: string;
-    };
+    params: {};
 }
 
-const CommunityAddPage: NextPage<CommunityAddPageProps> = async ({ searchParams }) => {
-    return <CommunityAddPageScreen searchParams={searchParams} />;
+const CommunityAddPage: NextPage<CommunityAddPageProps> = async ({ params }) => {
+    return <CommunityAddController params={params} />;
 };
 
 export default CommunityAddPage;

@@ -3,22 +3,23 @@ import { database } from 'src/firebase/firebase';
 import variableAssignment from '@utils/variableAssignment';
 import getInfiniteScrollData from 'src/api/common/getInfiniteScrollData';
 interface getCommunityDetailCommentReplyParams {
-    postId: string;
-    commentId: string;
+    params: {
+        postId: string;
+        commentId: string;
+    };
     cursor: any;
 }
 
-export const API_GET_COMMUNITY_DETAIL_COMMENT_REPLY_KEY =
+export const API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY =
     'community/{{postId}}/comment/{{commentId}}/reply';
 
 const getCommunityDetailCommentReply = async ({
-    postId,
-    commentId,
+    params,
     cursor,
 }: getCommunityDetailCommentReplyParams): Promise<any> => {
     const replyRef = collection(
         database,
-        variableAssignment(API_GET_COMMUNITY_DETAIL_COMMENT_REPLY_KEY, { postId, commentId }),
+        variableAssignment(API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY, params),
     );
 
     const data = await getInfiniteScrollData<any>(replyRef, cursor);
