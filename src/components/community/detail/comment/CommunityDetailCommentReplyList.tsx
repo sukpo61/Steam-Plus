@@ -7,6 +7,8 @@ import getCommunityDetailCommentReply from 'src/api/community/comment/reply/getC
 import { API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY } from 'src/api/community/comment/reply/getCommunityDetailCommentReply';
 import { Typo } from 'styles/Typography';
 import { Text } from '@components/ui/Text';
+import { CommunityCommentParams } from 'types/params/community';
+
 interface CommunityDetailCommentReplyListProps {
     params: {
         postId: string;
@@ -28,7 +30,7 @@ const Container = styled.div`
     justify-content: center;
 `;
 
-const CommunityDetailCommentReplyList = ({ params }: CommunityDetailCommentReplyListProps) => {
+const CommunityDetailCommentReplyList = ({ params }: CommunityCommentParams) => {
     const { fetchNextPage, hasNextPage, data } = useSuspenseInfiniteQuery({
         queryKey: [API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY, params],
         queryFn: ({ pageParam: cursor }) => getCommunityDetailCommentReply({ params, cursor }),

@@ -1,11 +1,17 @@
 export interface PostCommunityDetailCommentParameter {
-    comment: string;
+    content: string;
+    images: {
+        id: string;
+        src: string;
+    }[];
+    likes: string[];
+    timestamp: number;
+    username: string;
+    like?: string;
 }
 
 export interface CommunityDetailCommentResponse extends PostCommunityDetailCommentParameter {
     id: string;
-    postId: string;
-    username: string;
-    timestamp: Date;
     viewcount: number;
+    subcollectionCount: number;
 }

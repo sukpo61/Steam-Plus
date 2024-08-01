@@ -1,17 +1,13 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { CommunitySearchParams } from 'types/searchParams/community';
+import { CommunitySearchParams } from 'types/params/community';
 import CommunityPost from './CommunityPost';
 import { API_GET_COMMUNITY_LIST_KEY } from 'src/api/community/getCommunityList';
 import getCommunityList from 'src/api/community/getCommunityList';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useUpdateParams } from '@hooks/useUpdateParams';
 import StyledPagination from '@components/ui/Pagination';
-
-export interface CommunityListProps {
-    searchParams: CommunitySearchParams;
-}
 
 const Container = styled.div`
     display: flex;
@@ -28,7 +24,7 @@ const CommunityPostsContainer = styled.div`
     gap: 10px;
 `;
 
-const CommunityList = ({ searchParams }: CommunityListProps) => {
+const CommunityList = ({ searchParams }: CommunitySearchParams) => {
     const { page = '1' } = searchParams;
     const { updateParams } = useUpdateParams();
 
@@ -46,6 +42,8 @@ const CommunityList = ({ searchParams }: CommunityListProps) => {
     }
 
     const { data: communityData, itemCount, pageSize } = data;
+
+    console.log('itemCount', itemCount);
 
     return (
         <>

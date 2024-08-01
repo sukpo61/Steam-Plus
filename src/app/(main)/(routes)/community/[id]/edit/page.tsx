@@ -1,13 +1,8 @@
 import { NextPage } from 'next';
 import CommunityAddController from '@components/community/add/CommunityAddController';
+import { CommunityDetailParams } from 'types/params/community';
 
-interface CommunityAddPageProps {
-    params: {
-        id: string;
-    };
-}
-
-const CommunityAddPage: NextPage<CommunityAddPageProps> = async ({ params }) => {
+const CommunityAddPage: NextPage<CommunityDetailParams> = async ({ params }) => {
     return <CommunityAddController params={params} />;
 };
 

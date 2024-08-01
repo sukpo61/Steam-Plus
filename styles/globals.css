@@ -98,6 +98,7 @@ svg {
     --White: #ffffff;
     --Grey: #4e697d;
     --darkGrey: #1b2838;
+    --darkGrey-opacity: rgb(27, 40, 56, 0.8);
     --darkerGrey: #16202d;
     --darkestGrey: #000f18;
 

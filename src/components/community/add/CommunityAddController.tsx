@@ -1,31 +1,27 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { useCallback } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import postCommunityDetail from 'src/api/community/detail/postCommunityDetail';
-import { API_GET_COMMUNITY_LIST_KEY } from 'src/api/community/getCommunityList';
-import { useRouter } from 'next/navigation';
-import { FormProvider } from 'react-hook-form';
 import CommunityAddPageScreen from './CommunityAddPageScreen';
 import getCommunityDetail from 'src/api/community/detail/getCommunityDetail';
 import patchCommunityDetail from 'src/api/community/detail/patchCommunityDetail';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { useCallback } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { API_GET_COMMUNITY_LIST_KEY } from 'src/api/community/getCommunityList';
+import { useRouter } from 'next/navigation';
+import { FormProvider } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 import { API_COMMUNITY_DETAIL_KEY } from 'src/api/community/detail/getCommunityDetail';
 import { ImageInputValue } from '@components/ui/ImageInput';
-
-interface CommunityAddControllerProps {
-    params: {
-        id?: string;
-    };
-}
+import { useEffect } from 'react';
+import { CommunityDetailParams } from 'types/params/community';
 
 export interface CommunityAddFormValue {
     title: string;
     category: string;
     content: string;
-    image: ImageInputValue[];
+    images: ImageInputValue[];
 }
 
 const Form = styled.form`
@@ -34,9 +30,9 @@ const Form = styled.form`
     height: 100%;
 `;
 
-const CommunityAddController = ({ params }: CommunityAddControllerProps) => {
+const CommunityAddController = ({ params }: CommunityDetailParams) => {
     const { id } = params;
-    const { data } = useQuery({
+    const { data: prevData } = useQuery({
         queryKey: [API_COMMUNITY_DETAIL_KEY, params],
         queryFn: () => getCommunityDetail({ params }),
         enabled: !!id,
@@ -55,9 +51,10 @@ const CommunityAddController = ({ params }: CommunityAddControllerProps) => {
 
     const form = useForm<CommunityAddFormValue>({
         defaultValues: {
-            title: data?.title,
-            category: data?.category,
-            content: data?.content,
+            title: prevData?.title || '',
+            category: prevData?.category || '',
+            content: prevData?.content || '',
+            images: prevData?.images || [],
         },
     });
 
@@ -73,7 +70,7 @@ const CommunityAddController = ({ params }: CommunityAddControllerProps) => {
         };
         if (id) {
             patchMutate(
-                { data, params },
+                { params, data, prevImage: prevData?.images },
                 {
                     onSuccess: onSuccess,
                     onError: (error) => {},
@@ -81,13 +78,10 @@ const CommunityAddController = ({ params }: CommunityAddControllerProps) => {
             );
             return;
         }
-        postMutate(
-            { data },
-            {
-                onSuccess: onSuccess,
-                onError: (error) => {},
-            },
-        );
+        postMutate(data, {
+            onSuccess: onSuccess,
+            onError: (error) => {},
+        });
     }, []);
 
     const onSubmitError = (errors: any) => {
@@ -100,6 +94,17 @@ const CommunityAddController = ({ params }: CommunityAddControllerProps) => {
             return;
         }
     };
+
+    useEffect(() => {
+        if (prevData) {
+            form.reset({
+                title: prevData.title,
+                category: prevData.category,
+                content: prevData.content,
+                images: prevData.images,
+            });
+        }
+    }, [prevData, form.reset]);
 
     return (
         <FormProvider {...form}>

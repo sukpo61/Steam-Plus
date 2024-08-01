@@ -48,8 +48,12 @@ export interface TextProps {
 
 export const Text = ({ text, ellipsis = true, preLine = false, onClick, ...props }: TextProps) => {
     return (
-        <TextContainer {...props} onClick={onClick}>
-            {text || ''}
-        </TextContainer>
+        <>
+            {text ? (
+                <TextContainer {...props} onClick={onClick}>
+                    {text || ''}
+                </TextContainer>
+            ) : null}
+        </>
     );
 };

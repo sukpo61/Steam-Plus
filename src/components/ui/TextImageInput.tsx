@@ -15,9 +15,11 @@ export interface TextImageInputProps {
     cancle?: () => void;
     errorMessage?: string;
     placeholder?: string;
+    multiple?: boolean;
     setValue: UseFormSetValue<any>;
     register: UseFormRegister<any>;
-    image: ImageInputValue[];
+    images: ImageInputValue[];
+    imageMaxlength?: number;
 }
 
 const Container = styled.div`
@@ -43,26 +45,34 @@ const ButtonContainer = styled.div`
     display: flex;
     gap: 16px;
 `;
+const TextAreaContainer = styled.div`
+    display: flex;
+    flex: 1;
+`;
 const ImageListContainer = styled.div`
     display: flex;
     width: 100%;
     gap: 16px;
 `;
 
-const TextImageInput = ({
-    cancle,
-    errorMessage,
-    register,
-    placeholder,
-    image,
-    setValue,
-}: TextImageInputProps) => {
+const TextImageInput = (props: TextImageInputProps) => {
+    const {
+        cancle,
+        errorMessage,
+        register,
+        placeholder,
+        images,
+        setValue,
+        multiple,
+        imageMaxlength = 1,
+    } = props;
+
     const getImageSource = useCallback((src: File | string) => {
         if (typeof src === 'string') return src;
         return URL.createObjectURL(src);
     }, []);
 
-    const imageList = image?.map((image) => {
+    const imageList = images?.map((image) => {
         return {
             id: image.id,
             src: getImageSource(image.src),
@@ -70,22 +80,15 @@ const TextImageInput = ({
     });
 
     const onClose = (id: string) => {
-        const result = image.filter((i) => i.id !== id);
-        setValue('image', result);
+        const result = images.filter((i) => i.id !== id);
+        setValue('images', result);
     };
 
     return (
         <Container>
-            <TextArea
-                placeholder={placeholder}
-                {...register('content', {
-                    required: true,
-                    pattern: {
-                        value: /\S+/,
-                        message: '내용을 입력하세요',
-                    },
-                })}
-            />
+            <TextAreaContainer>
+                <TextArea placeholder={placeholder} {...register('content')} />
+            </TextAreaContainer>
             <ImageListContainer>
                 {imageList.map((image) => (
                     <ImagePreview key={image.id} image={image} onClose={() => onClose(image.id)} />
@@ -93,10 +96,11 @@ const TextImageInput = ({
             </ImageListContainer>
             <SubmitButtonContainer>
                 <ImageInput
-                    onChange={(e) => setValue('image', e)}
-                    value={image}
-                    maxLength={1}
-                    isChange
+                    onChange={(e) => setValue('images', e)}
+                    value={images}
+                    maxLength={imageMaxlength}
+                    multiple={multiple}
+                    replaceable
                 />
                 <ButtonContainer>
                     <Text text={errorMessage} typo={Typo.Error.Error1Regular} />

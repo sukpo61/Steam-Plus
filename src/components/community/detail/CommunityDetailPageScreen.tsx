@@ -1,17 +1,10 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { CommunitySearchParams } from 'types/searchParams/community';
 import CommunityDetail from './CommunityDetail';
 import QuerySuspenseErrorBoundary from '@components/hoc/QuerySuspenseErrorBoundary';
 import CommunityDetailCommentList from './comment/CommunityDetailCommentList';
-
-interface CommunityDetailPageScreenProps {
-    searchParams: CommunitySearchParams;
-    params: {
-        id: string;
-    };
-}
+import { CommunityDetailRequestParams } from 'types/params/community';
 
 const Container = styled.div`
     display: flex;
@@ -27,10 +20,11 @@ const Main = styled.div`
     flex-direction: column;
     align-items: center;
     max-width: 978px;
+    min-height: 100%;
     width: 100%;
 `;
 
-const CommunityDetailPageScreen = ({ searchParams, params }: CommunityDetailPageScreenProps) => {
+const CommunityDetailPageScreen = ({ searchParams, params }: CommunityDetailRequestParams) => {
     const { id: postId } = params;
     return (
         <Container>

@@ -5,7 +5,7 @@ import { Header } from '@components/ui/Header';
 import SearchInput from '@components/search/SearchInput';
 import QuerySuspenseErrorBoundary from '@components/hoc/QuerySuspenseErrorBoundary';
 import { SearchResult } from '@components/search/SearchResult';
-import { SearchParams } from 'types/searchParams/search';
+import { SearchParams } from 'types/params/search';
 
 interface SearchPageScreenProps {
     searchParams: SearchParams;

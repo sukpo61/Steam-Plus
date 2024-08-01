@@ -60,7 +60,7 @@ const CommunityAddPageScreen = ({ params }: CommunityAddPageScreenProps) => {
     const { id } = params;
     const { register, setValue, control } = useFormContext<CommunityAddFormValue>();
 
-    const image = useWatch({ control, name: 'image' });
+    const images = useWatch({ control, name: 'images' });
 
     const selectData = [
         {
@@ -102,7 +102,9 @@ const CommunityAddPageScreen = ({ params }: CommunityAddPageScreenProps) => {
                             placeholder="댓글을 입력하세요."
                             register={register}
                             setValue={setValue}
-                            image={image || []}
+                            images={images || []}
+                            imageMaxlength={5}
+                            multiple
                         />
                     </TextAreaContainer>
                 </InputContainer>

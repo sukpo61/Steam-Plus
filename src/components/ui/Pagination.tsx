@@ -39,17 +39,19 @@ const Container = styled.div`
         border-radius: 4px;
         background: var(--Grey);
     }
-    /* li.disabled a {
+    li.disabled a {
         display: none;
-    } */
+    }
 `;
 
 const StyledPagination = (props: ReactJsPaginationProps) => {
-    return (
-        <Container>
-            <Pagination {...props} />
-        </Container>
-    );
+    const { itemsCountPerPage, totalItemsCount } = props;
+    if (itemsCountPerPage)
+        return (
+            <Container>
+                {totalItemsCount > itemsCountPerPage && <Pagination {...props} />}
+            </Container>
+        );
 };
 
 export default StyledPagination;

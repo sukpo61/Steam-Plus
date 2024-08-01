@@ -13,7 +13,8 @@ interface ImageInputProps {
     value: ImageInputValue[];
     onChange: (value: ImageInputValue[]) => void;
     maxLength: number;
-    isChange?: boolean;
+    multiple?: boolean;
+    replaceable?: boolean;
 }
 
 const Container = styled.label`
@@ -24,7 +25,13 @@ const CusttomInput = styled.input`
     display: none;
 `;
 
-const ImageInput: FC<ImageInputProps> = ({ value, maxLength, onChange, isChange }) => {
+const ImageInput: FC<ImageInputProps> = ({
+    value,
+    maxLength,
+    onChange,
+    replaceable,
+    multiple = false,
+}) => {
     const { showToast } = useToast();
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -51,14 +58,14 @@ const ImageInput: FC<ImageInputProps> = ({ value, maxLength, onChange, isChange 
 
             let result: ImageInputValue[] = [...value];
 
-            if (isChange) {
+            if (replaceable) {
                 result = [...newValues, ...result];
                 if (maxLength - 1 < value.length) {
                     result.splice(-files.length);
                 }
             } else {
                 if (maxLength - 1 < result.length) {
-                    showToast('최대 등록 사진 개수 초과입니다.');
+                    showToast(`최대 등록 사진 갯수 ${maxLength}개 초과입니다.`);
                 } else {
                     result = [...newValues, ...result];
                 }
@@ -83,7 +90,7 @@ const ImageInput: FC<ImageInputProps> = ({ value, maxLength, onChange, isChange 
             <CusttomInput
                 type="file"
                 accept="image/*"
-                multiple
+                multiple={multiple}
                 onChange={onChangeImageInput}
                 ref={inputRef}
             />

@@ -1,7 +1,6 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { CommunitySearchParams } from 'types/searchParams/community';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { API_COMMUNITY_DETAIL_COMMENT_KEY } from 'src/api/community/comment/getCommunityDetailComment';
 import getCommunityDetailComment from 'src/api/community/comment/getCommunityDetailComment';
@@ -11,13 +10,7 @@ import CommunityDetailCommentContainer from './CommunityDetailCommentContainer';
 import RestartIcon from '@components/icons/common/Restart.icon';
 import { useUpdateParams } from '@hooks/useUpdateParams';
 import { Text } from '@components/ui/Text';
-
-interface CommunityDetailCommentListProps {
-    searchParams: CommunitySearchParams;
-    params: {
-        postId: string;
-    };
-}
+import { CommunityCommentRequestParams } from 'types/params/community';
 export interface SearchFormValue {
     title: string;
     category: string;
@@ -29,11 +22,10 @@ const Container = styled.div`
     max-width: 948px;
     background-color: var(--darkerGrey);
     display: flex;
+    flex: 1;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
-    padding: 16px 32px;
+    padding: 16px 32px 32px;
 `;
 
 const CommentMeta = styled.div`
@@ -52,7 +44,7 @@ const IconContainer = styled.button`
     display: flex;
 `;
 
-const CommunityDetailCommentList = ({ params, searchParams }: CommunityDetailCommentListProps) => {
+const CommunityDetailCommentList = ({ params, searchParams }: CommunityCommentRequestParams) => {
     const { page } = searchParams;
     const { updateParams } = useUpdateParams();
 
@@ -84,7 +76,6 @@ const CommunityDetailCommentList = ({ params, searchParams }: CommunityDetailCom
                     key={item.id}
                     item={item}
                     params={{ ...params, commentId: item.id }}
-                    searchParams={searchParams}
                 />
             ))}
             <StyledPagination
@@ -98,7 +89,6 @@ const CommunityDetailCommentList = ({ params, searchParams }: CommunityDetailCom
                 pageRangeDisplayed={10}
                 // 함수
                 onChange={handlePageChange}
-                hideDisabled
             />
         </Container>
     );

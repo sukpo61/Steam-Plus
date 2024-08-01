@@ -6,10 +6,12 @@ import Image from 'next/image';
 import DefaultProfileThumbnail from 'public/images/profile/profile.png';
 import DropDown from '@components/ui/DropDown';
 import CommentDropDown from './CommentDropDown';
-import deleteCommunityDetailComment from 'src/api/community/comment/deleteCommunityDetailComment';
 import EditIcon from '@components/icons/common/Edit.icon';
 import DeleteIcon from '@components/icons/common/Delete.icon';
+import LikeIcon from '@components/icons/common/Like.icon';
+import deleteCommunityDetailComment from 'src/api/community/comment/deleteCommunityDetailComment';
 import CommunityDetailCommentInput from './CommunityDetailCommentInput';
+import patchCommunityDetailComment from 'src/api/community/comment/patchCommunityDetailComment';
 import { Text } from '@components/ui/Text';
 import { useState } from 'react';
 import { Typo } from 'styles/Typography';
@@ -18,17 +20,12 @@ import { isCommentDropDownRecoil } from 'src/recoil-states/commentState';
 import { API_COMMUNITY_DETAIL_COMMENT_KEY } from 'src/api/community/comment/getCommunityDetailComment';
 import { API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY } from 'src/api/community/comment/reply/getCommunityDetailCommentReply';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button } from '@components/ui/Button';
+import { CommunityDetailCommentResponse } from 'types/community/commnitycomment';
+import { CommunityCommentParams } from 'types/params/community';
 
-export interface CommunityDetailCommentProps {
-    item: any;
-    params: {
-        postId: string;
-        commentId?: string;
-        replyId?: string;
-    };
-    type?: 'reply';
-    dropdownmenu?: any;
-    isEdit?: boolean;
+export interface CommunityDetailCommentProps extends CommunityCommentParams {
+    item: CommunityDetailCommentResponse;
 }
 
 const Container = styled.div`
@@ -73,13 +70,15 @@ const ProfileContainer = styled.div`
 const UserDetails = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
     align-items: start;
 `;
 
 const UserMeta = styled.div`
     display: flex;
     flex-direction: row;
+    align-items: center;
+    max-height: 13px;
     gap: 6px;
 `;
 const Time = styled.div`
@@ -89,12 +88,15 @@ const Time = styled.div`
 
 const CommentImage = styled(Image)`
     object-fit: cover;
-    border-radius: 4px;
+    border-radius: 8px;
+    height: auto !important;
 `;
 
+const userId = '1234';
+
 const CommunityDetailComment = ({ item, params }: CommunityDetailCommentProps) => {
-    const { postId, commentId } = params;
-    const { id, content, username = 'user', timestamp, image } = item;
+    const { postId, commentId, replyId } = params;
+    const { id, content, username = 'user', timestamp, images, likes } = item;
     const [isReplyInput, setIsReplyInput] = useState(false);
     const [openId, setOpenId] = useRecoilState(isCommentDropDownRecoil);
     const [isEdit, setIsEdit] = useState(false);
@@ -104,21 +106,37 @@ const CommunityDetailComment = ({ item, params }: CommunityDetailCommentProps) =
         mutationFn: deleteCommunityDetailComment,
     });
 
+    const { mutate: patchLike } = useMutation({
+        mutationFn: patchCommunityDetailComment,
+    });
+
+    const onSuccess = async () => {
+        await queryCache.invalidateQueries({
+            queryKey: [API_COMMUNITY_DETAIL_COMMENT_KEY, { postId }],
+        });
+        if (replyId)
+            await queryCache.invalidateQueries({
+                queryKey: [API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY, { postId, commentId }],
+            });
+    };
+
+    const likeOnClickHandler = () => {
+        const isLike = likes.includes(userId);
+        patchLike(
+            { params: { ...params, id }, data: { like: userId }, isLike: { value: !isLike } },
+            {
+                onSuccess: onSuccess,
+            },
+        );
+    };
+
     const deleteHandler = () => {
         const userConfirm = window.confirm('정말 삭제하시겠습니까?');
         if (!userConfirm) {
             return;
         }
-        const onSuccess = async () => {
-            await queryCache.invalidateQueries({
-                queryKey: [API_COMMUNITY_DETAIL_COMMENT_KEY, { postId }],
-            });
-            await queryCache.invalidateQueries({
-                queryKey: [API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY, { postId, commentId }],
-            });
-        };
         deleteMutate(
-            { id, params },
+            { params: { ...params, id } },
             {
                 onSuccess: onSuccess,
             },
@@ -156,7 +174,7 @@ const CommunityDetailComment = ({ item, params }: CommunityDetailCommentProps) =
                 <CommunityDetailCommentInput
                     id={id}
                     params={params}
-                    defaultValues={{ content, image }}
+                    defaultValues={{ content, images }}
                     closeInput={() => setIsEdit(false)}
                 />
             ) : (
@@ -165,17 +183,16 @@ const CommunityDetailComment = ({ item, params }: CommunityDetailCommentProps) =
                         <ProfileContainer>
                             <UserDetails>
                                 <Text text={username} typo={Typo.Body.Body2Bold} />
-                                {image &&
-                                    image.map(({ id, src }: any) => (
-                                        <CommentImage
-                                            key={id}
-                                            src={src}
-                                            alt="communitydetailimage"
-                                            width={200}
-                                            height={200}
-                                        />
-                                    ))}
                                 <Text text={content} />
+                                {images?.map(({ id, src }: any) => (
+                                    <CommentImage
+                                        key={id}
+                                        src={src}
+                                        alt="communitydetailimage"
+                                        width={200}
+                                        height={100}
+                                    />
+                                ))}
                                 <UserMeta>
                                     <Time>
                                         <Text
@@ -189,6 +206,12 @@ const CommunityDetailComment = ({ item, params }: CommunityDetailCommentProps) =
                                         underLine
                                         onClick={() => setIsReplyInput((e) => !e)}
                                     />
+                                    <Button
+                                        text={<LikeIcon isLike={likes.includes(userId)} />}
+                                        buttonType="icon"
+                                        onClick={likeOnClickHandler}
+                                    />
+                                    <Text text={likes.length} typo={Typo.Body.Body3Regular} />
                                 </UserMeta>
                             </UserDetails>
                         </ProfileContainer>

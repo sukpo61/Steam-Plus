@@ -5,18 +5,14 @@ import { useState } from 'react';
 import CommunityDetailCommentReplyList from './CommunityDetailCommentReplyList';
 import QuerySuspenseErrorBoundary from '@components/hoc/QuerySuspenseErrorBoundary';
 import { Button } from '@components/ui/Button';
-import { CommunitySearchParams } from 'types/searchParams/community';
+import { CommunityCommentParams } from 'types/params/community';
 import CommunityDetailComment from './CommunityDetailComment';
+import { CommunityDetailCommentResponse } from 'types/community/commnitycomment';
 import Stat1 from '@components/icons/common/Stat1.icon';
 import Stat2 from '@components/icons/common/Stat2.icon';
 
-export interface CommunityDetailCommentContainerProps {
-    item: any;
-    searchParams: CommunitySearchParams;
-    params: {
-        postId: string;
-        commentId: string;
-    };
+export interface CommunityDetailCommentContainerProps extends CommunityCommentParams {
+    item: CommunityDetailCommentResponse;
 }
 
 const Container = styled.div`

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-function timeFormat(timestamp: Date, type?: 'comment') {
+function timeFormat(timestamp: number, type?: 'comment') {
     const now = dayjs();
     const time = dayjs(timestamp);
 

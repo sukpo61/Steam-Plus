@@ -1,24 +1,19 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { Text } from '@components/ui/Text';
 import Image from 'next/image';
-import DefaultProfileThumbnail from 'public/images/profile/profile.png';
-import { Button } from '@components/ui/Button';
-import timeFormat from '@utils/timeFormat';
-import { useSuspenseQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import getCommunityDetail from 'src/api/community/detail/getCommunityDetail';
-import { API_COMMUNITY_DETAIL_KEY } from 'src/api/community/detail/getCommunityDetail';
-import { Typo } from 'styles/Typography';
 import deleteCommunityDetail from 'src/api/community/detail/deleteCommunityDetail';
+import DefaultProfileThumbnail from 'public/images/profile/profile.png';
+import getCommunityDetail from 'src/api/community/detail/getCommunityDetail';
+import timeFormat from '@utils/timeFormat';
+import { Text } from '@components/ui/Text';
+import { Button } from '@components/ui/Button';
+import { Typo } from 'styles/Typography';
 import { useRouter } from 'next/navigation';
+import { useSuspenseQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { API_COMMUNITY_DETAIL_KEY } from 'src/api/community/detail/getCommunityDetail';
 import { API_GET_COMMUNITY_LIST_KEY } from 'src/api/community/getCommunityList';
-
-interface CommunityDetailProps {
-    params: {
-        id: string;
-    };
-}
+import { CommunityDetailParams } from 'types/params/community';
 
 export interface SearchFormValue {
     title: string;
@@ -94,17 +89,38 @@ const UserMeta = styled.div`
 const PostContent = styled.div`
     width: 100%;
     display: flex;
+    flex-direction: column;
+    gap: 16px;
+`;
+const TextContainer = styled.div`
+    width: 100%;
+    display: flex;
     margin-bottom: 24px;
     word-break: break-word;
 `;
 
-const CommunityDetail = ({ params }: CommunityDetailProps) => {
+const ImageContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+`;
+const CommunityDetailImage = styled(Image)`
+    object-fit: cover;
+    border-radius: 8px;
+    height: auto !important;
+`;
+
+const CommunityDetail = ({ params }: CommunityDetailParams) => {
     const { id } = params;
 
     const { data } = useSuspenseQuery({
         queryKey: [API_COMMUNITY_DETAIL_KEY, params],
         queryFn: () => getCommunityDetail({ params }),
     });
+
+    if (!data) {
+        return;
+    }
 
     const queryCache = useQueryClient();
     const { push, replace } = useRouter();
@@ -113,11 +129,7 @@ const CommunityDetail = ({ params }: CommunityDetailProps) => {
         mutationFn: deleteCommunityDetail,
     });
 
-    if (!data) {
-        return;
-    }
-
-    const { title, username = 'user', timestamp, viewcount, content, image } = data;
+    const { title, username = 'user', timestamp, viewcount, content, images } = data;
 
     const deleteHandler = () => {
         const userConfirmed = window.confirm('정말 삭제하시겠습니까?');
@@ -163,17 +175,20 @@ const CommunityDetail = ({ params }: CommunityDetailProps) => {
                     </ActionButtons>
                 </Header>
                 <PostContent>
-                    {image &&
-                        image.map(({ id, src }) => (
-                            <Image
+                    <ImageContainer>
+                        {images.map(({ id, src }) => (
+                            <CommunityDetailImage
                                 key={id}
                                 src={src}
                                 alt="communitydetailimage"
-                                width={50}
-                                height={50}
+                                width={500}
+                                height={100}
                             />
                         ))}
-                    <Text text={content} typo={Typo.Body.Body1Regular} preLine={true} />
+                    </ImageContainer>
+                    <TextContainer>
+                        <Text text={content} typo={Typo.Body.Body1Regular} preLine={true} />
+                    </TextContainer>
                 </PostContent>
                 <Divider />
             </Container>

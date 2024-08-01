@@ -3,16 +3,16 @@ import { storage } from 'src/firebase/firebase';
 import { ImageInputValue } from '@components/ui/ImageInput';
 
 interface getImageUrlProps {
-    id: string;
-    src: string | File;
+    image: ImageInputValue;
+    url: string;
 }
 
-const getImageUrlIndex = async (file: getImageUrlProps) => {
-    const { id, src } = file;
+const getImageUrlIndex = async ({ image, url }: getImageUrlProps) => {
+    const { id, src } = image;
     if (typeof src === 'string') {
-        return file;
+        return image;
     }
-    const storageRef = ref(storage, 'images/' + id);
+    const storageRef = ref(storage, url + `/${id}`);
     const snapshot = await uploadBytes(storageRef, src);
     const downloadURL = await getDownloadURL(snapshot.ref);
 
@@ -20,6 +20,7 @@ const getImageUrlIndex = async (file: getImageUrlProps) => {
         id,
         src: downloadURL,
     };
+
     // Create the file metadata
     // const metadata = {
     //     contentType: 'image/jpeg',
@@ -72,7 +73,7 @@ const getImageUrlIndex = async (file: getImageUrlProps) => {
     // );
 };
 
-const getImageUrl = async (files: ImageInputValue[]) =>
-    await Promise.all(files.map((file) => getImageUrlIndex(file)));
+const getImageUrl = async ({ images, url }: any) =>
+    await Promise.all(images.map((image: any) => getImageUrlIndex({ image, url })));
 
 export default getImageUrl;

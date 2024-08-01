@@ -3,18 +3,14 @@
 import styled from '@emotion/styled';
 import ToggleButtonGroup from '@components/ui/ToggleButtonGroup';
 import CommunityList from '@components/community/CommunityList';
-import { useUpdateParams } from '@hooks/useUpdateParams';
-import { CommunitySearchParams } from 'types/searchParams/community';
 import QuerySuspenseErrorBoundary from '@components/hoc/QuerySuspenseErrorBoundary';
 import SearchInput from '@components/search/SearchInput';
+import { useUpdateParams } from '@hooks/useUpdateParams';
+import { CommunitySearchParams } from 'types/params/community';
 import { Text } from '@components/ui/Text';
 import { useRouter } from 'next/navigation';
 import { Button } from '@components/ui/Button';
 import { Typo } from 'styles/Typography';
-
-interface CommunityPageScreenProps {
-    searchParams: CommunitySearchParams;
-}
 
 const Container = styled.div`
     display: flex;
@@ -63,7 +59,7 @@ export const COMMUNIY_CATEGORY_LABEL = [
     },
 ];
 
-const CommunityPageScreen = ({ searchParams }: CommunityPageScreenProps) => {
+const CommunityPageScreen = ({ searchParams }: CommunitySearchParams) => {
     const { category, term } = searchParams;
     const { push } = useRouter();
 

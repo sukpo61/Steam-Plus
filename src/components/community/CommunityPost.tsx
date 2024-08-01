@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 import timeFormat from '@utils/timeFormat';
 import Image from 'next/image';
 import DefaultProfileThumbnail from 'public/images/profile/profile.png';
@@ -9,6 +10,7 @@ import { CommunityDetailResponse } from 'types/community/commnitydetail';
 import { COMMUNIY_CATEGORY_LABEL } from './CommunityPageScreen';
 import { useRouter } from 'next/navigation';
 import { Typo } from 'styles/Typography';
+import { useState } from 'react';
 
 export interface CommunityPostProps {
     item: CommunityDetailResponse;
@@ -37,20 +39,28 @@ const BorderTop = styled.div`
     z-index: -1;
 `;
 
-const CommentContainer = styled.div`
+const ContentContainer = styled.div`
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: start;
     flex: 1;
     width: 100%;
-    padding: 16px;
     gap: 8px;
 `;
-const TitleContainer = styled.div`
+
+const ImageTitle = css`
+    background: var(--darkGrey-opacity);
+`;
+
+const TitleContainer = styled.div<{ isImageTitle: boolean }>`
+    position: absolute;
     display: flex;
     justify-content: space-between;
+    padding: 16px;
     width: 100%;
-    margin-bottom: 8px;
+    z-index: 999;
+    ${({ isImageTitle }) => isImageTitle && ImageTitle};
 `;
 
 const UserMeta = styled.div`
@@ -71,10 +81,37 @@ const ProfileImage = styled(Image)`
 `;
 const ProfileContainer = styled.div`
     width: 100%;
+    min-height: 70px;
     border-top: 2px solid var(--darkGrey);
     display: flex;
     justify-content: space-between;
     padding: 16px;
+`;
+const TextContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 100%;
+    gap: 8px;
+    margin-top: 56px;
+    padding: 0 16px;
+`;
+
+const PostImage = styled(Image)`
+    object-fit: cover;
+`;
+
+const ImageWrap = styled.div`
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+`;
+const ImageContainer = styled.div`
+    display: flex;
+    width: 100%;
+    height: 100%;
+    padding: 6px;
 `;
 
 const CommunityPost = ({ item }: CommunityPostProps) => {
@@ -87,27 +124,58 @@ const CommunityPost = ({ item }: CommunityPostProps) => {
         timestamp,
         viewcount = 0,
         subcollectionCount: commentCount,
+        images,
     } = item;
     const { push } = useRouter();
+    const [isTitle, setIsTitle] = useState(images?.length === 0);
 
     const onClickHandler = () => {
         push(`community/${id}`);
     };
 
+    const handleMouseEnter = () => {
+        if (images.length !== 0) setIsTitle(true);
+    };
+
+    const handleMouseLeave = () => {
+        if (images.length !== 0) setIsTitle(false);
+    };
+
     return (
-        <Container onClick={onClickHandler}>
+        <Container
+            onClick={onClickHandler}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+        >
             <BorderTop />
-            <CommentContainer>
-                <TitleContainer>
-                    <Text text={title} typo={Typo.Title.Header3Regular} />
-                    <Text
-                        text={`${COMMUNIY_CATEGORY_LABEL.find((item) => item.id === category)?.label}`}
-                        typo={Typo.Body.Body2Regular}
-                    />
-                </TitleContainer>
-                <Text text={timeFormat(timestamp)} typo={Typo.Body.Body2Regular} />
-                <Text text={content} preLine />
-            </CommentContainer>
+            <ContentContainer>
+                {isTitle && (
+                    <TitleContainer isImageTitle={images?.length !== 0}>
+                        <Text text={title} typo={Typo.Title.Header3Regular} />
+                        <Text
+                            text={`${COMMUNIY_CATEGORY_LABEL.find((item) => item.id === category)?.label}`}
+                            typo={Typo.Body.Body2Regular}
+                        />
+                    </TitleContainer>
+                )}
+                {images.length !== 0 ? (
+                    <ImageContainer>
+                        <ImageWrap>
+                            <PostImage
+                                key={images[0].id}
+                                src={images[0].src}
+                                alt="communitydetailimage"
+                                fill
+                            />
+                        </ImageWrap>
+                    </ImageContainer>
+                ) : (
+                    <TextContainer>
+                        <Text text={timeFormat(timestamp)} typo={Typo.Body.Body2Regular} />
+                        <Text text={content} preLine />
+                    </TextContainer>
+                )}
+            </ContentContainer>
             <ProfileContainer>
                 <UserMeta>
                     <ProfileImage alt="profile_image" src={DefaultProfileThumbnail} />

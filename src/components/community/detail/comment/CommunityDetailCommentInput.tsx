@@ -9,21 +9,18 @@ import { API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY } from 'src/api/community/commen
 import patchCommunityDetailComment from 'src/api/community/comment/patchCommunityDetailComment';
 import TextImageInput from '@components/ui/TextImageInput';
 import { ImageInputValue } from '@components/ui/ImageInput';
+import { CommunityCommentParams } from 'types/params/community';
 
-interface CommunityDetailCommentInputProps {
-    params: {
-        postId: string;
-        commentId?: string;
-        replyId?: string;
-    };
+interface CommunityDetailCommentInputProps extends CommunityCommentParams {
     id?: string;
-    defaultValues?: any;
+    defaultValues?: CommentFormValue;
     closeInput?: () => void;
 }
 
 export interface CommentFormValue {
-    comment: string;
-    image: ImageInputValue[];
+    content: string;
+    images: ImageInputValue[];
+    like?: string;
 }
 
 const Form = styled.form`
@@ -52,7 +49,7 @@ const CommunityDetailCommentInput = ({
         defaultValues: defaultValues,
     });
 
-    const image = useWatch({ control, name: 'image' });
+    const images = useWatch({ control, name: 'images' });
 
     const { mutate: postMutate } = useMutation({
         mutationFn: postCommunityDetailComment,
@@ -63,6 +60,13 @@ const CommunityDetailCommentInput = ({
     });
 
     const onSubmit: SubmitHandler<CommentFormValue> = (data) => {
+        const { images = [], content } = data;
+
+        if (images.length === 0 && content.length === 0) {
+            alert('내용을 입력하세요.');
+            return;
+        }
+
         const onSuccess = async () => {
             await queryCache.invalidateQueries({
                 queryKey: [API_COMMUNITY_DETAIL_COMMENT_KEY, { postId }],
@@ -75,7 +79,7 @@ const CommunityDetailCommentInput = ({
         };
         if (defaultValues && id) {
             patchMutate(
-                { id, data, params },
+                { data, params: { ...params, id } },
                 {
                     onSuccess: onSuccess,
                 },
@@ -97,8 +101,8 @@ const CommunityDetailCommentInput = ({
                 register={register}
                 setValue={setValue}
                 cancle={closeInput}
-                errorMessage={errors.comment?.message}
-                image={image || []}
+                errorMessage={errors.content?.message}
+                images={images || []}
             />
         </Form>
     );
