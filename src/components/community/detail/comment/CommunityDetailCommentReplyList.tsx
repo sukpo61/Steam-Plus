@@ -4,17 +4,10 @@ import styled from '@emotion/styled';
 import CommunityDetailComment from './CommunityDetailComment';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import getCommunityDetailCommentReply from 'src/api/community/comment/reply/getCommunityDetailCommentReply';
-import { API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY } from 'src/api/community/comment/reply/getCommunityDetailCommentReply';
+import { API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY } from 'src/api/community/communityQueryKey';
 import { Typo } from 'styles/Typography';
 import { Text } from '@components/ui/Text';
 import { CommunityCommentParams } from 'types/params/community';
-
-interface CommunityDetailCommentReplyListProps {
-    params: {
-        postId: string;
-        commentId: string;
-    };
-}
 
 export interface SearchFormValue {
     title: string;

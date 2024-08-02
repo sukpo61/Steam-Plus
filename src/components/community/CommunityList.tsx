@@ -3,17 +3,20 @@
 import styled from '@emotion/styled';
 import { CommunitySearchParams } from 'types/params/community';
 import CommunityPost from './CommunityPost';
-import { API_GET_COMMUNITY_LIST_KEY } from 'src/api/community/getCommunityList';
+import { API_COMMUNITY_LIST_KEY } from 'src/api/community/communityQueryKey';
 import getCommunityList from 'src/api/community/getCommunityList';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useUpdateParams } from '@hooks/useUpdateParams';
 import StyledPagination from '@components/ui/Pagination';
+import { Text } from '@components/ui/Text';
 
 const Container = styled.div`
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     width: 100%;
+    min-height: 340px;
     margin-bottom: 16px;
 `;
 
@@ -33,17 +36,19 @@ const CommunityList = ({ searchParams }: CommunitySearchParams) => {
     };
 
     const { data } = useSuspenseQuery({
-        queryKey: [API_GET_COMMUNITY_LIST_KEY, searchParams],
+        queryKey: [API_COMMUNITY_LIST_KEY, searchParams],
         queryFn: () => getCommunityList({ searchParams }),
     });
 
-    if (!data) {
-        return;
-    }
-
     const { data: communityData, itemCount, pageSize } = data;
 
-    console.log('itemCount', itemCount);
+    if (itemCount === 0) {
+        return (
+            <Container>
+                <Text text={'게시물이 없습니다.'} />
+            </Container>
+        );
+    }
 
     return (
         <>

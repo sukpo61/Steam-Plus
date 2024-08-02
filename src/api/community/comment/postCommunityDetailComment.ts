@@ -1,11 +1,11 @@
+import variableAssignment from '@utils/variableAssignment';
+import getImageUrl from 'src/api/common/getImageUrl';
+import converter from 'types/firebaseTypeConverter';
 import { database } from 'src/firebase/firebase';
 import { collection, doc, setDoc } from 'firebase/firestore';
-import variableAssignment from '@utils/variableAssignment';
-import { API_COMMUNITY_DETAIL_COMMENT_KEY } from './getCommunityDetailComment';
-import { API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY } from './reply/getCommunityDetailCommentReply';
-import getImageUrl from 'src/api/common/getImageUrl';
+import { API_COMMUNITY_DETAIL_COMMENT_KEY } from '../communityQueryKey';
+import { API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY } from '../communityQueryKey';
 import { CommunityCommentParams } from 'types/params/community';
-import converter from 'types/firebaseTypeConverter';
 import { PostCommunityDetailCommentParameter } from 'types/community/commnitycomment';
 import { CommentFormValue } from '@components/community/detail/comment/CommunityDetailCommentInput';
 interface PostCommentParameter extends CommunityCommentParams {
@@ -25,21 +25,24 @@ const postCommunityDetailComment = async ({ data, params }: PostCommentParameter
         converter<PostCommunityDetailCommentParameter>(),
     );
     const id = newDocRef.id;
+    try {
+        const imageUrl = await getImageUrl({
+            images,
+            url: variableAssignment(urlKey, { ...params, id }),
+        });
 
-    const imageUrl = await getImageUrl({
-        images,
-        url: variableAssignment(urlKey, { ...params, id }),
-    });
-
-    await setDoc(newDocRef, {
-        ...data,
-        likes: [],
-        timestamp,
-        username: 'user',
-        images: imageUrl,
-    });
-
-    return id;
+        await setDoc(newDocRef, {
+            ...data,
+            likes: [],
+            timestamp,
+            username: 'user',
+            images: imageUrl,
+        });
+        return id;
+    } catch (error) {
+        console.error(error);
+        return Promise.reject(error);
+    }
 };
 
 export default postCommunityDetailComment;

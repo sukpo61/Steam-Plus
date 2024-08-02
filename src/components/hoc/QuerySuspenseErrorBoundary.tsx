@@ -1,3 +1,5 @@
+'use client';
+
 import DefaultError from '@components/common/DefaultError';
 import DefaultLoading from '@components/loading/DefaultLoading';
 import { Suspense } from '@suspensive/react';
@@ -21,6 +23,9 @@ const QuerySuspenseErrorBoundary: FC<PropsWithChildren<QuerySuspenseErrorBoundar
             {({ reset }) => (
                 <ErrorBoundary
                     onReset={reset}
+                    onError={(error) => {
+                        console.error(error.message);
+                    }}
                     fallbackRender={({ resetErrorBoundary }) =>
                         errorFallback ? (
                             errorFallback(resetErrorBoundary)

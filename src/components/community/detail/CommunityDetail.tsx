@@ -11,9 +11,10 @@ import { Button } from '@components/ui/Button';
 import { Typo } from 'styles/Typography';
 import { useRouter } from 'next/navigation';
 import { useSuspenseQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import { API_COMMUNITY_DETAIL_KEY } from 'src/api/community/detail/getCommunityDetail';
-import { API_GET_COMMUNITY_LIST_KEY } from 'src/api/community/getCommunityList';
+import { API_COMMUNITY_DETAIL_KEY } from 'src/api/community/communityQueryKey';
+import { API_COMMUNITY_LIST_KEY } from 'src/api/community/communityQueryKey';
 import { CommunityDetailParams } from 'types/params/community';
+import { useEffect } from 'react';
 
 export interface SearchFormValue {
     title: string;
@@ -57,7 +58,6 @@ const Divider = styled.div`
     width: 100%;
     height: 1px;
     background: var(--Grey);
-    margin-bottom: 20px;
 `;
 
 const ProfileContainer = styled.div`
@@ -112,24 +112,17 @@ const CommunityDetailImage = styled(Image)`
 
 const CommunityDetail = ({ params }: CommunityDetailParams) => {
     const { id } = params;
+    const { push, replace } = useRouter();
+    const queryCache = useQueryClient();
 
     const { data } = useSuspenseQuery({
         queryKey: [API_COMMUNITY_DETAIL_KEY, params],
         queryFn: () => getCommunityDetail({ params }),
     });
 
-    if (!data) {
-        return;
-    }
-
-    const queryCache = useQueryClient();
-    const { push, replace } = useRouter();
-
     const { mutate: deleteMutate } = useMutation({
         mutationFn: deleteCommunityDetail,
     });
-
-    const { title, username = 'user', timestamp, viewcount, content, images } = data;
 
     const deleteHandler = () => {
         const userConfirmed = window.confirm('정말 삭제하시겠습니까?');
@@ -139,7 +132,7 @@ const CommunityDetail = ({ params }: CommunityDetailParams) => {
                 {
                     onSuccess: async () => {
                         await queryCache.invalidateQueries({
-                            queryKey: [API_GET_COMMUNITY_LIST_KEY],
+                            queryKey: [API_COMMUNITY_LIST_KEY],
                         });
                         replace('/community');
                     },
@@ -151,6 +144,16 @@ const CommunityDetail = ({ params }: CommunityDetailParams) => {
     const editHandler = () => {
         push(`/community/${id}/edit`);
     };
+
+    if (!data) {
+        return (
+            <Container>
+                <Text text={'게시물이 없습니다.'} />
+            </Container>
+        );
+    }
+
+    const { title, username = 'user', timestamp, viewcount, content, images } = data;
 
     return (
         <>

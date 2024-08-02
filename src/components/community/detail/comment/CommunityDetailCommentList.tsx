@@ -2,7 +2,7 @@
 
 import styled from '@emotion/styled';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { API_COMMUNITY_DETAIL_COMMENT_KEY } from 'src/api/community/comment/getCommunityDetailComment';
+import { API_COMMUNITY_DETAIL_COMMENT_KEY } from 'src/api/community/communityQueryKey';
 import getCommunityDetailComment from 'src/api/community/comment/getCommunityDetailComment';
 import StyledPagination from '@components/ui/Pagination';
 import CommunityDetailCommentInput from './CommunityDetailCommentInput';
@@ -26,6 +26,19 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     padding: 16px 32px 32px;
+`;
+const CommentContainer = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 8px;
+`;
+const NoConmment = styled.div`
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    min-height: 320px;
 `;
 
 const CommentMeta = styled.div`
@@ -71,13 +84,21 @@ const CommunityDetailCommentList = ({ params, searchParams }: CommunityCommentRe
             <InputContainer>
                 <CommunityDetailCommentInput params={params} />
             </InputContainer>
-            {commentData.map((item) => (
-                <CommunityDetailCommentContainer
-                    key={item.id}
-                    item={item}
-                    params={{ ...params, commentId: item.id }}
-                />
-            ))}
+            {itemCount === 0 ? (
+                <NoConmment>
+                    <Text text={'댓글이 없습니다.'} />
+                </NoConmment>
+            ) : (
+                <CommentContainer>
+                    {commentData.map((item) => (
+                        <CommunityDetailCommentContainer
+                            key={item.id}
+                            item={item}
+                            params={{ ...params, commentId: item.id }}
+                        />
+                    ))}
+                </CommentContainer>
+            )}
             <StyledPagination
                 // 현제 보고있는 페이지
                 activePage={Number(page)}

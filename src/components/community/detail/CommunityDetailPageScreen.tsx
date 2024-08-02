@@ -5,6 +5,7 @@ import CommunityDetail from './CommunityDetail';
 import QuerySuspenseErrorBoundary from '@components/hoc/QuerySuspenseErrorBoundary';
 import CommunityDetailCommentList from './comment/CommunityDetailCommentList';
 import { CommunityDetailRequestParams } from 'types/params/community';
+import CommunityDetailLoading from '@components/loading/CommunityDetailLoading';
 
 const Container = styled.div`
     display: flex;
@@ -29,7 +30,7 @@ const CommunityDetailPageScreen = ({ searchParams, params }: CommunityDetailRequ
     return (
         <Container>
             <Main>
-                <QuerySuspenseErrorBoundary>
+                <QuerySuspenseErrorBoundary suspenseFallback={<CommunityDetailLoading />}>
                     <CommunityDetail params={params} />
                     <CommunityDetailCommentList searchParams={searchParams} params={{ postId }} />
                 </QuerySuspenseErrorBoundary>

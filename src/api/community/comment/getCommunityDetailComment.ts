@@ -1,3 +1,5 @@
+'use server';
+
 import { collection } from 'firebase/firestore';
 import { database } from 'src/firebase/firebase';
 import variableAssignment from '@utils/variableAssignment';
@@ -5,8 +7,7 @@ import getPaginationData from 'src/api/common/getPaginationData';
 import { CommunityDetailCommentResponse } from 'types/community/commnitycomment';
 import { PaginationResult } from 'src/api/common/getPaginationData';
 import { CommunityCommentRequestParams } from 'types/params/community';
-
-export const API_COMMUNITY_DETAIL_COMMENT_KEY = 'community/{{postId}}/comment/{{id}}';
+import { API_COMMUNITY_DETAIL_COMMENT_KEY } from '../communityQueryKey';
 
 const getCommunityDetailComment = async ({
     searchParams,
@@ -16,12 +17,17 @@ const getCommunityDetailComment = async ({
         database,
         variableAssignment(API_COMMUNITY_DETAIL_COMMENT_KEY, params),
     );
-    const data = await getPaginationData<CommunityDetailCommentResponse>({
-        ref: commentRef,
-        searchParams: searchParams,
-        subcollectionName: 'reply',
-    });
-    return data;
+    try {
+        const data = await getPaginationData<CommunityDetailCommentResponse>({
+            ref: commentRef,
+            searchParams: searchParams,
+            subcollectionName: 'reply',
+        });
+        return data;
+    } catch (error) {
+        console.error(error);
+        return Promise.reject(error);
+    }
 };
 
 export default getCommunityDetailComment;

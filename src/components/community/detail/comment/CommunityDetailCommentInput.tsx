@@ -4,8 +4,8 @@ import styled from '@emotion/styled';
 import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import postCommunityDetailComment from 'src/api/community/comment/postCommunityDetailComment';
-import { API_COMMUNITY_DETAIL_COMMENT_KEY } from 'src/api/community/comment/getCommunityDetailComment';
-import { API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY } from 'src/api/community/comment/reply/getCommunityDetailCommentReply';
+import { API_COMMUNITY_DETAIL_COMMENT_KEY } from 'src/api/community/communityQueryKey';
+import { API_COMMUNITY_DETAIL_COMMENT_REPLY_KEY } from 'src/api/community/communityQueryKey';
 import patchCommunityDetailComment from 'src/api/community/comment/patchCommunityDetailComment';
 import TextImageInput from '@components/ui/TextImageInput';
 import { ImageInputValue } from '@components/ui/ImageInput';
@@ -46,7 +46,10 @@ const CommunityDetailCommentInput = ({
         formState: { errors },
         setValue,
     } = useForm<CommentFormValue>({
-        defaultValues: defaultValues,
+        defaultValues: defaultValues || {
+            content: '',
+            images: [],
+        },
     });
 
     const images = useWatch({ control, name: 'images' });

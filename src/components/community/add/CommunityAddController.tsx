@@ -8,11 +8,11 @@ import patchCommunityDetail from 'src/api/community/detail/patchCommunityDetail'
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { API_GET_COMMUNITY_LIST_KEY } from 'src/api/community/getCommunityList';
+import { API_COMMUNITY_LIST_KEY } from 'src/api/community/communityQueryKey';
 import { useRouter } from 'next/navigation';
 import { FormProvider } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
-import { API_COMMUNITY_DETAIL_KEY } from 'src/api/community/detail/getCommunityDetail';
+import { API_COMMUNITY_DETAIL_KEY } from 'src/api/community/communityQueryKey';
 import { ImageInputValue } from '@components/ui/ImageInput';
 import { useEffect } from 'react';
 import { CommunityDetailParams } from 'types/params/community';
@@ -52,7 +52,7 @@ const CommunityAddController = ({ params }: CommunityDetailParams) => {
     const form = useForm<CommunityAddFormValue>({
         defaultValues: {
             title: prevData?.title || '',
-            category: prevData?.category || '',
+            category: prevData?.category || 'free',
             content: prevData?.content || '',
             images: prevData?.images || [],
         },
@@ -61,7 +61,7 @@ const CommunityAddController = ({ params }: CommunityDetailParams) => {
     const onSubmit: SubmitHandler<CommunityAddFormValue> = useCallback((data) => {
         const onSuccess = async (id: string) => {
             await queryCache.invalidateQueries({
-                queryKey: [API_GET_COMMUNITY_LIST_KEY],
+                queryKey: [API_COMMUNITY_LIST_KEY],
             });
             await queryCache.invalidateQueries({
                 queryKey: [API_COMMUNITY_DETAIL_KEY, params],

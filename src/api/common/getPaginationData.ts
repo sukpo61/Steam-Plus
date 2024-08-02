@@ -108,7 +108,6 @@ const getPaginationData = async <T>({
             if (!subcollectionCount) {
                 return docData;
             }
-            itemCount = itemCount + subcollectionCount;
             return {
                 ...docData,
                 subcollectionCount,

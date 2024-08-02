@@ -11,6 +11,7 @@ import { Text } from '@components/ui/Text';
 import { useRouter } from 'next/navigation';
 import { Button } from '@components/ui/Button';
 import { Typo } from 'styles/Typography';
+import CommunityLoading from '@components/loading/CommunityLoading';
 
 const Container = styled.div`
     display: flex;
@@ -89,7 +90,7 @@ const CommunityPageScreen = ({ searchParams }: CommunitySearchParams) => {
                         }}
                     />
                 </SearchInputContainer>
-                <QuerySuspenseErrorBoundary>
+                <QuerySuspenseErrorBoundary suspenseFallback={<CommunityLoading />}>
                     <CommunityList searchParams={searchParams} />
                 </QuerySuspenseErrorBoundary>
             </Main>

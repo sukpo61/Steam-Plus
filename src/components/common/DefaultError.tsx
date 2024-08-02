@@ -16,12 +16,7 @@ const Container = styled.div`
 const DefaultError: FC<DefaultErrorProps> = ({ onClick }) => {
     return (
         <Container>
-            <Text
-                text={`죄송합니다. 에러가 발생했습니다. \n 재시도 버튼을 눌러주세요.`}
-                preLine
-                weight={800}
-                size={25}
-            />
+            <Text text={`죄송합니다. 에러가 발생했습니다. \n 재시도 버튼을 눌러주세요.`} preLine />
             <Button text="재시도" onClick={onClick} />
         </Container>
     );

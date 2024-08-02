@@ -1,15 +1,16 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState } from 'react';
 import CommunityDetailCommentReplyList from './CommunityDetailCommentReplyList';
 import QuerySuspenseErrorBoundary from '@components/hoc/QuerySuspenseErrorBoundary';
-import { Button } from '@components/ui/Button';
-import { CommunityCommentParams } from 'types/params/community';
 import CommunityDetailComment from './CommunityDetailComment';
-import { CommunityDetailCommentResponse } from 'types/community/commnitycomment';
+import CommunityDetailReplyLoading from '@components/loading/CommunityDetailReplyLoading';
 import Stat1 from '@components/icons/common/Stat1.icon';
 import Stat2 from '@components/icons/common/Stat2.icon';
+import { useState } from 'react';
+import { Button } from '@components/ui/Button';
+import { CommunityCommentParams } from 'types/params/community';
+import { CommunityDetailCommentResponse } from 'types/community/commnitycomment';
 
 export interface CommunityDetailCommentContainerProps extends CommunityCommentParams {
     item: CommunityDetailCommentResponse;
@@ -67,7 +68,10 @@ const CommunityDetailCommentContainer = ({
                             />
                         </ReplyButtonContainer>
                         {isReply && (
-                            <QuerySuspenseErrorBoundary>
+                            <QuerySuspenseErrorBoundary
+                                suspenseFallback={<CommunityDetailReplyLoading />}
+                            >
+                                {/* <CommunityDetailReplyLoading /> */}
                                 <CommunityDetailCommentReplyList params={params} />
                             </QuerySuspenseErrorBoundary>
                         )}

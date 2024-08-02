@@ -1,14 +1,5 @@
-import styled from '@emotion/styled';
 import { ClipLoader } from 'react-spinners';
 
-const Container = styled.div`
-    display: flex;
-`;
-
-const DefaultLoading = () => (
-    <Container>
-        <ClipLoader size={32} color="#417a9b" />
-    </Container>
-);
+const DefaultLoading = () => <ClipLoader size={32} color="#417a9b" />;
 
 export default DefaultLoading;
