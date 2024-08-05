@@ -6,7 +6,7 @@ interface GetChannelSearchParameter {
     id: string;
 }
 
-export const API_GET_CHANNEL_DETAIL_KEY = '/api/steam/appdetails/?&appids={{id}}';
+export const API_GET_CHANNEL_DETAIL_KEY = '/api/steam/appposts/?&appids={{id}}';
 
 const getChannelDetail = async ({
     id,

@@ -25,7 +25,7 @@ const ContentsSection = styled.section`
     flex-direction: column;
 `;
 
-export const CommunityAddComponents = {
+export const PostAddComponents = {
     Layout,
     IconWrapper,
     ContentsSection,

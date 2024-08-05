@@ -1,49 +1,22 @@
 'use client';
 
-import styled from '@emotion/styled';
 import ToggleButtonGroup from '@components/ui/ToggleButtonGroup';
 import CommunityList from '@components/community/CommunityList';
 import QuerySuspenseErrorBoundary from '@components/hoc/QuerySuspenseErrorBoundary';
 import SearchInput from '@components/search/SearchInput';
+import CommunityLoading from '@components/loading/CommunityLoading';
 import { useUpdateParams } from '@hooks/useUpdateParams';
-import { CommunitySearchParams } from 'types/params/community';
 import { Text } from '@components/ui/Text';
 import { useRouter } from 'next/navigation';
 import { Button } from '@components/ui/Button';
 import { Typo } from 'styles/Typography';
-import CommunityLoading from '@components/loading/CommunityLoading';
+import { CommunityParams } from 'types/params/community';
+import { CommunitySearchParams } from 'types/params/community';
 
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    height: 100%; // 화면 전체 높이로 설정
-    overflow-y: scroll; // scroll 대신 auto 사용
-    padding: 80px 20px 40px;
-`;
-const SearchInputContainer = styled.div`
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 16px;
-    background-color: var(--Background-Neutral-LightSofter);
-`;
-const Title = styled.div`
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    margin-bottom: 32px;
-`;
-const Main = styled.div`
-    display: flex;
-    flex-direction: column;
-    max-width: 948px;
-    width: 100%;
-    align-items: center;
-`;
+interface CommunityPageScreenProps {
+    params: CommunityParams;
+    searchParams: CommunitySearchParams;
+}
 
 export const COMMUNIY_CATEGORY_LABEL = [
     {
@@ -60,7 +33,7 @@ export const COMMUNIY_CATEGORY_LABEL = [
     },
 ];
 
-const CommunityPageScreen = ({ searchParams }: CommunitySearchParams) => {
+const CommunityPageScreen = ({ params, searchParams }: CommunityPageScreenProps) => {
     const { category, term } = searchParams;
     const { push } = useRouter();
 
@@ -71,30 +44,25 @@ const CommunityPageScreen = ({ searchParams }: CommunitySearchParams) => {
     };
 
     return (
-        <Container>
-            <Main>
-                <Title>
+        <div className="flex flex-col items-center p-10">
+            <div className="flex flex-col items-center w-full max-w-4xl">
+                <div className="flex flex-row w-full mb-8">
                     <Text text="커뮤니티" typo={Typo.Title.Header1Regular} />
-                </Title>
+                </div>
                 <ToggleButtonGroup
                     data={COMMUNIY_CATEGORY_LABEL}
                     onChange={handleCategoryChange}
                     activeId={category}
                 />
-                <SearchInputContainer>
+                <div className="flex justify-around items-center w-full p-2 mb-4 bg-gray-100">
                     <SearchInput placeholder="검색어를 입력해주세요" term={term} />
-                    <Button
-                        text="글쓰기"
-                        onClick={() => {
-                            push('community/add');
-                        }}
-                    />
-                </SearchInputContainer>
+                    <Button text="글쓰기" onClick={() => push('/community/123/add')} />
+                </div>
                 <QuerySuspenseErrorBoundary suspenseFallback={<CommunityLoading />}>
-                    <CommunityList searchParams={searchParams} />
+                    <CommunityList params={params} searchParams={searchParams} />
                 </QuerySuspenseErrorBoundary>
-            </Main>
-        </Container>
+            </div>
+        </div>
     );
 };
 

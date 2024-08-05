@@ -5,7 +5,7 @@ export interface SteamAppDetailResponse {
     required_age: string;
     is_free: boolean;
     controller_support: string;
-    detailed_description: string;
+    posted_description: string;
     about_the_game: string;
     short_description: string;
     supported_languages: string;

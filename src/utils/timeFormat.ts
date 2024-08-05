@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-function timeFormat(timestamp: number, type?: 'comment') {
+export function timeFormat(timestamp: Date, type?: 'comment') {
     const now = dayjs();
     const time = dayjs(timestamp);
 
@@ -13,5 +13,3 @@ function timeFormat(timestamp: number, type?: 'comment') {
     }
     return `${time.format('YY.MM.DD')}`;
 }
-
-export default timeFormat;
