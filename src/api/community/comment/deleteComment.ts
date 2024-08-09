@@ -1,27 +1,19 @@
-import { database } from 'src/firebase/firebase';
-import { doc, deleteDoc } from 'firebase/firestore';
-import { variableAssignment } from '@utils/variableAssignment';
-import { API_Post_COMMENT_KEY } from '../communityQueryKey';
-import { API_Post_COMMENT_REPLY_KEY } from '../communityQueryKey';
-import deleteAllImages from 'src/api/common/deleteAllImage';
+import { variableAssignment } from '@/utils/variableAssignment';
+import axios from 'axios';
 import { CommentParams } from 'types/params/community';
-
+import { API_COMMENT_KEY } from './postComment';
 interface CommentProps {
     params: CommentParams;
 }
 
-const deletePostComment = async ({ params }: any): Promise<void> => {
-    const url = variableAssignment(
-        params.replyId ? API_Post_COMMENT_REPLY_KEY : API_Post_COMMENT_KEY,
-        params,
-    );
+export const deleteComment = async ({ params }: CommentProps): Promise<void> => {
     try {
-        await deleteDoc(doc(database, url));
-        await deleteAllImages(url);
+        const { replyId } = params;
+        await axios.delete(variableAssignment(API_COMMENT_KEY, params), {
+            params: { isreply: Boolean(replyId) },
+        });
     } catch (error) {
         console.error(error);
         return Promise.reject(error);
     }
 };
-
-export default deletePostComment;

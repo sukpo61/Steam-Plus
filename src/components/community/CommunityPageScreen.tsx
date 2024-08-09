@@ -1,17 +1,14 @@
 'use client';
 
-import ToggleButtonGroup from '@components/ui/ToggleButtonGroup';
-import CommunityList from '@components/community/CommunityList';
-import QuerySuspenseErrorBoundary from '@components/hoc/QuerySuspenseErrorBoundary';
-import SearchInput from '@components/search/SearchInput';
-import CommunityLoading from '@components/loading/CommunityLoading';
-import { useUpdateParams } from '@hooks/useUpdateParams';
-import { Text } from '@components/ui/Text';
+import CommunityList from '@/components/community/CommunityList';
+import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
+import { CommunityLoading } from '@/components/loading/CommunityLoading';
+import { SearchInput } from '@/components/search/SearchInput';
+import { Button } from '@/components/ui/Button';
+import { ToggleButtonGroup } from '@/components/ui/ToggleButtonGroup';
+import { useUpdateParams } from '@/hooks/useUpdateParams';
 import { useRouter } from 'next/navigation';
-import { Button } from '@components/ui/Button';
-import { Typo } from 'styles/Typography';
-import { CommunityParams } from 'types/params/community';
-import { CommunitySearchParams } from 'types/params/community';
+import { CommunityParams, CommunitySearchParams } from 'types/params/community';
 
 interface CommunityPageScreenProps {
     params: CommunityParams;
@@ -44,24 +41,22 @@ const CommunityPageScreen = ({ params, searchParams }: CommunityPageScreenProps)
     };
 
     return (
-        <div className="flex flex-col items-center p-10">
-            <div className="flex flex-col items-center w-full max-w-4xl">
-                <div className="flex flex-row w-full mb-8">
-                    <Text text="커뮤니티" typo={Typo.Title.Header1Regular} />
-                </div>
-                <ToggleButtonGroup
-                    data={COMMUNIY_CATEGORY_LABEL}
-                    onChange={handleCategoryChange}
-                    activeId={category}
-                />
-                <div className="flex justify-around items-center w-full p-2 mb-4 bg-gray-100">
-                    <SearchInput placeholder="검색어를 입력해주세요" term={term} />
-                    <Button text="글쓰기" onClick={() => push('/community/123/add')} />
-                </div>
-                <QuerySuspenseErrorBoundary suspenseFallback={<CommunityLoading />}>
-                    <CommunityList params={params} searchParams={searchParams} />
-                </QuerySuspenseErrorBoundary>
+        <div className="flex w-full max-w-[948px] flex-col items-center p-10">
+            <div className="mb-8 flex w-full flex-row">
+                <span className="text-4xl">커뮤니티</span>
             </div>
+            <ToggleButtonGroup
+                data={COMMUNIY_CATEGORY_LABEL}
+                onChange={handleCategoryChange}
+                activeId={category}
+            />
+            <div className="mb-4 flex w-full items-center justify-around bg-primary-foreground/20 p-2">
+                <SearchInput placeholder="검색어를 입력해주세요" term={term} />
+                <Button onClick={() => push('/community/123/add')}>글쓰기</Button>
+            </div>
+            <QuerySuspenseErrorBoundary suspenseFallback={<CommunityLoading />}>
+                <CommunityList params={params} searchParams={searchParams} />
+            </QuerySuspenseErrorBoundary>
         </div>
     );
 };

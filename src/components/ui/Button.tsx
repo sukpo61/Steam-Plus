@@ -1,261 +1,54 @@
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
-import { ButtonHTMLAttributes, FC } from 'react';
-import { Color, ColorToken } from 'styles/Color';
-import { Typo } from 'styles/Typography';
-import { PropsWithCustomStyle } from 'types/common';
+import { Slot } from '@radix-ui/react-slot';
+import { cva, type VariantProps } from 'class-variance-authority';
+import * as React from 'react';
+import { cn } from 'src/lib/utils';
 
-type ButtonType =
-    | 'default'
-    | 'primary'
-    | 'secondary'
-    | 'danger'
-    | 'cancel'
-    | 'reply'
-    | 'comment'
-    | 'icon';
-
-interface ButtonProps extends ButtonContainerProps {
-    text: string | React.ReactNode;
-}
-interface ButtonContainerProps {
-    buttonType?: ButtonType;
-    filled?: boolean;
-}
-
-const ButtonContainer = styled.button<PropsWithCustomStyle<ButtonContainerProps>>`
-    padding: 8px 16px;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    margin: ${({ m }) => m ?? 0};
-    :disabled {
-        cursor: not-allowed;
-    }
-    ${({ buttonType, filled }) => {
-        switch (buttonType) {
-            case 'primary':
-                return filled ? FilledPrimaryButtonStyle : LinedPrimaryButtonStyle;
-            case 'secondary':
-                return SecondaryButtonStyle;
-            case 'reply':
-                return ReplyButtonStyle;
-            case 'cancel':
-                return CancelButtonStyle;
-            case 'danger':
-                return filled ? FilledDangerButtonStyle : LinedDangerButtonStyle;
-            case 'comment':
-                return CommentButtonStyle;
-            case 'icon':
-                return IconButtonStyle;
-            case 'default':
-                return DefaultButtonStyle;
-        }
-    }}
-`;
-
-/**
- * Button Styles Each 'buttonType', 'filled'(추후, 확장성 고려한 설계)
- */
-
-const DefaultButtonStyle = css`
-    color: ${ColorToken.white};
-    background: ${Color.Blue};
-    :disabled {
-        background-color: ${Color.Grey};
-    }
-`;
-
-const FilledPrimaryButtonStyle = css`
-    color: ${ColorToken.white};
-    background: var(--dustyBlue);
-    :hover {
-        background: ${ColorToken.primary_pressed};
-    }
-    :active {
-        background: ${ColorToken.primary_pressed};
-    }
-    :disabled {
-        color: ${ColorToken.disabled_text};
-        background: ${ColorToken.disabled};
-    }
-`;
-
-const LinedPrimaryButtonStyle = css`
-    background: ${ColorToken.white};
-    color: ${ColorToken.primary};
-    border: solid 1px ${ColorToken.primary};
-    :hover {
-        color: ${ColorToken.primary_pressed};
-        border: solid 1px ${ColorToken.primary_pressed};
-    }
-    :active {
-        color: ${ColorToken.primary_pressed};
-        border: solid 1px ${ColorToken.primary_pressed};
-    }
-    :disabled {
-        color: ${ColorToken.icon_blue};
-        border: solid 1px ${ColorToken.icon_blue};
-    }
-`;
-
-const SecondaryButtonStyle = css`
-    background: ${ColorToken.secondary};
-    color: ${ColorToken.primary};
-    :hover {
-        color: ${ColorToken.primary_pressed};
-    }
-    :active {
-        background: ${ColorToken.secondary_pressed};
-        color: ${ColorToken.primary};
-    }
-    :disabled {
-        background: ${ColorToken.secondary};
-        color: ${ColorToken.icon_blue};
-    }
-`;
-
-const CommentButtonStyle = css`
-    color: var(--main-text-color);
-    height: 36px;
-    border-radius: 4px;
-    padding: 0 8px;
-    background: var(--dustyBlue);
-    :hover {
-        /* background: var(--darkGrey); */
-    }
-    :active {
-        /* background: var(--darkerGrey); */
-    }
-    :disabled {
-        background: none;
-        opacity: 50%;
-    }
-`;
-const IconButtonStyle = css`
-    border-radius: 4px;
-    padding: 4px;
-    :hover {
-        background: var(--darkGrey);
-    }
-    :active {
-        /* background: var(--darkerGrey); */
-    }
-    :disabled {
-        background: none;
-        opacity: 50%;
-    }
-`;
-
-const ReplyButtonStyle = css`
-    color: ${ColorToken.white};
-    height: 36px;
-    border-radius: 18px;
-    padding: 0 16px 0 8px;
-    :hover {
-        background: var(--darkGrey);
-    }
-    :active {
-        background: var(--darkerGrey);
-    }
-    :disabled {
-        background: ${ColorToken.white};
-    }
-`;
-
-const CancelButtonStyle = css`
-    background: ${ColorToken.cancel};
-    color: ${ColorToken.cancel_pressed};
-    :hover {
-        background: ${ColorToken.cancel};
-        color: ${ColorToken.grey2};
-    }
-    :active {
-        background: ${ColorToken.cancel_pressed};
-        color: ${ColorToken.cancel};
-    }
-    :disabled {
-        background: ${ColorToken.cancel};
-        color: ${ColorToken.grey};
-    }
-`;
-
-const FilledDangerButtonStyle = css`
-    background: ${ColorToken.danger_pink};
-    color: ${ColorToken.danger};
-    :hover {
-        color: ${ColorToken.danger_red};
-    }
-    :active {
-        background: ${ColorToken.danger_deeppink};
-        color: ${ColorToken.danger_pressed};
-    }
-    :disabled {
-        color: ${ColorToken.danger_deeppink};
-    }
-`;
-
-const LinedDangerButtonStyle = css`
-    background: ${ColorToken.white};
-    color: ${ColorToken.danger};
-    border: solid 1px ${ColorToken.danger};
-    :hover {
-        color: ${ColorToken.danger_red};
-        border: solid 1px ${ColorToken.danger_red};
-    }
-    :active {
-        color: ${ColorToken.danger_pressed};
-        border: solid 1px ${ColorToken.danger_pressed};
-    }
-    :disabled {
-        color: ${ColorToken.danger_deeppink};
-        border: solid 1px ${ColorToken.danger_deeppink};
-    }
-`;
-
-const FilledToggleButtonStyle = css`
-    background: ${ColorToken.grey7};
-    color: ${ColorToken.white};
-    border: solid 1px ${ColorToken.grey7};
-    :hover {
-        color: ${ColorToken.white};
-        border: solid 1px ${ColorToken.grey7};
-    }
-    :active {
-        color: ${ColorToken.white};
-        border: solid 1px ${ColorToken.grey7};
-    }
-    :disabled {
-        color: ${ColorToken.grey7};
-        border: solid 1px ${ColorToken.grey7};
-    }
-`;
-
-const LinedToggleButtonStyle = css`
-    background: ${ColorToken.grey4};
-    color: ${ColorToken.text_primary};
-    border: solid 1px ${ColorToken.grey4};
-    :hover {
-        color: ${ColorToken.text_primary};
-        border: solid 1px ${ColorToken.grey4};
-    }
-    :active {
-        color: ${ColorToken.text_primary};
-        border: solid 1px ${ColorToken.grey4};
-    }
-    :disabled {
-        color: ${ColorToken.grey4};
-        border: solid 1px ${ColorToken.grey4};
-    }
-`;
-
-export const Button: FC<
-    PropsWithCustomStyle<ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps>
-> = ({ buttonType = 'primary', w, h, m, filled = true, text, ...props }) => (
-    <ButtonContainer buttonType={buttonType} filled={filled} w={w} m={m} {...props}>
-        {text}
-    </ButtonContainer>
+const buttonVariants = cva(
+    'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+    {
+        variants: {
+            variant: {
+                default: 'bg-primary-bright text-primary-foreground hover:bg-primary/70 ',
+                trans: 'bg-transparent rounded-3xl',
+                outline:
+                    'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+                secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+                primary: 'bg-indigo-500 text-white hover:bg-indigo-500/90',
+            },
+            size: {
+                default: 'h-10 px-4 py-2',
+                sm: 'h-9 rounded-md px-3',
+                lg: 'h-11 rounded-md px-8',
+                icon: 'h-10 w-10',
+                iconround: 'h-10 w-10 rounded-full',
+                iconl: 'h-10 pl-2 pr-4 py-2',
+            },
+        },
+        defaultVariants: {
+            variant: 'default',
+            size: 'default',
+        },
+    },
 );
+
+export interface ButtonProps
+    extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+        VariantProps<typeof buttonVariants> {
+    asChild?: boolean;
+}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+    ({ className, variant, size, asChild = false, ...props }, ref) => {
+        const Comp = asChild ? Slot : 'button';
+        return (
+            <Comp
+                className={cn(buttonVariants({ variant, size, className }))}
+                ref={ref}
+                {...props}
+            />
+        );
+    },
+);
+Button.displayName = 'Button';
+
+export { Button, buttonVariants };

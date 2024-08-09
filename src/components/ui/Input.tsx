@@ -1,82 +1,25 @@
-import styled from '@emotion/styled';
-import { ChangeEvent, InputHTMLAttributes, forwardRef } from 'react';
-import { ColorToken } from 'styles/Color';
-import SearchIcon from '@components/icons/navigation/Search.icon';
+import { cn } from '@/lib/utils';
+import * as React from 'react';
 
-interface InputStyleProps {
-    isBorderRadius?: boolean;
-    errorMessage?: string;
-}
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-const Container = styled.div<{ width?: string | number | undefined }>`
-    display: flex;
-    position: relative;
-    max-width: ${({ width }) => `${width}px`};
-    width: 100%;
-    height: 40px;
-`;
-
-const CusttomInput = styled.input<InputStyleProps>`
-    width: 100%;
-    height: 100%;
-    padding: 0 40px 0 12px;
-    background-color: #263245;
-    box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.25);
-    border-radius: 10px;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 22px;
-    letter-spacing: -0.03em;
-    color: #d4d4d4;
-    border-style: none;
-    ::placeholder {
-        color: #777d87;
-    }
-    &:focus {
-        outline: none;
-    }
-`;
-
-const ErrorText = styled.p`
-    color: red;
-    margin-top: 10px;
-    margin-left: 5px;
-`;
-
-type InputProps = InputHTMLAttributes<HTMLInputElement>;
-
-interface CusttomInputProps extends InputProps {
-    whiteSpace?: boolean;
-    errorMessage?: string;
-}
-
-const Input = forwardRef<HTMLInputElement, CusttomInputProps>(
-    ({ whiteSpace, errorMessage, width, onChange, onSubmit, type = 'text', ...props }, ref) => {
-        const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-            if (!whiteSpace) {
-                e.target.value = e.target.value.replace(/\s/gi, '');
-            }
-            onChange && onChange(e);
-        };
-
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+    ({ className, type, ...props }, ref) => {
         return (
-            <Container width={width}>
-                <CusttomInput
+            <div className="relative flex h-10 w-full">
+                <input
                     type={type}
-                    onChange={onChangeHandler}
-                    errorMessage={errorMessage}
-                    {...props}
+                    className={cn(
+                        'flex h-10 w-full rounded-md border-none bg-input px-3 pr-10 text-base text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none',
+                        className,
+                    )}
                     ref={ref}
+                    {...props}
                 />
-                {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
-            </Container>
+            </div>
         );
     },
 );
-
 Input.displayName = 'Input';
 
-export default Input;
-
-//리팩토링 필요
+export { Input };

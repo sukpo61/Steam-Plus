@@ -1,14 +1,12 @@
 'use client';
 
+import { ImageInputValue } from '@/components/ui/ImageInput';
+import { TextImageInput } from '@/components/ui/TextImageInput';
 import styled from '@emotion/styled';
-import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import postComment from 'src/api/community/comment/postComment';
-import { API_Post_COMMENT_KEY } from 'src/api/community/communityQueryKey';
-import { API_Post_COMMENT_REPLY_KEY } from 'src/api/community/communityQueryKey';
-import patchComment from 'src/api/community/comment/patchComment';
-import TextImageInput from '@components/ui/TextImageInput';
-import { ImageInputValue } from '@components/ui/ImageInput';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { patchComment } from 'src/api/community/comment/patchComment';
+import { API_COMMENT_KEY, postComment } from 'src/api/community/comment/postComment';
 import { CommentParams } from 'types/params/community';
 
 interface CommentInputProps {
@@ -29,26 +27,23 @@ const Form = styled.form`
     width: 100%;
 `;
 
-const CommentInput = ({ id, params, defaultValues, closeInput }: CommentInputProps) => {
+export const CommentInput = ({ id, params, defaultValues, closeInput }: CommentInputProps) => {
     const { postId, commentId } = params;
 
     const queryCache = useQueryClient();
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        control,
-        formState: { errors },
-        setValue,
-    } = useForm<CommentFormValue>({
+    const form = useForm<CommentFormValue>({
         defaultValues: defaultValues || {
             content: '',
             images: [],
         },
     });
 
-    const images = useWatch({ control, name: 'images' });
+    const {
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = form;
 
     const { mutate: postMutate } = useMutation({
         mutationFn: postComment,
@@ -68,10 +63,10 @@ const CommentInput = ({ id, params, defaultValues, closeInput }: CommentInputPro
 
         const onSuccess = async () => {
             await queryCache.invalidateQueries({
-                queryKey: [API_Post_COMMENT_KEY, { postId }],
+                queryKey: [API_COMMENT_KEY, { postId }],
             });
             await queryCache.invalidateQueries({
-                queryKey: [API_Post_COMMENT_REPLY_KEY, { postId, commentId }],
+                queryKey: [API_COMMENT_KEY, { commentId }],
             });
             reset();
             closeInput?.();
@@ -94,17 +89,15 @@ const CommentInput = ({ id, params, defaultValues, closeInput }: CommentInputPro
     };
 
     return (
-        <Form onSubmit={handleSubmit(onSubmit)}>
-            <TextImageInput
-                placeholder="댓글을 입력하세요."
-                register={register}
-                setValue={setValue}
-                cancle={closeInput}
-                errorMessage={errors.content?.message}
-                images={images || []}
-            />
-        </Form>
+        <FormProvider {...form}>
+            <form className="flex w-full" onSubmit={handleSubmit(onSubmit)}>
+                <TextImageInput
+                    placeholder="댓글을 입력하세요."
+                    cancle={closeInput}
+                    errorMessage={errors.content?.message}
+                    imageMaxlength={1}
+                />
+            </form>
+        </FormProvider>
     );
 };
-
-export default CommentInput;

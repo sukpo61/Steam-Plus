@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { PostParams } from 'types/params/community';
-import PostAddController from '@components/community/add/PostAddController';
+import PostAddController from '@/components/community/add/PostAddController';
 
 interface PostAddPageParameter {
     params: PostParams;

@@ -1,20 +1,21 @@
-import Observer from "@components/common/Observer";
-import { FC, PropsWithChildren } from "react";
+import { Observer } from '@/components/common/Observer';
+import { ReactNode } from 'react';
 
 interface ObserverTriggerProps {
-  onObserve: VoidFunction;
-  observerMinHeight: string;
+    children: ReactNode;
+    onObserve: VoidFunction;
+    observerMinHeight?: string;
 }
 
-export const ObserverTrigger: FC<PropsWithChildren<ObserverTriggerProps>> = ({
-  children,
-  onObserve,
-  observerMinHeight,
-}) => {
-  return (
-    <>
-      {children}
-      <Observer onObserve={onObserve} minHeight={observerMinHeight} />
-    </>
-  );
+export const ObserverTrigger = ({
+    children,
+    onObserve,
+    observerMinHeight = '30px',
+}: ObserverTriggerProps) => {
+    return (
+        <>
+            {children}
+            <Observer onObserve={onObserve} minHeight={observerMinHeight} />
+        </>
+    );
 };

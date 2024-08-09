@@ -1,4 +1,4 @@
-import variableAssignment from '@utils/variableAssignment';
+import { variableAssignment } from '@/utils/variableAssignment';
 import axios from 'axios';
 import { SteamAppDetailResponse } from 'types/steam/SteamAppDetailResponse';
 
@@ -6,7 +6,7 @@ interface GetChannelSearchParameter {
     id: string;
 }
 
-export const API_GET_CHANNEL_DETAIL_KEY = '/api/steam/appposts/?&appids={{id}}';
+export const API_GET_CHANNEL_DETAIL_KEY = '/api/steam/appdetails/?&appids={{id}}';
 
 const getChannelDetail = async ({
     id,

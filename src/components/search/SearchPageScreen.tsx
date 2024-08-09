@@ -1,10 +1,10 @@
 'use client';
 
+import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
+import { SearchInput } from '@/components/search/SearchInput';
+import { SearchResult } from '@/components/search/SearchResult';
+import { Header } from '@/components/ui/Header';
 import styled from '@emotion/styled';
-import { Header } from '@components/ui/Header';
-import SearchInput from '@components/search/SearchInput';
-import QuerySuspenseErrorBoundary from '@components/hoc/QuerySuspenseErrorBoundary';
-import { SearchResult } from '@components/search/SearchResult';
 import { SearchParams } from 'types/params/search';
 
 interface SearchPageScreenProps {

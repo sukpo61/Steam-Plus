@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { SteamAppDetailResponse } from 'types/steam/SteamAppDetailResponse';
-import { Text } from '@components/ui/Text';
+import { Text } from '@/components/ui/Text';
 
 interface GameChannelProps {
     data: SteamAppDetailResponse;

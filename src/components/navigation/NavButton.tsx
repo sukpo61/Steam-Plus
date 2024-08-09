@@ -36,7 +36,7 @@ const TitleText = styled.span<{ selected: boolean }>`
     color: ${({ selected }) => (selected ? '#00B8C8' : '#777d87')};
 `;
 
-const NavButton = ({ item }: NavButtonProps) => {
+export const NavButton = ({ item }: NavButtonProps) => {
     const { title, href, icon, rex } = item;
     const pathname = usePathname();
     const selected = rex.test(pathname);
@@ -57,5 +57,3 @@ const NavButton = ({ item }: NavButtonProps) => {
         // </Link>
     );
 };
-
-export default NavButton;

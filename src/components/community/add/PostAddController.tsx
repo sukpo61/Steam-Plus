@@ -1,21 +1,15 @@
 'use client';
 
+import { ImageInputValue } from '@/components/ui/ImageInput';
 import styled from '@emotion/styled';
-import PostAddPageScreen from './PostAddPageScreen';
-import { postPost } from 'src/api/community/post/apiPost';
-import { getPost } from 'src/api/community/post/apiPost';
-import { patchPost } from 'src/api/community/post/apiPost';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { useCallback } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { API_COMMUNITY_LIST_KEY } from 'src/api/community/communityQueryKey';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { FormProvider } from 'react-hook-form';
-import { useQuery } from '@tanstack/react-query';
-import { API_Post_KEY } from 'src/api/community/communityQueryKey';
-import { ImageInputValue } from '@components/ui/ImageInput';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { API_COMMUNITY_LIST_KEY } from 'src/api/community/communityQueryKey';
+import { API_POST_KEY, getPost, patchPost, postPost } from 'src/api/community/post/apiPost';
 import { PostParams } from 'types/params/community';
+import PostAddPageScreen from './PostAddPageScreen';
 
 interface PostAddControllerProps {
     params: PostParams;
@@ -36,8 +30,9 @@ const Form = styled.form`
 
 const PostAddController = ({ params }: PostAddControllerProps) => {
     const { channelId, postId } = params;
+
     const { data: prevData } = useQuery({
-        queryKey: [API_Post_KEY, params],
+        queryKey: [API_POST_KEY, { postId }],
         queryFn: () => getPost({ params }),
         enabled: !!postId,
     });
@@ -63,15 +58,17 @@ const PostAddController = ({ params }: PostAddControllerProps) => {
         },
     });
 
+    const { handleSubmit, reset } = form;
+
     const onSubmit: SubmitHandler<PostAddFormValue> = useCallback((data) => {
         const onSuccess = async (id: string) => {
             await queryCache.resetQueries({
                 queryKey: [API_COMMUNITY_LIST_KEY],
             });
-            await queryCache.invalidateQueries({
-                queryKey: [API_Post_KEY, params],
+            await queryCache.resetQueries({
+                queryKey: [API_POST_KEY, params],
             });
-            replace(`/community`);
+            replace(`/community/${channelId}/post/${id}`);
         };
         if (postId) {
             patchMutate(
@@ -105,18 +102,21 @@ const PostAddController = ({ params }: PostAddControllerProps) => {
 
     useEffect(() => {
         if (prevData) {
-            form.reset({
+            reset({
                 title: prevData.title,
                 category: prevData.category,
                 content: prevData.content,
                 images: prevData.images,
             });
         }
-    }, [prevData, form.reset]);
+    }, [prevData, reset]);
 
     return (
         <FormProvider {...form}>
-            <Form onSubmit={form.handleSubmit(onSubmit, onSubmitError)}>
+            <Form
+                className="flex w-full max-w-[948px]"
+                onSubmit={handleSubmit(onSubmit, onSubmitError)}
+            >
                 <PostAddPageScreen params={params} />
             </Form>
         </FormProvider>

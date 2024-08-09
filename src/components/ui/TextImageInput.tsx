@@ -1,78 +1,38 @@
 'use client';
 
-import styled from '@emotion/styled';
-import { Text } from './Text';
-import { Button } from './Button';
-import { Typo } from 'styles/Typography';
-import ImageInput from './ImageInput';
-import TextArea from './TextArea';
-import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { useCallback } from 'react';
-import ImagePreview from './ImagePreview';
-import { ImageInputValue } from './ImageInput';
-
+import { useFormContext, useWatch } from 'react-hook-form';
+import { Typo } from 'styles/Typography';
+import { PostAddFormValue } from '../community/add/PostAddController';
+import { Button } from './Button';
+import { ImageInput } from './ImageInput';
+import { ImagePreview } from './ImagePreview';
+import { Text } from './Text';
+import { TextArea } from './TextArea';
 export interface TextImageInputProps {
     cancle?: () => void;
     errorMessage?: string;
     placeholder?: string;
     multiple?: boolean;
-    setValue: UseFormSetValue<any>;
-    register: UseFormRegister<any>;
-    images: ImageInputValue[];
-    imageMaxlength?: number;
+    imageMaxlength: number;
 }
 
-const Container = styled.div`
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    padding: 12px 12px 6px 12px;
-    background-color: #263245;
-    box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.25);
-    border-radius: 10px;
-`;
-
-const SubmitButtonContainer = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const ButtonContainer = styled.div`
-    display: flex;
-    gap: 16px;
-`;
-const TextAreaContainer = styled.div`
-    display: flex;
-    flex: 1;
-`;
-const ImageListContainer = styled.div`
-    display: flex;
-    width: 100%;
-    gap: 16px;
-`;
-
-const TextImageInput = (props: TextImageInputProps) => {
-    const {
-        cancle,
-        errorMessage,
-        register,
-        placeholder,
-        images,
-        setValue,
-        multiple,
-        imageMaxlength = 1,
-    } = props;
+export const TextImageInput = ({
+    cancle,
+    errorMessage,
+    placeholder,
+    multiple,
+    imageMaxlength = 1,
+}: TextImageInputProps) => {
+    const { register, setValue, control } = useFormContext<PostAddFormValue>();
+    const prevImages = useWatch({ control, name: 'images' });
 
     const getImageSource = useCallback((src: File | string) => {
         if (typeof src === 'string') return src;
         return URL.createObjectURL(src);
     }, []);
 
-    const imageList = images?.map((image) => {
+    const imageList = prevImages.map((image) => {
         return {
             id: image.id,
             src: getImageSource(image.src),
@@ -80,38 +40,40 @@ const TextImageInput = (props: TextImageInputProps) => {
     });
 
     const onClose = (id: string) => {
-        const result = images.filter((i) => i.id !== id);
-        setValue('images', result);
+        const filteredImages = prevImages?.filter((image) => image.id !== id);
+        setValue('images', filteredImages);
     };
 
     return (
-        <Container>
-            <TextAreaContainer>
+        <div className="relative flex h-full min-h-40 w-full flex-col rounded-lg bg-input px-3 py-2">
+            <section className="flex flex-1">
                 <TextArea placeholder={placeholder} {...register('content')} />
-            </TextAreaContainer>
-            <ImageListContainer>
-                {imageList.map((image) => (
-                    <ImagePreview key={image.id} image={image} onClose={() => onClose(image.id)} />
-                ))}
-            </ImageListContainer>
-            <SubmitButtonContainer>
+            </section>
+            {imageList.length !== 0 && (
+                <section className="mb-1 mt-4 flex w-full gap-4">
+                    {imageList?.map((image) => (
+                        <ImagePreview
+                            key={image.id}
+                            image={image}
+                            onClose={() => onClose(image.id)}
+                        />
+                    ))}
+                </section>
+            )}
+            <section className="flex w-full items-center justify-between">
                 <ImageInput
-                    onChange={(e) => setValue('images', e)}
-                    value={images}
+                    onChange={(images) => setValue('images', images)}
+                    prevValue={prevImages}
                     maxLength={imageMaxlength}
                     multiple={multiple}
                     replaceable
                 />
-                <ButtonContainer>
+                <div className="flex gap-4">
                     <Text text={errorMessage} typo={Typo.Error.Error1Regular} />
-                    {cancle && (
-                        <Button text="취소" buttonType="comment" type="button" onClick={cancle} />
-                    )}
-                    <Button text="등록" buttonType="comment" />
-                </ButtonContainer>
-            </SubmitButtonContainer>
-        </Container>
+                    {cancle && <Button onClick={cancle}>취소</Button>}
+                    <Button>등록</Button>
+                </div>
+            </section>
+        </div>
     );
 };
-
-export default TextImageInput;

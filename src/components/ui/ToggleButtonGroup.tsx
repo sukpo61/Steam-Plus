@@ -1,8 +1,6 @@
 'use client';
 
-import styled from '@emotion/styled';
 import ToggleButton from './ToggleButton';
-import { useState } from 'react';
 
 interface ToggleButtonGroupProps {
     data: {
@@ -13,23 +11,7 @@ interface ToggleButtonGroupProps {
     activeId?: string;
 }
 
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-`;
-const ButtonContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-`;
-const BottomLine = styled.div`
-    display: flex;
-    width: 100%;
-    height: 6px;
-    background: var(--darkestGrey);
-`;
-
-const ToggleButtonGroup = ({ data, onChange, activeId }: ToggleButtonGroupProps) => {
+export const ToggleButtonGroup = ({ data, onChange, activeId }: ToggleButtonGroupProps) => {
     const handleClick = (id?: string) => {
         if (onChange) {
             onChange(id);
@@ -37,8 +19,8 @@ const ToggleButtonGroup = ({ data, onChange, activeId }: ToggleButtonGroupProps)
     };
 
     return (
-        <Container>
-            <ButtonContainer>
+        <div className="flex w-full flex-col">
+            <div className="flex">
                 {data.map((item) => {
                     const { label, id } = item;
                     const selected = activeId === id;
@@ -51,10 +33,8 @@ const ToggleButtonGroup = ({ data, onChange, activeId }: ToggleButtonGroupProps)
                         />
                     );
                 })}
-            </ButtonContainer>
-            <BottomLine />
-        </Container>
+            </div>
+            <div className="flex h-1 w-full bg-primary-darkest" />
+        </div>
     );
 };
-
-export default ToggleButtonGroup;

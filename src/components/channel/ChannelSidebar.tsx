@@ -12,7 +12,7 @@ const Container = styled.div`
 `;
 
 const ChannelSidebar = () => {
-    return <Container></Container>;
+    return <div className="flex w-full h-full z-50 bg-primary-dark"></div>;
 };
 
 export default ChannelSidebar;

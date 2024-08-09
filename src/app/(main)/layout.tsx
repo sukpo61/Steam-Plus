@@ -1,4 +1,4 @@
-import NavigationSidebar from '@components/navigation/NavigationSidebar';
+import NavigationSidebar from '@/components/navigation/NavigationSidebar';
 
 const NavigationLayout = ({ children }: { children: React.ReactNode }) => {
     return (

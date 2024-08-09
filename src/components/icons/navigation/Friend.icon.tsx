@@ -1,4 +1,4 @@
-const FriendIcon = ({ selected = false }: { selected: boolean }) => {
+export const FriendIcon = ({ selected = false }: { selected: boolean }) => {
     const iconColor = selected ? '#00B8C8' : '#777D87';
 
     return (
@@ -41,5 +41,3 @@ const FriendIcon = ({ selected = false }: { selected: boolean }) => {
         </svg>
     );
 };
-
-export default FriendIcon;

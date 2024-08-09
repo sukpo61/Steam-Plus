@@ -12,9 +12,10 @@ export async function GET(_: Request, { params }: { params: { postId: string } }
                 images: true,
             },
         });
+
         return NextResponse.json(server);
     } catch (error) {
-        console.log('CHANNELS_POST', error);
+        console.log('POST_GET', error);
         return new NextResponse('Internal Error', { status: 500 });
     }
 }
@@ -22,13 +23,16 @@ export async function GET(_: Request, { params }: { params: { postId: string } }
 export async function DELETE(_: Request, { params }: { params: { postId: string } }) {
     try {
         const { postId } = params;
-        const server = await db.post.delete({
+
+        await db.comment.updateMany({
             where: {
-                id: postId,
+                OR: [{ postId: postId }, { parentId: { not: null } }],
             },
-            include: {
-                images: true,
-            },
+            data: { parentId: null },
+        });
+
+        const server = await db.post.delete({
+            where: { id: postId },
         });
 
         return NextResponse.json(server);
@@ -38,18 +42,62 @@ export async function DELETE(_: Request, { params }: { params: { postId: string 
     }
 }
 
-export async function PATCH(req: Request) {
+export async function PATCH(req: Request, { params }: { params: { postId: string } }) {
     try {
-        const { id, ...data } = await req.json();
+        const { images, ...postData } = await req.json();
+        const { postId } = params;
 
-        const updatedPost = await db.post.update({
+        if (images > 5) {
+            return new NextResponse('Image upload exceeded', { status: 401 });
+        }
+
+        await db.post.update({
             where: {
-                id: id,
+                id: postId,
             },
-            data: data,
+            data: postData,
         });
 
-        return NextResponse.json(updatedPost);
+        const currentImages = await db.image.findMany({
+            where: { postId: postId },
+            select: { id: true },
+        });
+
+        const currentImageIds = currentImages.map((img) => img.id);
+
+        const newImageIds = images.map((img: any) => img.id).filter(Boolean);
+
+        const imagesToDelete = currentImageIds.filter((id) => !newImageIds.includes(id));
+
+        if (imagesToDelete.length > 0) {
+            await db.image.deleteMany({
+                where: {
+                    id: { in: imagesToDelete },
+                },
+            });
+        }
+
+        if (images && images.length > 0) {
+            await Promise.all(
+                images.map(async (image: any) => {
+                    if (!image.postId) {
+                        await db.image.create({
+                            data: {
+                                src: image.src,
+                                postId: postId,
+                            },
+                        });
+                    }
+                }),
+            );
+        }
+
+        const server = await db.post.findUnique({
+            where: { id: postId },
+            include: { images: true },
+        });
+
+        return NextResponse.json(server);
     } catch (error) {
         console.error('CHANNELS_POST', error);
         return new NextResponse('Internal Error', { status: 500 });

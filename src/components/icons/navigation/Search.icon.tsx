@@ -1,4 +1,10 @@
-const SearchIcon = ({ selected = false, size = 40 }: { selected?: boolean; size?: number }) => {
+export const SearchIcon = ({
+    selected = false,
+    size = 40,
+}: {
+    selected?: boolean;
+    size?: number;
+}) => {
     const iconColor = selected ? '#00B8C8' : '#777D87';
 
     return (
@@ -23,5 +29,3 @@ const SearchIcon = ({ selected = false, size = 40 }: { selected?: boolean; size?
         </svg>
     );
 };
-
-export default SearchIcon;

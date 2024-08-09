@@ -1,7 +1,7 @@
+import { variableAssignment } from '@/utils/variableAssignment';
 import axios from 'axios';
-import { CommunityParams } from 'types/params/community';
-import { CommunitySearchParams } from 'types/params/community';
-import { variableAssignment } from '@utils/variableAssignment';
+import { PostPage } from 'types/community/post';
+import { CommunityParams, CommunitySearchParams } from 'types/params/community';
 
 interface getCommunityParameter {
     params: CommunityParams;
@@ -10,10 +10,12 @@ interface getCommunityParameter {
 
 const API_COMMUNITY_KEY = '/api/community/{{channelId}}';
 
-const getCommunity = async ({
+export const getCommunity = async ({
     params,
     searchParams = { page: '1', pagesize: '10' },
-}: getCommunityParameter): Promise<any> => {
+}: getCommunityParameter): Promise<PostPage> => {
+    console.log('params', variableAssignment(API_COMMUNITY_KEY, params));
+
     try {
         const { data } = await axios.get(variableAssignment(API_COMMUNITY_KEY, params), {
             params: searchParams,
@@ -24,5 +26,3 @@ const getCommunity = async ({
         return Promise.reject(error);
     }
 };
-
-export default getCommunity;

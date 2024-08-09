@@ -1,18 +1,19 @@
 'use client';
 
-import styled from '@emotion/styled';
+import { UserAvatar } from '@/components/common/UserAvatar';
+import { Button } from '@/components/ui/Button';
+import { Separator } from '@/components/ui/Separator';
+import { Text } from '@/components/ui/Text';
+import { timeFormat } from '@/utils/timeFormat';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import Image from 'next/image';
-import DefaultProfileThumbnail from 'public/images/profile/profile.png';
-import { timeFormat } from '@utils/timeFormat';
-import { deletePost } from 'src/api/community/post/apiPost';
-import { getPost } from 'src/api/community/post/apiPost';
-import { Text } from '@components/ui/Text';
-import { Button } from '@components/ui/Button';
-import { Typo } from 'styles/Typography';
 import { useRouter } from 'next/navigation';
-import { useSuspenseQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import { API_Post_KEY } from 'src/api/community/communityQueryKey';
-import { API_COMMUNITY_LIST_KEY } from 'src/api/community/communityQueryKey';
+import {
+    API_COMMUNITY_KEY,
+    API_POST_KEY,
+    deletePost,
+    getPost,
+} from 'src/api/community/post/apiPost';
 import { PostParams } from 'types/params/community';
 
 interface PostProps {
@@ -25,101 +26,13 @@ export interface SearchFormValue {
     content: string;
 }
 
-const Container = styled.div`
-    display: flex;
-    background: var(--Gradient-Background);
-    flex-direction: column;
-    align-items: start;
-    max-width: 948px;
-    width: 100%;
-    padding: 16px 32px;
-`;
-
-const PostTitle = styled.div`
-    width: 100%;
-    background: var(--systemDarkerGrey);
-    height: 100px;
-    display: flex;
-    padding: 32px;
-`;
-const ProfileImage = styled(Image)`
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-`;
-
-const Header = styled.div`
-    width: 100%;
-    padding: 16px;
-    background: var(--Background-Neutral-LightSofter);
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 32px;
-`;
-
-const Divider = styled.div`
-    width: 100%;
-    height: 1px;
-    background: var(--Grey);
-`;
-
-const ProfileContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
-`;
-
-const ActionButtons = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
-`;
-
-const UserDetails = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: start;
-`;
-
-const UserMeta = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 6px;
-`;
-
-const PostContent = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-`;
-const TextContainer = styled.div`
-    width: 100%;
-    display: flex;
-    margin-bottom: 24px;
-    word-break: break-word;
-`;
-
-const ImageContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-`;
-const PostImage = styled(Image)`
-    object-fit: cover;
-    border-radius: 8px;
-    height: auto !important;
-`;
-
 const Post = ({ params }: PostProps) => {
     const { channelId, postId } = params;
     const { push, replace } = useRouter();
     const queryCache = useQueryClient();
 
     const { data } = useSuspenseQuery({
-        queryKey: [API_Post_KEY, params],
+        queryKey: [API_POST_KEY, params],
         queryFn: () => getPost({ params }),
     });
 
@@ -135,9 +48,9 @@ const Post = ({ params }: PostProps) => {
                 {
                     onSuccess: async () => {
                         await queryCache.invalidateQueries({
-                            queryKey: [API_COMMUNITY_LIST_KEY],
+                            queryKey: [API_COMMUNITY_KEY],
                         });
-                        replace('/community');
+                        replace(`/community/${channelId}`);
                     },
                 },
             );
@@ -145,14 +58,14 @@ const Post = ({ params }: PostProps) => {
     };
 
     const editHandler = () => {
-        push(`/community/${channelId}/post/${postId}`);
+        push(`/community/${channelId}/post/${postId}/edit`);
     };
 
     if (!data) {
         return (
-            <Container>
+            <div className="flex w-full max-w-[948px] flex-col items-start">
                 <Text text={'게시물이 없습니다.'} />
-            </Container>
+            </div>
         );
     }
 
@@ -160,44 +73,45 @@ const Post = ({ params }: PostProps) => {
 
     return (
         <>
-            <PostTitle>
-                <Text text={title} typo={Typo.Title.Header2Regular} preLine />
-            </PostTitle>
-            <Container>
-                <Header>
-                    <ProfileContainer>
-                        <ProfileImage alt="profile_image" src={DefaultProfileThumbnail} />
-                        <UserDetails>
-                            <Text text={'username'} typo={Typo.Body.Body2Bold} />
-                            <UserMeta>
-                                <Text text={timeFormat(createdAt)} typo={Typo.Body.Body3Regular} />
-                                <Text text={String(viewcount)} typo={Typo.Body.Body3Regular} />
-                            </UserMeta>
-                        </UserDetails>
-                    </ProfileContainer>
-                    <ActionButtons>
-                        <Button text="수정" onClick={editHandler} />
-                        <Button text="삭제" onClick={deleteHandler} />
-                    </ActionButtons>
-                </Header>
-                <PostContent>
-                    <ImageContainer>
+            <div className="flex h-[100px] w-full bg-primary-dark p-8">
+                <span className="text-3xl">{title}</span>
+            </div>
+            <div className="flex w-full max-w-[948px] flex-col items-start bg-primary px-8 pt-4">
+                <div className="mb-8 flex w-full justify-between bg-primary-foreground/20 p-4">
+                    <div className="flex items-center gap-4">
+                        <UserAvatar className="h-9 w-9" />
+                        <div className="flex flex-col items-start gap-1">
+                            <span className="text-base">username</span>
+                            <div className="flex gap-1">
+                                <span className="text-sm">{timeFormat(createdAt)}</span>
+                                <span className="text-sm">{String(viewcount)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <Button onClick={editHandler}>수정</Button>
+                        <Button onClick={deleteHandler}>삭제</Button>
+                    </div>
+                </div>
+                <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-4">
                         {images.map(({ id, src }: any) => (
-                            <PostImage
+                            <Image
                                 key={id}
                                 src={src}
                                 alt="Postimage"
                                 width={500}
                                 height={100}
+                                className="rounded-lg"
                             />
                         ))}
-                    </ImageContainer>
-                    <TextContainer>
-                        <Text text={content} typo={Typo.Body.Body1Regular} preLine={true} />
-                    </TextContainer>
-                </PostContent>
-                <Divider />
-            </Container>
+                    </div>
+                    <div className="mb-6 w-full break-words">
+                        <span className="text-base">{content}</span>
+                    </div>
+                </div>
+                <Separator />
+            </div>
         </>
     );
 };

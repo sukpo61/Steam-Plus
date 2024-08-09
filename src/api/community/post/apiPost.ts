@@ -1,9 +1,9 @@
+import { PostAddFormValue } from '@/components/community/add/PostAddController';
+import { variableAssignment } from '@/utils/variableAssignment';
 import axios from 'axios';
-import getImageUrl from 'src/api/common/getImageUrl';
-import { variableAssignment } from '@utils/variableAssignment';
-import { PostParams } from 'types/params/community';
+import { getImageUrl } from 'src/api/common/getImageUrl';
 import { PostResponse } from 'types/community/post';
-import { PostAddFormValue } from '@components/community/add/PostAddController';
+import { PostParams } from 'types/params/community';
 
 interface PostParameter {
     params: PostParams;
@@ -12,12 +12,15 @@ interface uploadPostParameter extends PostParameter {
     data: PostAddFormValue;
 }
 
-export const API_POST_KEY = '/post/{{postId}}';
+export const API_POST_KEY = '/api/post/{{postId}}';
 export const API_COMMUNITY_KEY = '/api/community/{{channelId}}';
 
 const getPost = async ({ params }: PostParameter): Promise<PostResponse> => {
+    console.log('params', variableAssignment(API_POST_KEY, params));
+
     try {
         const { data } = await axios.get(variableAssignment(API_POST_KEY, params));
+
         return data;
     } catch (error) {
         console.log(error);
@@ -38,19 +41,18 @@ const deletePost = async ({ params }: PostParameter): Promise<string> => {
 
 const postPost = async ({ data, params }: uploadPostParameter): Promise<string> => {
     const { images } = data;
-    let id = '';
     try {
-        const imagesUrl = await getImageUrl({
-            images,
-            url: 'images',
+        const imagesUrl = images
+            ? await getImageUrl({
+                  images,
+                  url: 'images',
+              })
+            : [];
+        const { data: resData } = await axios.post(variableAssignment(API_COMMUNITY_KEY, params), {
+            ...data,
+            images: imagesUrl,
         });
-        await axios
-            .post(variableAssignment(API_COMMUNITY_KEY, params), { ...data, images: imagesUrl })
-            .then((res: any) => {
-                console.log(res);
-                id = res.id;
-            });
-        return id;
+        return resData.id;
     } catch (error) {
         console.error(error);
         return Promise.reject(error);
@@ -70,4 +72,4 @@ const patchPost = async ({ params, data }: uploadPostParameter): Promise<string>
     }
 };
 
-export { getPost, deletePost, postPost, patchPost };
+export { deletePost, getPost, patchPost, postPost };

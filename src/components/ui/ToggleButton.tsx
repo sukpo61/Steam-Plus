@@ -1,7 +1,6 @@
 'use client';
 
-import styled from '@emotion/styled';
-import { Text } from '@components/ui/Text';
+import { Text } from '@/components/ui/Text';
 import { MouseEventHandler } from 'react';
 
 export interface ToggleButtonProps {
@@ -10,30 +9,18 @@ export interface ToggleButtonProps {
     onClick: MouseEventHandler<HTMLButtonElement>;
 }
 
-const Container = styled.button<{ selected?: boolean }>`
-    display: flex;
-    min-width: 80px;
-    height: 40px;
-    padding: 1px;
-    background: ${({ selected }) => selected && 'var(--Gradient-ToggleButtonBorder)'};
-`;
-const TextContainer = styled.div<{ selected?: boolean }>`
-    display: flex;
-    width: 100%;
-    height: 100%;
-    padding: 0 16px;
-    justify-content: center;
-    align-items: center;
-    background: ${({ selected }) => selected && 'var(--darkestGrey)'};
-`;
-
 const ToggleButton = ({ onClick, label, selected }: ToggleButtonProps) => {
     return (
-        <Container onClick={onClick} selected={selected}>
-            <TextContainer selected={selected}>
-                <Text text={label} />
-            </TextContainer>
-        </Container>
+        <div
+            className={`flex min-w-20 h-10 px-[1px] pt-[1px] ${selected && 'bg-gradient-to-b from-secondary to-primary-darkest'} `}
+        >
+            <button
+                onClick={onClick}
+                className={`flex w-full h-full items-center justify-center px-4 ${selected && 'bg-primary-darkest'} `}
+            >
+                <span className="text-sm">{label}</span>
+            </button>
+        </div>
     );
 };
 

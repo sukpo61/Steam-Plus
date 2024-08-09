@@ -1,13 +1,11 @@
 'use client';
 
-import styled from '@emotion/styled';
-import Comment from './Comment';
+import { getComment } from '@/api/community/comment/getComment';
+import { API_COMMENT_KEY } from '@/api/community/comment/postComment';
+import { Button } from '@/components/ui/Button';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import getReply from 'src/api/community/comment/reply/getReply';
-import { API_Post_COMMENT_REPLY_KEY } from 'src/api/community/communityQueryKey';
-import { Typo } from 'styles/Typography';
-import { Text } from '@components/ui/Text';
 import { CommentParams } from 'types/params/community';
+import { Comment } from './Comment';
 
 interface ReplyListProps {
     params: CommentParams;
@@ -19,19 +17,13 @@ export interface SearchFormValue {
     content: string;
 }
 
-const Container = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-`;
+export const ReplyList = ({ params }: ReplyListProps) => {
+    const { postId, commentId } = params;
 
-const ReplyList = ({ params }: ReplyListProps) => {
     const { fetchNextPage, hasNextPage, data } = useSuspenseInfiniteQuery({
-        queryKey: [API_Post_COMMENT_REPLY_KEY, params],
-        queryFn: ({ pageParam: cursor }) => getReply({ params, cursor }),
-        initialPageParam: 0,
+        queryKey: [API_COMMENT_KEY, { postId }, { commentId }],
+        queryFn: ({ pageParam: cursor }) => getComment({ params, cursor }),
+        initialPageParam: null,
         getNextPageParam: ({ cursor }) => {
             return cursor ?? null;
         },
@@ -41,23 +33,21 @@ const ReplyList = ({ params }: ReplyListProps) => {
         hasNextPage && fetchNextPage();
     };
 
-    const replyData = data.pages;
+    const replysData = data.pages;
 
     return (
-        <Container>
-            {replyData.map((item: any) =>
+        <div className="flex w-full flex-col items-center justify-center">
+            {replysData.map((item: any) =>
                 item.data.map((reply: any) => (
                     <Comment
                         key={reply.id}
                         item={reply}
-                        params={{ ...params, replyId: reply.id }}
+                        params={{ ...params, commentId: reply.id }}
                     />
                 )),
             )}
-            {hasNextPage && (
-                <Text text="더보기" typo={Typo.Body.Body4Regular} onClick={onObserve} underLine />
-            )}
-        </Container>
+            {hasNextPage && <Button onClick={onObserve}>더보기</Button>}
+        </div>
     );
 };
 

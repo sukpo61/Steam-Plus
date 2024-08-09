@@ -1,8 +1,12 @@
+import PostAddController from '@/components/community/add/PostAddController';
 import { NextPage } from 'next';
-import PostAddController from '@components/community/add/PostAddController';
 import { PostParams } from 'types/params/community';
 
-const PostAddPage: NextPage<PostParams> = async ({ params }) => {
+interface PostAddPageProps {
+    params: PostParams;
+}
+
+const PostAddPage: NextPage<PostAddPageProps> = async ({ params }) => {
     return <PostAddController params={params} />;
 };
 

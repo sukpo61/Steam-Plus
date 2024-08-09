@@ -1,8 +1,7 @@
-import styled from '@emotion/styled';
-import useToast from '@hooks/useToast';
+import { CameraIcon } from '@/components/icons/common/Camera.icon';
+// import useToast from '@/hooks/useToast';
 import { ChangeEventHandler, FC, useCallback, useRef } from 'react';
 import { Button } from './Button';
-import CameraIcon from '@components/icons/common/Camera.icon';
 
 export interface ImageInputValue {
     id: string;
@@ -10,29 +9,21 @@ export interface ImageInputValue {
 }
 
 interface ImageInputProps {
-    value: ImageInputValue[];
+    prevValue: ImageInputValue[];
     onChange: (value: ImageInputValue[]) => void;
     maxLength: number;
     multiple?: boolean;
     replaceable?: boolean;
 }
 
-const Container = styled.label`
-    display: flex;
-`;
-
-const CusttomInput = styled.input`
-    display: none;
-`;
-
-const ImageInput: FC<ImageInputProps> = ({
-    value,
+export const ImageInput: FC<ImageInputProps> = ({
+    prevValue = [],
     maxLength,
     onChange,
     replaceable,
     multiple = false,
 }) => {
-    const { showToast } = useToast();
+    // const { showToast } = useToast();
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     const onChangeImageInput = useCallback<ChangeEventHandler<HTMLInputElement>>(
@@ -56,16 +47,16 @@ const ImageInput: FC<ImageInputProps> = ({
                 }
             }
 
-            let result: ImageInputValue[] = [...value];
+            let result: ImageInputValue[] = [...prevValue];
 
             if (replaceable) {
                 result = [...newValues, ...result];
-                if (maxLength - 1 < value.length) {
+                if (maxLength - 1 < prevValue.length) {
                     result.splice(-files.length);
                 }
             } else {
                 if (maxLength - 1 < result.length) {
-                    showToast(`최대 등록 사진 갯수 ${maxLength}개 초과입니다.`);
+                    // showToast(`최대 등록 사진 갯수 ${maxLength}개 초과입니다.`);
                 } else {
                     result = [...newValues, ...result];
                 }
@@ -75,10 +66,10 @@ const ImageInput: FC<ImageInputProps> = ({
             event.currentTarget.value = '';
 
             if (sizeError) {
-                showToast('사진이 100MB 제한을 초과했어요.');
+                // showToast('사진이 100MB 제한을 초과했어요.');
             }
         },
-        [maxLength, onChange, showToast, value],
+        [maxLength, onChange, prevValue],
     );
 
     const onClickHandler = () => {
@@ -86,21 +77,19 @@ const ImageInput: FC<ImageInputProps> = ({
     };
 
     return (
-        <Container>
-            <CusttomInput
+        <div className="flex">
+            <input
+                className="hidden"
                 type="file"
                 accept="image/*"
                 multiple={multiple}
                 onChange={onChangeImageInput}
                 ref={inputRef}
             />
-            <Button
-                type="button"
-                text={<CameraIcon />}
-                buttonType="icon"
-                onClick={onClickHandler}
-            />
-        </Container>
+            <Button type="button" size={'icon'} onClick={onClickHandler}>
+                <CameraIcon />
+            </Button>
+        </div>
     );
 };
 

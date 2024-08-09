@@ -1,70 +1,47 @@
 'use client';
 
-import styled from '@emotion/styled';
-import ReplyList from './ReplyList';
-import QuerySuspenseErrorBoundary from '@components/hoc/QuerySuspenseErrorBoundary';
-import Comment from './Comment';
-import ReplyLoading from '@components/loading/ReplyLoading';
-import Stat1 from '@components/icons/common/Stat1.icon';
-import Stat2 from '@components/icons/common/Stat2.icon';
+import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
+import { Stat1 } from '@/components/icons/common/Stat1.icon';
+import { Stat2 } from '@/components/icons/common/Stat2.icon';
+import { ReplyLoading } from '@/components/loading/ReplyLoading';
+import { Button } from '@/components/ui/Button';
 import { useState } from 'react';
-import { Button } from '@components/ui/Button';
 import { CommentResponse } from 'types/community/comment';
 import { CommentParams } from 'types/params/community';
+import { Comment } from './Comment';
+import ReplyList from './ReplyList';
 
 export interface CommentReplyWrapProps {
     params: CommentParams;
-    item: CommentResponse;
+    item: {
+        comment: CommentResponse;
+        replysCount: number;
+    };
 }
 
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    align-items: start;
-`;
+export const CommentReplyWrap = ({ item, params }: CommentReplyWrapProps) => {
+    const { comment, replysCount } = item;
 
-const ReplyContainer = styled.div`
-    position: relative;
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    align-items: start;
-    padding-left: 52px;
-`;
-
-const ReplyButtonContainer = styled.div`
-    position: relative;
-    left: -16px;
-    margin-bottom: 24px;
-`;
-const ReplyButtonText = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-const CommentReplyWrap = ({ item, params }: CommentReplyWrapProps) => {
-    const replyCount = 0;
     const [isReply, setIsReply] = useState(false);
 
     return (
-        <Container>
-            <Comment item={item} params={params} />
-            <ReplyContainer>
-                {replyCount && (
+        <div className="flex w-full flex-col items-start">
+            <Comment item={comment} params={params} />
+            <div className="relative flex w-full flex-col items-start pl-14">
+                {replysCount !== 0 && (
                     <>
-                        <ReplyButtonContainer>
+                        <div className="relative -left-2 mb-6">
                             <Button
-                                text={
-                                    <ReplyButtonText>
-                                        {isReply ? <Stat1 /> : <Stat2 />}
-                                        <span>{` 답글 ${replyCount}개`}</span>
-                                    </ReplyButtonText>
-                                }
-                                buttonType="reply"
+                                variant="trans"
+                                size={'iconl'}
                                 onClick={() => setIsReply((e) => !e)}
-                            />
-                        </ReplyButtonContainer>
+                            >
+                                <div className="flex items-center">
+                                    {isReply ? <Stat1 /> : <Stat2 />}
+                                    <span>{` 답글 ${replysCount}개`}</span>
+                                </div>
+                            </Button>
+                        </div>
                         {isReply && (
                             <QuerySuspenseErrorBoundary suspenseFallback={<ReplyLoading />}>
                                 <ReplyList params={params} />
@@ -72,9 +49,7 @@ const CommentReplyWrap = ({ item, params }: CommentReplyWrapProps) => {
                         )}
                     </>
                 )}
-            </ReplyContainer>
-        </Container>
+            </div>
+        </div>
     );
 };
-
-export default CommentReplyWrap;

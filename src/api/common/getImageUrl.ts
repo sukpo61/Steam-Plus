@@ -1,6 +1,6 @@
-import { ref, uploadBytesResumable, getDownloadURL, uploadBytes } from 'firebase/storage';
+import { ImageInputValue } from '@/components/ui/ImageInput';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from 'src/firebase/firebase';
-import { ImageInputValue } from '@components/ui/ImageInput';
 
 interface getImageUrlIndexProps {
     image: ImageInputValue;
@@ -25,8 +25,7 @@ const getImageUrlIndex = async ({ image, url }: getImageUrlIndexProps) => {
     };
 };
 
-const getImageUrl = async ({ images, url }: getImageUrlProps): Promise<any> => {
-    console.log('images', images);
+export const getImageUrl = async ({ images, url }: getImageUrlProps): Promise<any> => {
     try {
         if (images.length === 0) {
             return [];
@@ -38,8 +37,6 @@ const getImageUrl = async ({ images, url }: getImageUrlProps): Promise<any> => {
         return Promise.reject(error);
     }
 };
-
-export default getImageUrl;
 
 // Create the file metadata
 // const metadata = {

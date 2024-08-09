@@ -1,7 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { Text } from '@components/ui/Text';
+import { Text } from '@/components/ui/Text';
 import { ReactNode } from 'react';
 import { Typo } from 'styles/Typography';
 

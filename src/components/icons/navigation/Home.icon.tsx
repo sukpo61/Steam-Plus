@@ -1,4 +1,4 @@
-const HomeIcon = ({ selected = false }: { selected: boolean }) => {
+export const HomeIcon = ({ selected = false }: { selected: boolean }) => {
     const iconColor = selected ? '#00B8C8' : '#777D87';
 
     return (
@@ -23,5 +23,3 @@ const HomeIcon = ({ selected = false }: { selected: boolean }) => {
         </svg>
     );
 };
-
-export default HomeIcon;

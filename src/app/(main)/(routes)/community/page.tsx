@@ -1,5 +1,5 @@
+import CommunityPageScreen from '@/components/community/CommunityPageScreen';
 import { NextPage } from 'next';
-import CommunityPageScreen from '@components/community/CommunityPageScreen';
 import { CommunityParams } from 'types/params/community';
 import { CommunitySearchParams } from 'types/params/community';
 

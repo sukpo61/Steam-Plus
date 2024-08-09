@@ -1,4 +1,4 @@
-const CommunityIcon = ({ selected = false }: { selected: boolean }) => {
+export const CommunityIcon = ({ selected = false }: { selected: boolean }) => {
     const iconColor = selected ? '#00B8C8' : '#777D87';
 
     return (
@@ -31,5 +31,3 @@ const CommunityIcon = ({ selected = false }: { selected: boolean }) => {
         </svg>
     );
 };
-
-export default CommunityIcon;

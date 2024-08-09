@@ -1,54 +1,61 @@
 'use client';
 
+import { timeFormat } from '@/utils/timeFormat';
 import Image from 'next/image';
-import DefaultProfileThumbnail from 'public/images/profile/profile.png';
-import { Typo } from 'styles/Typography';
-import { Text } from '@components/ui/Text';
-import { timeFormat } from '@utils/timeFormat';
+import DefaultImage from 'public/images/profile/profile.png';
+import { useState } from 'react';
 import { PostResponse } from 'types/community/post';
 import { COMMUNIY_CATEGORY_LABEL } from './CommunityPageScreen';
-import { useState } from 'react';
 
 export interface PostTileProps {
     item: PostResponse;
     onClick: (channelId: string) => void;
 }
 
-const PostTile = ({ item, onClick }: PostTileProps) => {
-    const { category, title, content, viewcount = 0, images, createdAt, channelId } = item;
+export const PostTile = ({ item, onClick }: PostTileProps) => {
+    const {
+        category,
+        title,
+        content,
+        viewcount = 0,
+        images,
+        createdAt,
+        channelId,
+        commentsCount,
+    } = item;
     const [isTitle, setIsTitle] = useState(images?.length === 0);
+    const isImage = images.length !== 0;
 
     const handleMouseEnter = () => {
-        if (images.length !== 0) setIsTitle(true);
+        if (isImage) setIsTitle(true);
     };
 
     const handleMouseLeave = () => {
-        if (images.length !== 0) setIsTitle(false);
+        if (isImage) setIsTitle(false);
     };
 
     return (
         <div
-            className="relative w-full h-[340px] bg-gray-800 flex flex-col cursor-pointer z-10 hover:outline hover:outline-1 hover:outline-blue-400"
+            className="relative z-10 flex h-[340px] w-full cursor-pointer flex-col bg-primary hover:outline hover:outline-1 hover:outline-secondary"
             onClick={() => onClick(channelId)}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            <div className="absolute top-[-1px] w-full h-[1px] bg-gradient-to-r from-transparent to-transparent via-gray-400 z-[-1]" />
-            <div className="relative flex flex-col items-start flex-1 w-full gap-2 p-4">
+            <div className="absolute top-[-1px] z-[-1] h-[1px] w-full bg-gradient-to-r from-secondary to-primary" />
+            <div className="relative flex w-full flex-1 flex-col items-start gap-2">
                 {isTitle && (
                     <div
-                        className={`absolute flex justify-between p-4 w-full z-[999] ${images?.length !== 0 ? 'bg-gray-700 bg-opacity-50' : ''}`}
+                        className={`absolute left-0 top-0 z-[99] flex w-full items-center justify-between p-4 ${isImage && 'bg-primary/80'}`}
                     >
-                        <Text text={title} typo={Typo.Title.Header3Regular} />
-                        <Text
-                            text={`${COMMUNIY_CATEGORY_LABEL.find((item) => item.id === category)?.label}`}
-                            typo={Typo.Body.Body2Regular}
-                        />
+                        <span className="text-3xl">{title}</span>
+                        <span className="text-sm">
+                            {COMMUNIY_CATEGORY_LABEL.find((item) => item.id === category)?.label}
+                        </span>
                     </div>
                 )}
-                {images.length !== 0 ? (
-                    <div className="flex w-full h-full p-1.5">
-                        <div className="relative flex w-full h-full">
+                {isImage ? (
+                    <div className="flex h-full w-full p-1.5">
+                        <div className="relative flex h-full w-full">
                             <Image
                                 key={images[0].id}
                                 src={images[0].src}
@@ -59,30 +66,29 @@ const PostTile = ({ item, onClick }: PostTileProps) => {
                         </div>
                     </div>
                 ) : (
-                    <div className="flex flex-col items-start w-full gap-2 mt-14 p-4">
-                        <Text text={timeFormat(createdAt)} typo={Typo.Body.Body2Regular} />
-                        <Text text={content} preLine />
+                    <div className="mt-14 flex w-full flex-col items-start gap-2 p-4">
+                        <span className="text-sm">{timeFormat(createdAt)} </span>
+                        <span className="text-base">{content} </span>
                     </div>
                 )}
             </div>
-            <div className="flex justify-between w-full min-h-[70px] border-t-2 border-gray-700 p-4">
-                <div className="flex flex-row gap-2">
+            <div className="h-[1px] w-full bg-primary-bright" />
+            <div className="flex min-h-[70px] w-full items-center justify-between border-t-2 border-primary-bright p-4">
+                <div className="flex items-center gap-2">
                     <Image
                         alt="profile_image"
-                        src={DefaultProfileThumbnail}
+                        src={DefaultImage}
                         width={36}
                         height={36}
                         className="rounded-full"
                     />
-                    <Text text={''} typo={Typo.Body.Body2Regular} />
+                    <span className="text-sm">{timeFormat(createdAt)} </span>
                 </div>
-                <div className="flex flex-row gap-2">
-                    <Text text={`댓글 ${0}`} typo={Typo.Body.Body2Regular} underline />
-                    <Text text={`조회수 ${viewcount}`} typo={Typo.Body.Body2Regular} />
+                <div className="flex gap-2">
+                    <span className="text-sm">{`댓글 ${commentsCount}`} </span>
+                    <span className="text-sm">{`조회수 ${viewcount}`} </span>
                 </div>
             </div>
         </div>
     );
 };
-
-export default PostTile;

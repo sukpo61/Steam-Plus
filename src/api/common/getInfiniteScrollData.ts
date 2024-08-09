@@ -1,13 +1,13 @@
 import {
-    query,
-    orderBy,
-    limit,
-    startAfter,
-    getDocs,
     CollectionReference,
     DocumentData,
     doc,
     getDoc,
+    getDocs,
+    limit,
+    orderBy,
+    query,
+    startAfter,
 } from 'firebase/firestore';
 
 export interface PaginationResult<T> {

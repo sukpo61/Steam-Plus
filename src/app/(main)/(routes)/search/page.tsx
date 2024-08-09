@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import SearchPageScreen from '@components/search/SearchPageScreen';
+import SearchPageScreen from '@/components/search/SearchPageScreen';
 
 interface SearchResultPageProps {
     searchParams: {

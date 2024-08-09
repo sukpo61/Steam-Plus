@@ -1,105 +1,37 @@
 'use client';
 
-import styled from '@emotion/styled';
-import Image from 'next/image';
-import DefaultProfileThumbnail from 'public/images/profile/profile.png';
-import DropDown from '@components/ui/DropDown';
-import CommentDropDown from './CommentDropDown';
-import EditIcon from '@components/icons/common/Edit.icon';
-import DeleteIcon from '@components/icons/common/Delete.icon';
-import LikeIcon from '@components/icons/common/Like.icon';
-import deleteComment from 'src/api/community/comment/deleteComment';
-import CommentInput from './CommentInput';
-import patchComment from 'src/api/community/comment/patchComment';
-import { timeFormat } from '@utils/timeFormat';
-import { Text } from '@components/ui/Text';
-import { useState } from 'react';
-import { Typo } from 'styles/Typography';
-import { useRecoilState } from 'recoil';
-import { isCommentDropDownRecoil } from 'src/recoil-states/commentState';
-import { API_Post_COMMENT_KEY } from 'src/api/community/communityQueryKey';
-import { API_Post_COMMENT_REPLY_KEY } from 'src/api/community/communityQueryKey';
+import { API_COMMENT_KEY } from '@/api/community/comment/postComment';
+import { UserAvatar } from '@/components/common/UserAvatar';
+import { DeleteIcon } from '@/components/icons/common/Delete.icon';
+import { DropDownIcon } from '@/components/icons/common/DropDown.icon';
+import { EditIcon } from '@/components/icons/common/Edit.icon';
+import { Button } from '@/components/ui/Button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuPortal,
+    DropdownMenuTrigger,
+} from '@/components/ui/DropDown';
+import { timeFormat } from '@/utils/timeFormat';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button } from '@components/ui/Button';
+import Image from 'next/image';
+import { useState } from 'react';
+import { deleteComment } from 'src/api/community/comment/deleteComment';
+import { patchComment } from 'src/api/community/comment/patchComment';
 import { CommentResponse } from 'types/community/comment';
 import { CommentParams } from 'types/params/community';
-
+import { CommentInput } from './CommentInput';
 export interface CommentProps {
     params: CommentParams;
     item: CommentResponse;
 }
 
-const Container = styled.div`
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    align-items: start;
-    gap: 16px;
-    margin-bottom: 24px;
-`;
-
-const CommentContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-`;
-const InputContainer = styled.div`
-    display: flex;
-    width: 100%;
-    margin-top: 24px;
-`;
-
-const CommentDetailContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    width: 100%;
-`;
-
-const ProfileImage = styled(Image)`
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-`;
-
-const ProfileContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
-`;
-
-const UserDetails = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: start;
-`;
-
-const UserMeta = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    max-height: 13px;
-    gap: 6px;
-`;
-const Time = styled.div`
-    display: flex;
-    min-width: 86px;
-`;
-
-const CommentImage = styled(Image)`
-    object-fit: cover;
-    border-radius: 8px;
-    height: auto !important;
-`;
-
-const userId = '1234';
-
-const Comment = ({ item, params }: CommentProps) => {
-    const { postId, commentId, replyId } = params;
+export const Comment = ({ item, params }: CommentProps) => {
+    const { postId } = params;
     const { id, content, username = 'user', createdAt, images, likes } = item;
     const [isReplyInput, setIsReplyInput] = useState(false);
-    const [openId, setOpenId] = useRecoilState(isCommentDropDownRecoil);
+    // const [openId, setOpenId] = useRecoilState(isCommentDropDownRecoil);
     const [isEdit, setIsEdit] = useState(false);
     const queryCache = useQueryClient();
 
@@ -113,22 +45,8 @@ const Comment = ({ item, params }: CommentProps) => {
 
     const onSuccess = async () => {
         await queryCache.invalidateQueries({
-            queryKey: [API_Post_COMMENT_KEY, { postId }],
+            queryKey: [API_COMMENT_KEY, { postId }],
         });
-        if (replyId)
-            await queryCache.invalidateQueries({
-                queryKey: [API_Post_COMMENT_REPLY_KEY, { postId, commentId }],
-            });
-    };
-
-    const likeOnClickHandler = () => {
-        const isLike = likes.includes(userId);
-        // patchLike(
-        //     { params: { ...params, id }, data: { like: userId }, isLike: { value: !isLike } },
-        //     {
-        //         onSuccess: onSuccess,
-        //     },
-        // );
     };
 
     const deleteHandler = () => {
@@ -137,7 +55,7 @@ const Comment = ({ item, params }: CommentProps) => {
             return;
         }
         deleteMutate(
-            { params: { ...params, id } },
+            { params },
             {
                 onSuccess: onSuccess,
             },
@@ -146,31 +64,13 @@ const Comment = ({ item, params }: CommentProps) => {
 
     const editHandler = () => {
         setIsEdit(true);
-        setOpenId(null);
-    };
-
-    const dropdownmenu = [
-        {
-            id: 'delete',
-            label: '삭제',
-            icon: <DeleteIcon />,
-            onClick: deleteHandler,
-        },
-        {
-            id: 'edit',
-            label: '편집',
-            icon: <EditIcon />,
-            onClick: editHandler,
-        },
-    ];
-
-    const dropDownOnClickHandler = () => {
-        setOpenId((prevId) => (prevId === id ? null : id));
     };
 
     return (
-        <Container>
-            <ProfileImage alt="profile_image" src={DefaultProfileThumbnail} />
+        <div className="mb-6 flex w-full flex-row items-start gap-4">
+            <div className="flex pt-0.5">
+                <UserAvatar className="h-9 w-9" />
+            </div>
             {isEdit ? (
                 <CommentInput
                     id={id}
@@ -179,62 +79,74 @@ const Comment = ({ item, params }: CommentProps) => {
                     closeInput={() => setIsEdit(false)}
                 />
             ) : (
-                <CommentContainer>
-                    <CommentDetailContainer>
-                        <ProfileContainer>
-                            <UserDetails>
-                                <Text text={username} typo={Typo.Body.Body2Bold} />
-                                <Text text={content} />
+                <div className="flex w-full flex-col">
+                    <div className="flex w-full items-start justify-between">
+                        <div className="flex flex-row gap-3">
+                            <div className="flex flex-col items-start gap-1">
+                                <span className="text-sm">{username}</span>
+                                <span className="mb-1 text-base">{content}</span>
                                 {images?.map(({ id, src }: any) => (
-                                    <CommentImage
+                                    <Image
                                         key={id}
                                         src={src}
                                         alt="Postimage"
                                         width={200}
                                         height={100}
+                                        className="mb-3 rounded-lg object-cover"
                                     />
                                 ))}
-                                <UserMeta>
-                                    <Time>
-                                        <Text
-                                            text={timeFormat(createdAt, 'comment')}
-                                            typo={Typo.Body.Body3Regular}
-                                        />
-                                    </Time>
-                                    <Text
-                                        text="답글쓰기"
-                                        typo={Typo.Body.Body3Regular}
-                                        underLine
+
+                                <div className="flex max-h-[13px] flex-row items-center gap-2">
+                                    <div className="flex min-w-[86px]">
+                                        <span className="text-sm">
+                                            {timeFormat(createdAt, 'comment')}{' '}
+                                        </span>
+                                    </div>
+                                    <span
+                                        className="cursor-pointer text-sm hover:underline"
                                         onClick={() => setIsReplyInput((e) => !e)}
-                                    />
-                                    <Button
-                                        text={<LikeIcon isLike={likes.includes(userId)} />}
-                                        buttonType="icon"
-                                        onClick={likeOnClickHandler}
-                                    />
-                                    <Text text={likes.length} typo={Typo.Body.Body3Regular} />
-                                </UserMeta>
-                            </UserDetails>
-                        </ProfileContainer>
-                        <DropDown
-                            isOpen={openId === id}
-                            onClick={dropDownOnClickHandler}
-                            component={<CommentDropDown data={dropdownmenu} />}
-                        />
-                    </CommentDetailContainer>
+                                    >
+                                        답글쓰기
+                                    </span>
+                                    {/* <Text text={likes.length} typo={Typo.Body.Body3Regular} /> */}
+                                </div>
+                            </div>
+                        </div>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger>
+                                <Button
+                                    className="hover:bg-primary-bright"
+                                    variant={'trans'}
+                                    size={'iconround'}
+                                >
+                                    <DropDownIcon />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuPortal>
+                                <DropdownMenuContent align="start">
+                                    <DropdownMenuItem onClick={editHandler}>
+                                        <EditIcon />
+                                        <span>수정</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={deleteHandler}>
+                                        <DeleteIcon />
+                                        <span>삭제</span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenuPortal>
+                        </DropdownMenu>
+                    </div>
                     {isReplyInput && (
-                        <InputContainer>
+                        <div className="mt-6 flex w-full">
                             <CommentInput
                                 id={id}
                                 params={params}
                                 closeInput={() => setIsReplyInput(false)}
                             />
-                        </InputContainer>
+                        </div>
                     )}
-                </CommentContainer>
+                </div>
             )}
-        </Container>
+        </div>
     );
 };
-
-export default Comment;

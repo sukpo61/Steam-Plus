@@ -1,4 +1,4 @@
-import { ref, listAll, deleteObject, ListResult, StorageReference } from 'firebase/storage';
+import { deleteObject, listAll, ListResult, ref, StorageReference } from 'firebase/storage';
 import { storage } from 'src/firebase/firebase';
 
 const deleteAllImages = async (url: string) => {

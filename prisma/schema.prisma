@@ -49,33 +49,45 @@ model Post {
   community Community @relation(fields: [channelId], references: [id])
 
   images    Image[] 
-  comments   Comment[]
+  comments  Comment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([channelId])
 }
 
 model Image {
-  id     String @id @default(uuid())
-  src    String
+  id        String  @id @default(uuid())
+  src       String  @db.VarChar(1000)
 
-  postId String
-  post   Post   @relation(fields: [postId], references: [id]) 
+  commentId String?
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  postId    String?
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([commentId])
+  @@index([postId])
+
 }
 
 model Comment {
-  id String @id @default(uuid())
-  content String
-  images String 
+  id        String  @id @default(uuid())
+  content   String
 
-  postId String
-  post Post @relation(fields: [postId], references: [id])
+  images     Image[]
 
-  // community Community @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId String
+  post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  postId    String
+
+  parentId  String?
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies   Comment[] @relation("CommentReplies")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  }
-
+  @@index([parentId])
+  @@index([postId])
+}

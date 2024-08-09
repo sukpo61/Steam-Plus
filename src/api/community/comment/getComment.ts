@@ -1,24 +1,21 @@
-import { variableAssignment } from '@utils/variableAssignment';
-import { PostSearchParams } from 'types/params/community';
+import { variableAssignment } from '@/utils/variableAssignment';
+import axios from 'axios';
 import { CommentParams } from 'types/params/community';
+import { API_COMMENT_KEY } from './postComment';
 
 interface CommentParameter {
-    searchParams: PostSearchParams;
     params: CommentParams;
+    cursor: any;
 }
 
-const getComment = async ({ searchParams, params }: CommentParameter): Promise<any> => {
+export const getComment = async ({ params, cursor }: CommentParameter): Promise<any> => {
     try {
-        // const data = await getPaginationData<CommentResponse>({
-        //     ref: commentRef,
-        //     searchParams: searchParams,
-        //     subcollectionName: 'reply',
-        // });
-        // return data;
+        const { data } = await axios.get(variableAssignment(API_COMMENT_KEY, params), {
+            params: { cursor },
+        });
+        return data;
     } catch (error) {
         console.error(error);
         return Promise.reject(error);
     }
 };
-
-export default getComment;

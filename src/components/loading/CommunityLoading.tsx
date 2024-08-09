@@ -10,10 +10,8 @@ const Container = styled.div`
     min-height: 340px;
 `;
 
-const CommunityLoading = () => (
+export const CommunityLoading = () => (
     <Container>
         <DefaultLoading />
     </Container>
 );
-
-export default CommunityLoading;

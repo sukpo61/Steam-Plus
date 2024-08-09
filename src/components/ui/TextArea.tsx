@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import {
     ChangeEvent,
     FormEvent,
@@ -9,9 +8,6 @@ import {
     useRef,
     useState,
 } from 'react';
-import { Text } from './Text';
-import { Typo } from 'styles/Typography';
-
 interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
     width?: string;
     margin?: string;
@@ -19,46 +15,10 @@ interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
     errorMessage?: string;
     type?: 'edit';
     cancle?: () => void;
+    textonChange?: (value: any) => void;
 }
 
-const Container = styled.div`
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-`;
-
-const Header = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    margin-bottom: 8px;
-`;
-
-const LengthTextBox = styled.div`
-    display: flex;
-`;
-const TextAreaInput = styled.textarea`
-    font-family: 'Pretendard Variable', sans-serif;
-    padding: 0;
-    width: 100%;
-    flex: 1;
-    ${Typo.Body.Body1Regular}
-    line-height: 22px;
-    letter-spacing: -0.03em;
-    color: var(--main-text-color);
-    background: none;
-    border-style: none;
-    resize: none;
-    ::placeholder {
-        color: var(--main-text-color);
-        opacity: 50%;
-    }
-    &:focus {
-        outline: none;
-    }
-`;
-
-const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
+export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     (
         {
             maxLength = 3000,
@@ -68,6 +28,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
             margin,
             errorMessage,
             cancle,
+            textonChange,
             ...props
         },
         ref,
@@ -79,6 +40,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         const handleTextareaChange = useCallback<(event: ChangeEvent<HTMLTextAreaElement>) => void>(
             (event) => {
                 setLength(event.currentTarget.value.length);
+                textonChange?.(event.currentTarget.value);
                 onChange?.(event);
             },
             [onChange],
@@ -117,30 +79,26 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         }, [inputRef.current?.value]);
 
         return (
-            <Container>
-                <Header>
-                    <Text text={'user'} />
-                    <LengthTextBox>
+            <div className="flex w-full flex-col">
+                <header className="mb-2 flex w-full justify-between">
+                    <span className="text-base">user</span>
+                    <div className="flex">
                         {maxLength && length !== 0 && (
-                            <Text
-                                text={`${length.toLocaleString()}/${maxLength.toLocaleString()}`}
-                                typo={Typo.Body.Body4Regular}
-                            />
+                            <span className="text-sm">{`${length.toLocaleString()}/${maxLength.toLocaleString()}`}</span>
                         )}
-                    </LengthTextBox>
-                </Header>
-                <TextAreaInput
+                    </div>
+                </header>
+                <textarea
+                    className="w-full flex-1 resize-none border-none bg-transparent p-0 text-base placeholder:text-primary-foreground/50 focus:outline-none"
                     ref={combineRef}
                     maxLength={maxLength}
                     onChange={handleTextareaChange}
                     onInput={handleTextareaInput}
                     {...props}
                 />
-            </Container>
+            </div>
         );
     },
 );
 
 TextArea.displayName = 'TextArea';
-
-export default TextArea;

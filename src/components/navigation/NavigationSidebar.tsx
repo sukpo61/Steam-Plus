@@ -1,47 +1,15 @@
 'use client';
 
 import styled from '@emotion/styled';
-import CommunityIcon from '@components/icons/navigation/Community.icon';
-import FriendIcon from '@components/icons/navigation/Friend.icon';
-import HomeIcon from '@components/icons/navigation/Home.icon';
-import SearchIcon from '@components/icons/navigation/Search.icon';
-import VoiceChatIcon from '@components/icons/navigation/VoiceChat.icon';
-import NavButton from './NavButton';
+import { CommunityIcon } from '@/components/icons/navigation/Community.icon';
+import { FriendIcon } from '@/components/icons/navigation/Friend.icon';
+import { HomeIcon } from '@/components/icons/navigation/Home.icon';
+import { SearchIcon } from '@/components/icons/navigation/Search.icon';
+import { VoiceChatIcon } from '@/components/icons/navigation/VoiceChat.icon';
+import { UserAvatar } from '../common/UserAvatar';
+import { NavButton } from './NavButton';
 
 interface NavigationSidebarProps {}
-
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    width: 100%;
-    height: 100%;
-    background: var(--darkestGrey);
-    z-index: 99;
-`;
-
-const Profilebutton = styled.div`
-    margin: 20px auto 40px;
-    border-radius: 50%;
-    font-size: 12px;
-    width: 50px;
-    height: 50px;
-    overflow: hidden;
-    line-height: 50px;
-    text-align: center;
-    color: #fff;
-    font-weight: 500;
-    background: linear-gradient(
-        65.45deg,
-        #002176 13.13%,
-        #002fa8 30.2%,
-        #0076b9 52.4%,
-        #00b4c7 74.45%,
-        #12f8d8 86.79%
-    );
-    cursor: pointer;
-`;
 
 const ProfileImg = styled.img`
     width: 50px;
@@ -83,14 +51,12 @@ const navList = [
 
 const NavigationSidebar = () => {
     return (
-        <Container>
-            <Profilebutton>
-                {true ? 'Login' : <ProfileImg src={'/images/profile/profile.png'} />}
-            </Profilebutton>
+        <div className="flex flex-col pt-4 items-center gap-4 w-full h-full bg-primary-darkest">
+            <UserAvatar className="w-12 h-12" />
             {navList.map((item) => (
                 <NavButton key={item.title} item={item} />
             ))}
-        </Container>
+        </div>
     );
 };
 

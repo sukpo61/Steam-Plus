@@ -1,7 +1,7 @@
 'use client';
 
-import DefaultError from '@components/common/DefaultError';
-import DefaultLoading from '@components/loading/DefaultLoading';
+import DefaultError from '@/components/common/DefaultError';
+import DefaultLoading from '@/components/loading/DefaultLoading';
 import { Suspense } from '@suspensive/react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { FC, PropsWithChildren, ReactEventHandler } from 'react';
@@ -13,7 +13,7 @@ interface QuerySuspenseErrorBoundaryProps {
     errorFallback?: (resetErrorBoundary: ReactEventHandler<HTMLButtonElement>) => React.ReactNode;
 }
 
-const QuerySuspenseErrorBoundary: FC<PropsWithChildren<QuerySuspenseErrorBoundaryProps>> = ({
+export const QuerySuspenseErrorBoundary: FC<PropsWithChildren<QuerySuspenseErrorBoundaryProps>> = ({
     children,
     suspenseFallback,
     errorFallback,
@@ -42,5 +42,3 @@ const QuerySuspenseErrorBoundary: FC<PropsWithChildren<QuerySuspenseErrorBoundar
         </QueryErrorResetBoundary>
     );
 };
-
-export default QuerySuspenseErrorBoundary;

@@ -1,39 +1,20 @@
-import styled from '@emotion/styled';
-import { FC } from 'react';
+import { SearchIcon } from '@/components/icons/navigation/Search.icon';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { useUpdateParams } from '@/hooks/useUpdateParams';
+import { FC, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { useCallback } from 'react';
-import Input from '@components/ui/Input';
-import { useUpdateParams } from '@hooks/useUpdateParams';
-import SearchIcon from '@components/icons/navigation/Search.icon';
 
 interface SearchInputProps {
     placeholder?: string;
     term?: string;
 }
 
-const Form = styled.form`
-    display: flex;
-    justify-content: center;
-    position: relative;
-    width: 100%;
-    max-width: 600px;
-`;
-
-const IconContainer = styled.button`
-    display: flex;
-    position: absolute;
-    right: 0;
-    width: 40px;
-    height: 40px;
-    justify-content: center;
-    align-items: center;
-`;
-
 export interface SearchFormValue {
     term: string;
 }
 
-const SearchInput: FC<SearchInputProps> = (params) => {
+export const SearchInput: FC<SearchInputProps> = (params) => {
     const { placeholder, term } = params;
     const { updateParams } = useUpdateParams();
 
@@ -58,13 +39,11 @@ const SearchInput: FC<SearchInputProps> = (params) => {
     });
 
     return (
-        <Form onSubmit={onSubmit}>
+        <form className="relative flex w-full max-w-[600px] justify-center" onSubmit={onSubmit}>
             <Input placeholder={placeholder} {...register('term')} />
-            <IconContainer type="submit">
+            <Button className="absolute right-0" variant={'trans'} size={'icon'} type="submit">
                 <SearchIcon size={32} />
-            </IconContainer>
-        </Form>
+            </Button>
+        </form>
     );
 };
-
-export default SearchInput;

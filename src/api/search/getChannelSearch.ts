@@ -1,8 +1,8 @@
-import variableAssignment from '@utils/variableAssignment';
+import { variableAssignment } from '@/utils/variableAssignment';
 import axios from 'axios';
+import { SteamAppDetailResponse } from 'types/steam/SteamAppDetailResponse';
 import { GameItem } from 'types/steam/SteamSearchResponse';
 import getChannelDetail from './getChannelDetail';
-import { SteamAppDetailResponse } from 'types/steam/SteamAppDetailResponse';
 
 interface GetChannelSearchParameter {
     term: string;

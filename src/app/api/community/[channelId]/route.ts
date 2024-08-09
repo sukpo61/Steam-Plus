@@ -24,7 +24,11 @@ export async function POST(req: Request) {
                 return db.image.create({
                     data: {
                         src: image.src,
-                        postId: post.id,
+                        post: {
+                            connect: {
+                                id: post.id,
+                            },
+                        },
                     },
                 });
             });
@@ -38,18 +42,44 @@ export async function POST(req: Request) {
     }
 }
 
-export async function GET(_: Request, { params }: { params: { channelId: string } }) {
-    const { channelId } = params;
-
+export async function GET(req: Request, { params }: { params: { channelId: string } }) {
     try {
+        const { channelId } = params;
+        const { searchParams } = new URL(req.url);
+
+        const page = parseInt(searchParams.get('page') || '1', 10);
+        const pageSize = parseInt(searchParams.get('pagesize') || '10', 10);
+        const offset = (page - 1) * pageSize;
+        const totalCount = await db.post.count({
+            where: {
+                channelId,
+            },
+        });
+
         const posts = await db.post.findMany({
             where: {
                 channelId,
             },
             include: { images: true },
+            orderBy: {
+                createdAt: 'desc',
+            },
+            skip: offset,
+            take: pageSize,
         });
 
-        return NextResponse.json({ data: posts, itemCount: 1, pageSize: 1 });
+        const result = await Promise.all(
+            posts.map(async (post) => ({
+                ...post,
+                commentsCount: await db.comment.count({
+                    where: {
+                        postId: post.id,
+                    },
+                }),
+            })),
+        );
+
+        return NextResponse.json({ data: result, totalCount, pageSize });
     } catch (error) {
         console.error('COMMUNITIES_GET', error);
         return new NextResponse('Internal Error', { status: 500 });

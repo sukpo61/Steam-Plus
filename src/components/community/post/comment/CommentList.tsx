@@ -1,17 +1,15 @@
 'use client';
 
-import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { API_Post_COMMENT_KEY } from 'src/api/community/communityQueryKey';
-import getComment from 'src/api/community/comment/getComment';
-import StyledPagination from '@components/ui/Pagination';
-import CommentInput from './CommentInput';
-import CommentReplyWrap from './CommentReplyWrap';
-import RestartIcon from '@components/icons/common/Restart.icon';
-import { useUpdateParams } from '@hooks/useUpdateParams';
-import { Text } from '@components/ui/Text';
-import { PostSearchParams } from 'types/params/community';
-import { CommentParams } from 'types/params/community';
+import { API_COMMENT_KEY } from '@/api/community/comment/postComment';
+import { ObserverTrigger } from '@/components/hoc/ObserverTrigger';
+import { RestartIcon } from '@/components/icons/common/Restart.icon';
+import { Text } from '@/components/ui/Text';
+import { useUpdateParams } from '@/hooks/useUpdateParams';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { getComment } from 'src/api/community/comment/getComment';
+import { CommentParams, PostSearchParams } from 'types/params/community';
+import { CommentInput } from './CommentInput';
+import { CommentReplyWrap } from './CommentReplyWrap';
 
 interface CommentListProps {
     searchParams: PostSearchParams;
@@ -24,101 +22,62 @@ export interface SearchFormValue {
     content: string;
 }
 
-const Container = styled.div`
-    width: 100%;
-    max-width: 948px;
-    background-color: var(--darkerGrey);
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-    padding: 16px 32px 32px;
-`;
-const CommentContainer = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: 16px 8px;
-`;
-const NoConmment = styled.div`
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    min-height: 320px;
-`;
-
-const CommentMeta = styled.div`
-    display: flex;
-    width: 100%;
-    gap: 4px;
-    margin-bottom: 16px;
-    padding-left: 4px;
-`;
-const InputContainer = styled.div`
-    display: flex;
-    margin-bottom: 16px;
-    width: 100%;
-`;
-const IconContainer = styled.button`
-    display: flex;
-`;
-
 const CommentList = ({ params, searchParams }: CommentListProps) => {
-    const { page } = searchParams;
+    const { postId } = params;
+
     const { updateParams } = useUpdateParams();
 
     const handlePageChange = (page: number) => {
         updateParams({ page });
     };
 
-    const { data, refetch } = useSuspenseQuery({
-        queryKey: [API_Post_COMMENT_KEY, params, searchParams],
-        queryFn: () => getComment({ params, searchParams }),
+    const { fetchNextPage, hasNextPage, data, refetch } = useSuspenseInfiniteQuery({
+        queryKey: [API_COMMENT_KEY, { postId }],
+        queryFn: ({ pageParam: cursor }) => getComment({ params, cursor }),
+        initialPageParam: null,
+        getNextPageParam: ({ nextCursor }) => {
+            return nextCursor ?? null;
+        },
     });
 
-    const { data: commentData, itemCount, pageSize } = data;
+    const onObserve = () => {
+        hasNextPage && fetchNextPage();
+    };
+
+    const commentsData = data.pages;
+
+    const { totalCount } = commentsData[0];
 
     return (
-        <Container>
-            <CommentMeta>
+        <div className="flex w-full max-w-[948px] flex-1 flex-col items-center bg-primary px-8 py-4">
+            <div className="mb-4 flex w-full gap-1 pl-1">
                 <Text text={'댓글'} />
-                <Text text={itemCount || '0'} />
-                <IconContainer onClick={() => refetch()}>
+                <Text text={totalCount} />
+                <button onClick={() => refetch()}>
                     <RestartIcon />
-                </IconContainer>
-            </CommentMeta>
-            <InputContainer>
+                </button>
+            </div>
+            <div className="mb-4 flex w-full">
                 <CommentInput params={params} />
-            </InputContainer>
-            {itemCount === 0 ? (
-                <NoConmment>
-                    <Text text={'댓글이 없습니다.'} />
-                </NoConmment>
-            ) : (
-                <CommentContainer>
-                    {commentData.map((item: any) => (
-                        <CommentReplyWrap
-                            key={item.id}
-                            item={item}
-                            params={{ ...params, commentId: item.id }}
-                        />
-                    ))}
-                </CommentContainer>
-            )}
-            <StyledPagination
-                // 현제 보고있는 페이지
-                activePage={Number(page)}
-                // 한페이지에 출력할 아이템수
-                itemsCountPerPage={pageSize}
-                // 총 아이템수
-                totalItemsCount={itemCount}
-                // 표시할 페이지수
-                pageRangeDisplayed={10}
-                // 함수
-                onChange={handlePageChange}
-            />
-        </Container>
+            </div>
+            <div className="flex min-h-[320px] w-full flex-col px-1">
+                {totalCount === 0 ? (
+                    <span className="base">댓글이 없습니다.</span>
+                ) : (
+                    <ObserverTrigger onObserve={onObserve}>
+                        {commentsData.map((item: any) =>
+                            item.data.map((item: any) => (
+                                <CommentReplyWrap
+                                    key={item.id}
+                                    item={item}
+                                    params={{ ...params, commentId: item.comment.id }}
+                                />
+                            )),
+                        )}
+                    </ObserverTrigger>
+                )}
+            </div>
+        </div>
     );
 };
 
