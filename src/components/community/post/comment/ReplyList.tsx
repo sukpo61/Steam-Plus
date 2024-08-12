@@ -1,7 +1,6 @@
 'use client';
 
-import { getComment } from '@/api/community/comment/getComment';
-import { API_COMMENT_KEY } from '@/api/community/comment/postComment';
+import { API_COMMENT_KEY, getComment } from '@/actions/community/comment';
 import { Button } from '@/components/ui/Button';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { CommentParams } from 'types/params/community';
@@ -42,7 +41,7 @@ export const ReplyList = ({ params }: ReplyListProps) => {
                     <Comment
                         key={reply.id}
                         item={reply}
-                        params={{ ...params, commentId: reply.id }}
+                        params={{ ...params, commentId: reply.id, parentId: commentId }}
                     />
                 )),
             )}

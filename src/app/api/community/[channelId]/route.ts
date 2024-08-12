@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import { db } from 'src/lib/db';
 
-export async function POST(req: Request) {
+export async function POST(req: Request, { params }: { params: { channelId: string } }) {
     try {
+        const { channelId } = params;
         const data = await req.json();
 
-        const { images, channelId, ...postData } = data;
+        const { images, ...postData } = data;
 
         const post = await db.post.create({
             data: {

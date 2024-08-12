@@ -1,23 +1,14 @@
+import { getImageUrl } from '@/actions/image/getImageUrl';
 import { PostAddFormValue } from '@/components/community/add/PostAddController';
 import { variableAssignment } from '@/utils/variableAssignment';
 import axios from 'axios';
-import { getImageUrl } from 'src/api/common/getImageUrl';
 import { PostResponse } from 'types/community/post';
 import { PostParams } from 'types/params/community';
-
-interface PostParameter {
-    params: PostParams;
-}
-interface uploadPostParameter extends PostParameter {
-    data: PostAddFormValue;
-}
+import { API_COMMUNITY_KEY } from './community';
 
 export const API_POST_KEY = '/api/post/{{postId}}';
-export const API_COMMUNITY_KEY = '/api/community/{{channelId}}';
 
-const getPost = async ({ params }: PostParameter): Promise<PostResponse> => {
-    console.log('params', variableAssignment(API_POST_KEY, params));
-
+const getPost = async ({ params }: { params: PostParams }): Promise<PostResponse> => {
     try {
         const { data } = await axios.get(variableAssignment(API_POST_KEY, params));
 
@@ -28,7 +19,7 @@ const getPost = async ({ params }: PostParameter): Promise<PostResponse> => {
     }
 };
 
-const deletePost = async ({ params }: PostParameter): Promise<string> => {
+const deletePost = async ({ params }: { params: PostParams }): Promise<string> => {
     const { postId } = params;
     try {
         await axios.delete(variableAssignment(API_POST_KEY, params));
@@ -39,7 +30,13 @@ const deletePost = async ({ params }: PostParameter): Promise<string> => {
     }
 };
 
-const postPost = async ({ data, params }: uploadPostParameter): Promise<string> => {
+const postPost = async ({
+    data,
+    params,
+}: {
+    data: PostAddFormValue;
+    params: PostParams;
+}): Promise<string> => {
     const { images } = data;
     try {
         const imagesUrl = images
@@ -58,7 +55,13 @@ const postPost = async ({ data, params }: uploadPostParameter): Promise<string> 
         return Promise.reject(error);
     }
 };
-const patchPost = async ({ params, data }: uploadPostParameter): Promise<string> => {
+const patchPost = async ({
+    data,
+    params,
+}: {
+    data: PostAddFormValue;
+    params: PostParams;
+}): Promise<string> => {
     const { images } = data;
     const { postId } = params;
     const url = variableAssignment(API_POST_KEY, params);

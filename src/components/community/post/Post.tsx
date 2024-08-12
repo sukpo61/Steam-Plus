@@ -1,5 +1,7 @@
 'use client';
 
+import { API_COMMUNITY_KEY } from '@/actions/community/community';
+import { API_POST_KEY, deletePost, getPost } from '@/actions/community/post';
 import { UserAvatar } from '@/components/common/UserAvatar';
 import { Button } from '@/components/ui/Button';
 import { Separator } from '@/components/ui/Separator';
@@ -8,12 +10,6 @@ import { timeFormat } from '@/utils/timeFormat';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import {
-    API_COMMUNITY_KEY,
-    API_POST_KEY,
-    deletePost,
-    getPost,
-} from 'src/api/community/post/apiPost';
 import { PostParams } from 'types/params/community';
 
 interface PostProps {
@@ -69,7 +65,7 @@ const Post = ({ params }: PostProps) => {
         );
     }
 
-    const { title, createdAt, viewcount, content, images } = data;
+    const { title, createdAt, viewCount, content, images } = data;
 
     return (
         <>
@@ -84,7 +80,7 @@ const Post = ({ params }: PostProps) => {
                             <span className="text-base">username</span>
                             <div className="flex gap-1">
                                 <span className="text-sm">{timeFormat(createdAt)}</span>
-                                <span className="text-sm">{String(viewcount)}</span>
+                                <span className="text-sm">{String(viewCount)}</span>
                             </div>
                         </div>
                     </div>
@@ -106,8 +102,8 @@ const Post = ({ params }: PostProps) => {
                             />
                         ))}
                     </div>
-                    <div className="mb-6 w-full break-words">
-                        <span className="text-base">{content}</span>
+                    <div className="mb-6 w-full">
+                        <span className="pre-wrap text-base">{content}</span>
                     </div>
                 </div>
                 <Separator />

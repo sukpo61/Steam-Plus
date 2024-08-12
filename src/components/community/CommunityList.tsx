@@ -1,11 +1,10 @@
 'use client';
 
+import { API_COMMUNITY_KEY, getCommunity } from '@/actions/community/community';
 import { Pagination } from '@/components/ui/Pagination';
 import { useUpdateParams } from '@/hooks/useUpdateParams';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { getCommunity } from 'src/api/community/getCommunity';
-import { API_COMMUNITY_KEY } from 'src/api/community/post/apiPost';
 import { CommunityParams, CommunitySearchParams } from 'types/params/community';
 import { PostTile } from './PostTile';
 

@@ -1,14 +1,16 @@
 'use client';
 
+import { API_COMMUNITY_KEY } from '@/actions/community/community';
+import { API_POST_KEY, getPost, patchPost, postPost } from '@/actions/community/post';
 import { ImageInputValue } from '@/components/ui/ImageInput';
-import styled from '@emotion/styled';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { API_COMMUNITY_LIST_KEY } from 'src/api/community/communityQueryKey';
-import { API_POST_KEY, getPost, patchPost, postPost } from 'src/api/community/post/apiPost';
 import { PostParams } from 'types/params/community';
+import z from 'zod';
+
 import PostAddPageScreen from './PostAddPageScreen';
 
 interface PostAddControllerProps {
@@ -19,14 +21,11 @@ export interface PostAddFormValue {
     category: string;
     content: string;
     images: ImageInputValue[];
-    channelId: string;
 }
 
-const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-`;
+export const MAX_TITLE_LENGTH = 300;
+export const MAX_CONTENT_LENGTH = 1000;
+export const MAX_IMAGES_LENGTH = 5;
 
 const PostAddController = ({ params }: PostAddControllerProps) => {
     const { channelId, postId } = params;
@@ -48,13 +47,29 @@ const PostAddController = ({ params }: PostAddControllerProps) => {
         mutationFn: postPost,
     });
 
+    const formSchema = z
+        .object({
+            title: z.string().min(1, { message: '제목을 입력하세요.' }),
+            category: z.string(),
+            content: z
+                .string()
+                .max(MAX_CONTENT_LENGTH, { message: `최대 입력 ${MAX_CONTENT_LENGTH}자 초과` }),
+            images: z.array(z.any()).max(MAX_IMAGES_LENGTH, {
+                message: `최대 ${MAX_IMAGES_LENGTH}개의 이미지까지 업로드할 수 있습니다.`,
+            }),
+        })
+        .refine((data) => !(data.images.length === 0 && data.content.length === 0), {
+            message: '내용을 입력하세요.',
+            path: ['content'],
+        });
+
     const form = useForm<PostAddFormValue>({
-        defaultValues: {
+        resolver: zodResolver(formSchema),
+        values: {
             title: prevData?.title || '',
             category: prevData?.category || 'free',
             content: prevData?.content || '',
             images: prevData?.images || [],
-            channelId: channelId,
         },
     });
 
@@ -63,10 +78,10 @@ const PostAddController = ({ params }: PostAddControllerProps) => {
     const onSubmit: SubmitHandler<PostAddFormValue> = useCallback((data) => {
         const onSuccess = async (id: string) => {
             await queryCache.resetQueries({
-                queryKey: [API_COMMUNITY_LIST_KEY],
+                queryKey: [API_COMMUNITY_KEY],
             });
             await queryCache.resetQueries({
-                queryKey: [API_POST_KEY, params],
+                queryKey: [API_POST_KEY, { postId }],
             });
             replace(`/community/${channelId}/post/${id}`);
         };
@@ -89,36 +104,21 @@ const PostAddController = ({ params }: PostAddControllerProps) => {
         );
     }, []);
 
-    const onSubmitError = (errors: any) => {
-        if (errors.title) {
-            alert(errors.title.message);
-            return;
-        }
-        if (errors.content) {
-            alert(errors.content.message);
-            return;
+    const onSubmitError = (errors: Object) => {
+        for (const error of Object.values(errors)) {
+            alert(error.message);
+            break;
         }
     };
 
-    useEffect(() => {
-        if (prevData) {
-            reset({
-                title: prevData.title,
-                category: prevData.category,
-                content: prevData.content,
-                images: prevData.images,
-            });
-        }
-    }, [prevData, reset]);
-
     return (
         <FormProvider {...form}>
-            <Form
-                className="flex w-full max-w-[948px]"
+            <form
+                className="flex h-full w-full max-w-[948px]"
                 onSubmit={handleSubmit(onSubmit, onSubmitError)}
             >
                 <PostAddPageScreen params={params} />
-            </Form>
+            </form>
         </FormProvider>
     );
 };

@@ -1,12 +1,11 @@
 'use client';
 
-import { API_COMMENT_KEY } from '@/api/community/comment/postComment';
+import { API_COMMENT_KEY, getComment } from '@/actions/community/comment';
 import { ObserverTrigger } from '@/components/hoc/ObserverTrigger';
 import { RestartIcon } from '@/components/icons/common/Restart.icon';
 import { Text } from '@/components/ui/Text';
 import { useUpdateParams } from '@/hooks/useUpdateParams';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { getComment } from 'src/api/community/comment/getComment';
 import { CommentParams, PostSearchParams } from 'types/params/community';
 import { CommentInput } from './CommentInput';
 import { CommentReplyWrap } from './CommentReplyWrap';
@@ -60,7 +59,7 @@ const CommentList = ({ params, searchParams }: CommentListProps) => {
             <div className="mb-4 flex w-full">
                 <CommentInput params={params} />
             </div>
-            <div className="flex min-h-[320px] w-full flex-col px-1">
+            <div className="flex w-full flex-col px-1">
                 {totalCount === 0 ? (
                     <span className="base">댓글이 없습니다.</span>
                 ) : (

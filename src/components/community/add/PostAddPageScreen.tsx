@@ -2,10 +2,15 @@
 
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
-import { PostAddFormValue } from './PostAddController';
 import { TextImageInput } from '@/components/ui/TextImageInput';
-import { PostParams } from 'types/params/community';
 import { useFormContext } from 'react-hook-form';
+import { PostParams } from 'types/params/community';
+import {
+    MAX_CONTENT_LENGTH,
+    MAX_IMAGES_LENGTH,
+    MAX_TITLE_LENGTH,
+    PostAddFormValue,
+} from './PostAddController';
 
 interface PostAddPageScreenProps {
     params: PostParams;
@@ -13,7 +18,10 @@ interface PostAddPageScreenProps {
 
 const PostAddPageScreen = ({ params }: PostAddPageScreenProps) => {
     const { postId } = params;
-    const { register } = useFormContext<PostAddFormValue>();
+    const {
+        register,
+        formState: { errors },
+    } = useFormContext<PostAddFormValue>();
 
     const selectData = [
         {
@@ -25,18 +33,18 @@ const PostAddPageScreen = ({ params }: PostAddPageScreenProps) => {
             label: '모집',
         },
     ];
+
     return (
-        <div className="flex min-h-full flex-col bg-primary p-8">
+        <div className="flex min-h-full w-full flex-col bg-primary p-8">
             <header className="flex border-b-2 py-4">
                 <h1 className="text-3xl">{`게시글 ${postId ? '수정' : '작성'}`}</h1>
             </header>
             <section className="flex flex-col items-start gap-4 py-4">
                 <span className="text-base">제목</span>
                 <Input
+                    maxLength={MAX_TITLE_LENGTH}
                     placeholder="제목을 입력하세요."
-                    {...register('title', {
-                        required: '제목을 입력하세요',
-                    })}
+                    {...register('title')}
                 />
             </section>
             <section className="flex flex-col items-start gap-4 py-4">
@@ -45,9 +53,14 @@ const PostAddPageScreen = ({ params }: PostAddPageScreenProps) => {
             </section>
             <section className="flex flex-col items-start gap-4 py-4">
                 <span className="text-base">내용</span>
-                <div className="h-[500px] w-full">
-                    <TextImageInput placeholder="댓글을 입력하세요." imageMaxlength={5} multiple />
-                </div>
+                <TextImageInput
+                    className="min-h-[400px]"
+                    placeholder="댓글을 입력하세요."
+                    textMaxLength={MAX_CONTENT_LENGTH}
+                    textMaxHeight={500}
+                    imageMaxlength={MAX_IMAGES_LENGTH}
+                    multiple
+                />
             </section>
         </div>
     );

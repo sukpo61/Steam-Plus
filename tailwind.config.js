@@ -6,6 +6,7 @@ module.exports = {
         './components/**/*.{ts,tsx}',
         './app/**/*.{ts,tsx}',
         './src/**/*.{ts,tsx}',
+        './path-to-your-custom-layer-file/**/*.{html,js}',
     ],
     theme: {
         container: {

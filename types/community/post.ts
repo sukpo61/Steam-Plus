@@ -12,7 +12,7 @@ export interface PostRequest {
 
 export interface PostResponse extends PostRequest {
     id: string;
-    viewcount: number;
+    viewCount: number;
     createdAt: Date;
     updatedAt: Date;
     commentsCount: number;

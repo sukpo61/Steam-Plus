@@ -1,31 +1,43 @@
 'use client';
 
-import { useCallback } from 'react';
+import { cn } from '@/lib/utils';
+import { KeyboardEvent, useCallback, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { Typo } from 'styles/Typography';
-import { PostAddFormValue } from '../community/add/PostAddController';
 import { Button } from './Button';
-import { ImageInput } from './ImageInput';
+import { ImageInput, ImageInputValue } from './ImageInput';
 import { ImagePreview } from './ImagePreview';
-import { Text } from './Text';
 import { TextArea } from './TextArea';
 export interface TextImageInputProps {
     cancle?: () => void;
-    errorMessage?: string;
     placeholder?: string;
     multiple?: boolean;
     imageMaxlength: number;
+    textMaxHeight?: number;
+    textMaxLength?: number;
+    className?: string;
+    disabled?: boolean;
+}
+
+export interface TextImageFormValue {
+    content: string;
+    images: ImageInputValue[];
 }
 
 export const TextImageInput = ({
     cancle,
-    errorMessage,
     placeholder,
     multiple,
-    imageMaxlength = 1,
+    imageMaxlength = 3,
+    className,
+    textMaxHeight,
+    textMaxLength = 3000,
 }: TextImageInputProps) => {
-    const { register, setValue, control } = useFormContext<PostAddFormValue>();
+    const { register, setValue, control } = useFormContext<TextImageFormValue>();
+
+    const buttonRef = useRef<HTMLButtonElement>(null);
+
     const prevImages = useWatch({ control, name: 'images' });
+    const content = useWatch({ control, name: 'content' });
 
     const getImageSource = useCallback((src: File | string) => {
         if (typeof src === 'string') return src;
@@ -44,10 +56,36 @@ export const TextImageInput = ({
         setValue('images', filteredImages);
     };
 
+    const handleKeyDown = useCallback<(event: KeyboardEvent<HTMLTextAreaElement>) => void>(
+        (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                buttonRef.current?.click();
+            }
+        },
+        [],
+    );
+
     return (
-        <div className="relative flex h-full min-h-40 w-full flex-col rounded-lg bg-input px-3 py-2">
+        <div
+            className={cn('relative flex w-full flex-col rounded-lg bg-input px-3 py-2', className)}
+        >
+            <header className="mb-2 flex w-full justify-between">
+                <span className="text-base">user</span>
+                <div className="flex">
+                    {content.length !== 0 && (
+                        <span className="text-sm">{`${content.length}/${textMaxLength}`}</span>
+                    )}
+                </div>
+            </header>
             <section className="flex flex-1">
-                <TextArea placeholder={placeholder} {...register('content')} />
+                <TextArea
+                    onKeyDown={handleKeyDown}
+                    maxLength={textMaxLength}
+                    maxHeight={textMaxHeight}
+                    placeholder={placeholder}
+                    {...register('content')}
+                />
             </section>
             {imageList.length !== 0 && (
                 <section className="mb-1 mt-4 flex w-full gap-4">
@@ -69,9 +107,13 @@ export const TextImageInput = ({
                     replaceable
                 />
                 <div className="flex gap-4">
-                    <Text text={errorMessage} typo={Typo.Error.Error1Regular} />
                     {cancle && <Button onClick={cancle}>취소</Button>}
-                    <Button>등록</Button>
+                    <Button
+                        disabled={prevImages.length === 0 && content.length === 0}
+                        ref={buttonRef}
+                    >
+                        등록
+                    </Button>
                 </div>
             </section>
         </div>

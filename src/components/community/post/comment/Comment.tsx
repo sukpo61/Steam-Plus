@@ -1,6 +1,6 @@
 'use client';
 
-import { API_COMMENT_KEY } from '@/api/community/comment/postComment';
+import { API_COMMENT_KEY, deleteComment, patchComment } from '@/actions/community/comment';
 import { UserAvatar } from '@/components/common/UserAvatar';
 import { DeleteIcon } from '@/components/icons/common/Delete.icon';
 import { DropDownIcon } from '@/components/icons/common/DropDown.icon';
@@ -17,8 +17,6 @@ import { timeFormat } from '@/utils/timeFormat';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useState } from 'react';
-import { deleteComment } from 'src/api/community/comment/deleteComment';
-import { patchComment } from 'src/api/community/comment/patchComment';
 import { CommentResponse } from 'types/community/comment';
 import { CommentParams } from 'types/params/community';
 import { CommentInput } from './CommentInput';
@@ -31,7 +29,6 @@ export const Comment = ({ item, params }: CommentProps) => {
     const { postId } = params;
     const { id, content, username = 'user', createdAt, images, likes } = item;
     const [isReplyInput, setIsReplyInput] = useState(false);
-    // const [openId, setOpenId] = useRecoilState(isCommentDropDownRecoil);
     const [isEdit, setIsEdit] = useState(false);
     const queryCache = useQueryClient();
 
@@ -84,7 +81,7 @@ export const Comment = ({ item, params }: CommentProps) => {
                         <div className="flex flex-row gap-3">
                             <div className="flex flex-col items-start gap-1">
                                 <span className="text-sm">{username}</span>
-                                <span className="mb-1 text-base">{content}</span>
+                                <span className="pre-wrap mb-1 text-base">{content}</span>
                                 {images?.map(({ id, src }: any) => (
                                     <Image
                                         key={id}
@@ -99,7 +96,7 @@ export const Comment = ({ item, params }: CommentProps) => {
                                 <div className="flex max-h-[13px] flex-row items-center gap-2">
                                     <div className="flex min-w-[86px]">
                                         <span className="text-sm">
-                                            {timeFormat(createdAt, 'comment')}{' '}
+                                            {timeFormat(createdAt, 'comment')}
                                         </span>
                                     </div>
                                     <span
@@ -108,7 +105,6 @@ export const Comment = ({ item, params }: CommentProps) => {
                                     >
                                         답글쓰기
                                     </span>
-                                    {/* <Text text={likes.length} typo={Typo.Body.Body3Regular} /> */}
                                 </div>
                             </div>
                         </div>

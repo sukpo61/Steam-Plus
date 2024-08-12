@@ -14,19 +14,6 @@ datasource db {
   relationMode = "prisma"
 }
 
-model Profile {
-  id String @id @default(uuid())
-  userId String @unique
-  name String
-  imageUrl String @db.Text
-  email String @db.Text
-
-  // community Community[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model Community {
   id String  @id 
   name String @unique
@@ -37,13 +24,35 @@ model Community {
   updatedAt DateTime @updatedAt
 }
 
+model Profile {
+  id String @id @default(uuid())
+  userId String @unique
+  name String
+  imageUrl String @db.Text
+  email String @db.Text
+
+  post Post[]
+
+  likes LikesOnPosts[]
+
+  channelId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
 model Post {
   id        String   @id @default(uuid())
 
-  title     String
+  title     String @db.VarChar(500)
   category  String
-  content   String
+  content   String @db.VarChar(3000)
+  viewCount Int @default(0)
+  
+  profileId String?
+  profile Profile? @relation(fields: [profileId], references: [id])
+
+  likes LikesOnPosts[]
 
   channelId String
   community Community @relation(fields: [channelId], references: [id])
@@ -55,6 +64,19 @@ model Post {
   updatedAt DateTime @updatedAt
 
   @@index([channelId])
+}
+
+model LikesOnPosts {
+
+  postId     String 
+  post       Post     @relation(fields: [postId], references: [id])
+
+  profileId  String 
+  profile    Profile @relation(fields: [profileId], references: [id])
+
+  assignedAt DateTime @default(now())
+
+  @@id([postId, profileId])
 }
 
 model Image {
@@ -71,10 +93,9 @@ model Image {
   @@index([postId])
 
 }
-
 model Comment {
   id        String  @id @default(uuid())
-  content   String
+  content   String @db.VarChar(3000)
 
   images     Image[]
 

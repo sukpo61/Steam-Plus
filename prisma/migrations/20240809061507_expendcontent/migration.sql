@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `post` MODIFY `title` VARCHAR(500) NOT NULL,
+    MODIFY `content` VARCHAR(3000) NOT NULL;

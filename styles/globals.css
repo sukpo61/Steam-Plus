@@ -17,7 +17,7 @@
 
 ::-webkit-scrollbar-thumb {
     border-radius: 3px;
-    background-color: hsl(var(--primary-bright));
+    background-color: hsl(var(--primary-brighter));
     margin: 4px;
 }
 
@@ -27,13 +27,18 @@
     font-family: var(--main-font);
 }
 
-/* reset color */
 @layer base {
     body {
         @apply bg-primary text-primary-foreground;
     }
     svg {
         @apply fill-primary-foreground;
+    }
+    .pre-wrap {
+        @apply overflow-hidden whitespace-pre-wrap break-words break-all;
+    }
+    .ellipsis {
+        @apply overflow-hidden text-ellipsis whitespace-nowrap break-words break-all;
     }
 }
 
@@ -57,7 +62,7 @@
     }
 }
 
-/* color pallet */
+/* color pallat */
 :root {
     /* Slate */
     --slate-50: 210 40% 98%;

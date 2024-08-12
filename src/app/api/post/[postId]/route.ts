@@ -1,9 +1,23 @@
 import { NextResponse } from 'next/server';
 import { db } from 'src/lib/db';
 
+const IMAGE_UPLOAD_LIMIT = 5;
+
 export async function GET(_: Request, { params }: { params: { postId: string } }) {
     try {
         const { postId } = params;
+
+        await db.post.update({
+            where: {
+                id: postId,
+            },
+            data: {
+                viewCount: {
+                    increment: 1,
+                },
+            },
+        });
+
         const server = await db.post.findUnique({
             where: {
                 id: postId,
@@ -47,7 +61,7 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
         const { images, ...postData } = await req.json();
         const { postId } = params;
 
-        if (images > 5) {
+        if (images > IMAGE_UPLOAD_LIMIT) {
             return new NextResponse('Image upload exceeded', { status: 401 });
         }
 
@@ -63,9 +77,9 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
             select: { id: true },
         });
 
-        const currentImageIds = currentImages.map((img) => img.id);
+        const currentImageIds = currentImages?.map((img) => img.id);
 
-        const newImageIds = images.map((img: any) => img.id).filter(Boolean);
+        const newImageIds = images?.map((img: any) => img.id).filter(Boolean);
 
         const imagesToDelete = currentImageIds.filter((id) => !newImageIds.includes(id));
 

@@ -1,7 +1,7 @@
+import getChannelSearch, { API_GET_CHANNEL_SEARCH_KEY } from '@/actions/search/getChannelSearch';
 import NoResult from '@/components/common/NoResult';
 import { Text } from '@/components/ui/Text';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import getChannelSearch, { API_GET_CHANNEL_SEARCH_KEY } from 'src/api/search/getChannelSearch';
 import GameChannelBlock from './GameChannelBlock';
 
 interface SearchResultProps {

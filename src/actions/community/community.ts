@@ -8,7 +8,7 @@ interface getCommunityParameter {
     searchParams: CommunitySearchParams;
 }
 
-const API_COMMUNITY_KEY = '/api/community/{{channelId}}';
+export const API_COMMUNITY_KEY = '/api/community/{{channelId}}';
 
 export const getCommunity = async ({
     params,

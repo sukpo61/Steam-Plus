@@ -8,7 +8,7 @@ export interface PostParams extends CommunityParams {
 export interface CommentParams {
     postId: string;
     commentId?: string;
-    replyId?: string;
+    parentId?: string;
 }
 export interface PostSearchParams {
     page: string;

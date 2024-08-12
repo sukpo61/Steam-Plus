@@ -1,4 +1,4 @@
-import { ChangeEvent, SelectHTMLAttributes, forwardRef } from 'react';
+import { SelectHTMLAttributes, forwardRef } from 'react';
 
 interface SelectStyleProps {
     isBorderRadius?: boolean;

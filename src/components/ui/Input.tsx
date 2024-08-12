@@ -5,6 +5,17 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ({ className, type, ...props }, ref) => {
+        // const handleOnInput = useCallback<(event: FormEvent<HTMLTextAreaElement>) => void>(
+        //     (event) => {
+        //         const target = event.currentTarget.value;
+        //         if (maxLength && target.length > maxLength) {
+        //             event.currentTarget.value = target.slice(0, maxLength);
+        //         }
+        //         onInput?.(event);
+        //     },
+        //     [maxLength, onInput],
+        // );
+
         return (
             <div className="relative flex h-10 w-full">
                 <input
