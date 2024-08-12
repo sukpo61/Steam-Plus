@@ -73,7 +73,7 @@ const Post = ({ params }: PostProps) => {
                 <span className="text-3xl">{title}</span>
             </div>
             <div className="flex w-full max-w-[948px] flex-col items-start bg-primary px-8 pt-4">
-                <div className="mb-8 flex w-full justify-between bg-primary-foreground/20 p-4">
+                <div className="mb-8 flex w-full justify-between bg-primary-bright/30 p-4">
                     <div className="flex items-center gap-4">
                         <UserAvatar className="h-9 w-9" />
                         <div className="flex flex-col items-start gap-1">

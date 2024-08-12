@@ -29,7 +29,7 @@
 
 @layer base {
     body {
-        @apply bg-primary text-primary-foreground;
+        @apply bg-gradient-radial from-primary-bright to-primary text-primary-foreground;
     }
     svg {
         @apply fill-primary-foreground;
