@@ -24,6 +24,7 @@ module.exports = {
                     bright: 'hsl(var(--primary-bright))',
                     DEFAULT: 'hsl(var(--primary))',
                     dark: 'hsl(var(--primary-dark))',
+                    darker: 'hsl(var(--primary-darker))',
                     darkest: 'hsl(var(--primary-darkest))',
                 },
                 secondary: {

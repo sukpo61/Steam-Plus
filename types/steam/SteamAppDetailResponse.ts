@@ -1,4 +1,4 @@
-export interface SteamAppDetailResponse {
+export interface GameData {
     type: string;
     name: string;
     steam_appid: number;
@@ -119,8 +119,9 @@ export interface SteamAppDetailResponse {
         };
     };
 }
-
-export interface SteamAppDetailIsSuccess {
+export interface IsSuccess {
     success: boolean;
-    data: SteamAppDetailResponse;
+    data: GameData;
 }
+
+export type ChannelDetailsResponse = Record<string, IsSuccess>;

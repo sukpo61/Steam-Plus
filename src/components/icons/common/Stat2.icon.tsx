@@ -1,5 +1,5 @@
 export const Stat2 = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" className="h-6 w-6">
         <path d="M480-345 240-585l56-56 184 183 184-183 56 56-240 240Z" />
     </svg>
 );

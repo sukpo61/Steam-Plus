@@ -1,8 +1,7 @@
 import getChannelSearch, { API_GET_CHANNEL_SEARCH_KEY } from '@/actions/search/getChannelSearch';
 import NoResult from '@/components/common/NoResult';
-import { Text } from '@/components/ui/Text';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import GameChannelBlock from './GameChannelBlock';
+import ChannelBlock from './ChannelBlock';
 
 interface SearchResultProps {
     term: string;
@@ -14,22 +13,18 @@ export const SearchResult = ({ term }: SearchResultProps) => {
         queryFn: () => getChannelSearch({ term }),
     });
 
-    if (!data) {
-        return;
-    }
-
     return (
         <>
             {data.length === 0 ? (
                 <NoResult>
-                    <Text text={'검색결과가 없습니다.'} preLine size={20} weight={800} />
+                    <span>검색결과가 없습니다.</span>
                 </NoResult>
             ) : (
-                <>
+                <div className="flex flex-col gap-1">
                     {data.map((item) => (
-                        <GameChannelBlock data={item} key={item.steam_appid} />
+                        <ChannelBlock data={item} key={item.steam_appid} />
                     ))}
-                </>
+                </div>
             )}
         </>
     );

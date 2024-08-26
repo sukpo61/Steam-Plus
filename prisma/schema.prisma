@@ -15,7 +15,8 @@ datasource db {
 }
 
 model Community {
-  id String  @id 
+  id String  @id @default(uuid())
+  appId String? @unique
   name String @unique
 
   posts Post[]
@@ -24,18 +25,18 @@ model Community {
   updatedAt DateTime @updatedAt
 }
 
-model Profile {
+model User {
   id String @id @default(uuid())
-  userId String @unique
-  name String
-  imageUrl String @db.Text
-  email String @db.Text
+  steamId String @unique
+  name String?
+  avatar String? @db.Text
 
-  post Post[]
-
+  posts Post[]
+  comments Comment[]
   likes LikesOnPosts[]
+  token RefreshToken?
 
-  channelId String
+  channelId String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -49,8 +50,8 @@ model Post {
   content   String @db.VarChar(3000)
   viewCount Int @default(0)
   
-  profileId String?
-  profile Profile? @relation(fields: [profileId], references: [id])
+  userId String?
+  user User? @relation(fields: [userId], references: [id])
 
   likes LikesOnPosts[]
 
@@ -71,12 +72,12 @@ model LikesOnPosts {
   postId     String 
   post       Post     @relation(fields: [postId], references: [id])
 
-  profileId  String 
-  profile    Profile @relation(fields: [profileId], references: [id])
+  userId  String 
+  user    User @relation(fields: [userId], references: [id])
 
   assignedAt DateTime @default(now())
 
-  @@id([postId, profileId])
+  @@id([postId, userId])
 }
 
 model Image {
@@ -91,13 +92,15 @@ model Image {
 
   @@index([commentId])
   @@index([postId])
-
 }
 model Comment {
   id        String  @id @default(uuid())
   content   String @db.VarChar(3000)
 
-  images     Image[]
+  images    Image[]
+
+  userId String?
+  user User? @relation(fields: [userId], references: [id])
 
   post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   postId    String
@@ -111,4 +114,15 @@ model Comment {
 
   @@index([parentId])
   @@index([postId])
+}
+
+model RefreshToken {
+  id        Int    @id @default(autoincrement())
+  token     String @unique
+
+  userId    String? @unique
+  user      User?     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  expiresAt DateTime 
 }

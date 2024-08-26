@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useMemo } from 'react';
-import { CloseIcon } from '../icons/common/Close.icon copy';
+import { CloseIcon } from '../icons/common/Close.icon';
 import { ImageInputValue } from './ImageInput';
 
 interface ImagePreviewProps {

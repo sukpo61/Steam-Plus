@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { ColorToken } from 'styles/Color';
 
 interface HomeHeaderProps {
     leftArea?: React.ReactNode | string;
@@ -9,6 +8,7 @@ interface HomeHeaderProps {
 
 const Container = styled.div`
     display: flex;
+    
     justify-content: space-between;
     align-items: center;
     z-index: 999;

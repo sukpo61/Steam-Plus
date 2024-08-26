@@ -4,14 +4,13 @@ export interface CommentRequest {
         id: string;
         src: string;
     }[];
-    likes: string[];
-    timestamp: number;
-    username: string;
-    like?: string;
 }
 
 export interface CommentResponse extends CommentRequest {
     id: string;
+    likes?: string[];
+    username: string;
+    isOwned: boolean;
     createdAt: Date;
     updatedAt: Date;
 }

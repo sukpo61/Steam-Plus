@@ -21,7 +21,7 @@
     margin: 4px;
 }
 
-/* font */
+/* font d*/
 * {
     --main-font: 'Pretendard Variable', sans-serif;
     font-family: var(--main-font);
@@ -29,7 +29,8 @@
 
 @layer base {
     body {
-        @apply bg-gradient-radial from-primary-bright to-primary text-primary-foreground;
+        /* @apply bg-gradient-radial from-primary-bright to-primary text-primary-foreground; */
+        @apply bg-primary-bright text-primary-foreground;
     }
     svg {
         @apply fill-primary-foreground;
@@ -45,17 +46,18 @@
 /* color select */
 @layer base {
     :root {
-        --primary-foreground: var(--gray-200);
+        --primary-foreground: var(--gray-100);
         --primary-brighter: var(--gray-600);
         --primary-bright: var(--gray-700);
         --primary: var(--gray-800);
         --primary-dark: var(--gray-900);
+        --primary-darker: var(--gray-900);
         --primary-darkest: var(--gray-950);
 
         --secondary: var(--blue-400);
 
         --border: var(--primary-bright);
-        --input: var(--primary-bright);
+        --input: var(--primary-dark);
 
         --popover: var(--primary-bright);
         --popover-foreground: var(--primary-foreground);

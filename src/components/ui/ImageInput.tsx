@@ -86,7 +86,7 @@ export const ImageInput: FC<ImageInputProps> = ({
                 onChange={onChangeImageInput}
                 ref={inputRef}
             />
-            <Button type="button" size={'icon'} onClick={onClickHandler}>
+            <Button type="button" size={'icon'} variant={'trans'} onClick={onClickHandler}>
                 <CameraIcon />
             </Button>
         </div>

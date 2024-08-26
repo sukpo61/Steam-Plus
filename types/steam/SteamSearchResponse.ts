@@ -22,7 +22,7 @@ export interface GameItem {
     controller_support?: string;
 }
 
-export interface SteamSearchResponse {
+export interface ChannelSearchResponse {
     total: number;
     items: GameItem[];
 }

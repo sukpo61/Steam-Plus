@@ -4,7 +4,7 @@ import DefaultImage from 'public/images/profile/profile.png';
 import { useState } from 'react';
 import { PostResponse } from 'types/community/post';
 import { Separator } from '../ui/Separator';
-import { COMMUNIY_CATEGORY_LABEL } from './CommunityPageScreen';
+import { COMMUNIY_CATEGORY_LABEL } from './Community';
 
 export interface PostTileProps {
     item: PostResponse;

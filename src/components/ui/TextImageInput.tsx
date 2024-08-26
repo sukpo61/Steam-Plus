@@ -3,6 +3,7 @@
 import { cn } from '@/lib/utils';
 import { KeyboardEvent, useCallback, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
+import { LoaderIcon } from '../icons/common/Loader.icon';
 import { Button } from './Button';
 import { ImageInput, ImageInputValue } from './ImageInput';
 import { ImagePreview } from './ImagePreview';
@@ -16,6 +17,7 @@ export interface TextImageInputProps {
     textMaxLength?: number;
     className?: string;
     disabled?: boolean;
+    isPending?: boolean;
 }
 
 export interface TextImageFormValue {
@@ -31,6 +33,7 @@ export const TextImageInput = ({
     className,
     textMaxHeight,
     textMaxLength = 3000,
+    isPending,
 }: TextImageInputProps) => {
     const { register, setValue, control } = useFormContext<TextImageFormValue>();
 
@@ -38,6 +41,8 @@ export const TextImageInput = ({
 
     const prevImages = useWatch({ control, name: 'images' });
     const content = useWatch({ control, name: 'content' });
+
+    const isNoContents = prevImages.length === 0 && content.length === 0;
 
     const getImageSource = useCallback((src: File | string) => {
         if (typeof src === 'string') return src;
@@ -68,7 +73,10 @@ export const TextImageInput = ({
 
     return (
         <div
-            className={cn('relative flex w-full flex-col rounded-lg bg-input px-3 py-2', className)}
+            className={cn(
+                'relative flex w-full flex-col rounded-lg bg-primary-bright px-3 py-2',
+                className,
+            )}
         >
             <header className="mb-2 flex w-full justify-between">
                 <span className="text-base">user</span>
@@ -108,11 +116,8 @@ export const TextImageInput = ({
                 />
                 <div className="flex gap-4">
                     {cancle && <Button onClick={cancle}>취소</Button>}
-                    <Button
-                        disabled={prevImages.length === 0 && content.length === 0}
-                        ref={buttonRef}
-                    >
-                        등록
+                    <Button disabled={isPending || isNoContents} ref={buttonRef} variant={'trans'}>
+                        {isPending && prevImages.length !== 0 ? <LoaderIcon /> : '등록'}
                     </Button>
                 </div>
             </section>

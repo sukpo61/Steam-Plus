@@ -54,47 +54,33 @@ export const CommentInput = ({ id, params, defaultValues, closeInput }: CommentI
 
     const { handleSubmit, reset } = form;
 
-    const { mutate: postMutate } = useMutation({
+    const onSuccess = async () => {
+        await queryCache.invalidateQueries({
+            queryKey: [API_COMMENT_KEY, { postId }],
+        });
+        await queryCache.invalidateQueries({
+            queryKey: [API_COMMENT_KEY, { commentId }],
+        });
+        reset();
+        closeInput?.();
+    };
+
+    const { mutate: postMutate, isPending: postIsPending } = useMutation({
         mutationFn: postComment,
+        onSuccess: onSuccess,
     });
 
-    const { mutate: patchMutate } = useMutation({
+    const { mutate: patchMutate, isPending: patchIsPending } = useMutation({
         mutationFn: patchComment,
+        onSuccess: onSuccess,
     });
 
     const onSubmit: SubmitHandler<CommentFormValue> = (data) => {
-        const { images = [], content } = data;
-
-        if (images.length === 0 && content.length === 0) {
-            alert('내용을 입력하세요.');
-            return;
-        }
-
-        const onSuccess = async () => {
-            await queryCache.invalidateQueries({
-                queryKey: [API_COMMENT_KEY, { postId }],
-            });
-            await queryCache.invalidateQueries({
-                queryKey: [API_COMMENT_KEY, { commentId }],
-            });
-            reset();
-            closeInput?.();
-        };
         if (defaultValues && id) {
-            patchMutate(
-                { data, params: { ...params, postId } },
-                {
-                    onSuccess: onSuccess,
-                },
-            );
+            patchMutate({ data, params: { ...params, postId } });
             return;
         }
-        postMutate(
-            { data, params },
-            {
-                onSuccess: onSuccess,
-            },
-        );
+        postMutate({ data, params });
     };
 
     const onSubmitError = (errors: Object) => {
@@ -113,6 +99,7 @@ export const CommentInput = ({ id, params, defaultValues, closeInput }: CommentI
                     imageMaxlength={MAX_IMAGES_LENGTH}
                     textMaxHeight={240}
                     textMaxLength={MAX_CONTENT_LENGTH}
+                    isPending={postIsPending || patchIsPending}
                 />
             </form>
         </FormProvider>

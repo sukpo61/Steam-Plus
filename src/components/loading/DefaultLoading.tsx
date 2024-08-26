@@ -1,5 +1,5 @@
-import { ClipLoader } from 'react-spinners';
+import { LoaderIcon } from '../icons/common/Loader.icon';
 
-const DefaultLoading = () => <ClipLoader size={32} color="#417a9b" />;
+const DefaultLoading = () => <LoaderIcon />;
 
 export default DefaultLoading;

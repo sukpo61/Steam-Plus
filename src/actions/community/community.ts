@@ -1,5 +1,5 @@
+import api from '@/lib/api';
 import { variableAssignment } from '@/utils/variableAssignment';
-import axios from 'axios';
 import { PostPage } from 'types/community/post';
 import { CommunityParams, CommunitySearchParams } from 'types/params/community';
 
@@ -17,7 +17,7 @@ export const getCommunity = async ({
     console.log('params', variableAssignment(API_COMMUNITY_KEY, params));
 
     try {
-        const { data } = await axios.get(variableAssignment(API_COMMUNITY_KEY, params), {
+        const { data } = await api.get(variableAssignment(API_COMMUNITY_KEY, params), {
             params: searchParams,
         });
         return data;

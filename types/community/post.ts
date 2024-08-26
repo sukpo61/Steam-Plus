@@ -13,6 +13,7 @@ export interface PostRequest {
 export interface PostResponse extends PostRequest {
     id: string;
     viewCount: number;
+    isOwned: boolean;
     createdAt: Date;
     updatedAt: Date;
     commentsCount: number;

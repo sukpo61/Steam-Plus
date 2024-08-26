@@ -65,7 +65,7 @@ const Post = ({ params }: PostProps) => {
         );
     }
 
-    const { title, createdAt, viewCount, content, images } = data;
+    const { title, createdAt, viewCount, content, images, isOwned } = data;
 
     return (
         <>
@@ -84,10 +84,12 @@ const Post = ({ params }: PostProps) => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <Button onClick={editHandler}>수정</Button>
-                        <Button onClick={deleteHandler}>삭제</Button>
-                    </div>
+                    {isOwned && (
+                        <div className="flex items-center gap-4">
+                            <Button onClick={editHandler}>수정</Button>
+                            <Button onClick={deleteHandler}>삭제</Button>
+                        </div>
+                    )}
                 </div>
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-4">

@@ -27,7 +27,7 @@ export interface CommentProps {
 
 export const Comment = ({ item, params }: CommentProps) => {
     const { postId } = params;
-    const { id, content, username = 'user', createdAt, images, likes } = item;
+    const { id, content, username = 'user', createdAt, images, isOwned } = item;
     const [isReplyInput, setIsReplyInput] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const queryCache = useQueryClient();
@@ -108,29 +108,31 @@ export const Comment = ({ item, params }: CommentProps) => {
                                 </div>
                             </div>
                         </div>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger>
-                                <Button
-                                    className="hover:bg-primary-bright"
-                                    variant={'trans'}
-                                    size={'iconround'}
-                                >
-                                    <DropDownIcon />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuPortal>
-                                <DropdownMenuContent align="start">
-                                    <DropdownMenuItem onClick={editHandler}>
-                                        <EditIcon />
-                                        <span>수정</span>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={deleteHandler}>
-                                        <DeleteIcon />
-                                        <span>삭제</span>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenuPortal>
-                        </DropdownMenu>
+                        {isOwned && (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <Button
+                                        className="hover:bg-primary-bright"
+                                        variant={'trans'}
+                                        size={'iconround'}
+                                    >
+                                        <DropDownIcon />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuPortal>
+                                    <DropdownMenuContent align="start">
+                                        <DropdownMenuItem onClick={editHandler}>
+                                            <EditIcon />
+                                            <span>수정</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={deleteHandler}>
+                                            <DeleteIcon />
+                                            <span>삭제</span>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenuPortal>
+                            </DropdownMenu>
+                        )}
                     </div>
                     {isReplyInput && (
                         <div className="mt-6 flex w-full">

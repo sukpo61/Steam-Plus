@@ -13,11 +13,13 @@ interface PostPageScreenProps {
 
 const PostPageScreen = ({ searchParams, params }: PostPageScreenProps) => {
     return (
-        <div className="flex min-h-full w-full max-w-[978px] flex-col items-center">
-            <QuerySuspenseErrorBoundary suspenseFallback={<PostLoading />}>
-                <Post params={params} />
-                <CommentList searchParams={searchParams} params={params} />
-            </QuerySuspenseErrorBoundary>
+        <div className="flex h-full w-full flex-col items-center overflow-auto">
+            <div className="flex min-h-full w-full max-w-[978px] flex-col items-center">
+                <QuerySuspenseErrorBoundary suspenseFallback={<PostLoading />}>
+                    <Post params={params} />
+                    <CommentList searchParams={searchParams} params={params} />
+                </QuerySuspenseErrorBoundary>
+            </div>
         </div>
     );
 };
