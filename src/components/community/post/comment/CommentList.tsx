@@ -1,6 +1,7 @@
 'use client';
 
-import { API_COMMENT_KEY, getComment } from '@/actions/community/comment';
+import { getComment } from '@/actions/community/comment';
+import { API_COMMENT_KEY } from '@/actions/queryKeys';
 import { ObserverTrigger } from '@/components/hoc/ObserverTrigger';
 import { RestartIcon } from '@/components/icons/common/Restart.icon';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';

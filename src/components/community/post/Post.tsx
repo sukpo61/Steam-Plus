@@ -1,7 +1,7 @@
 'use client';
 
-import { API_COMMUNITY_KEY } from '@/actions/community/community';
-import { API_POST_KEY, deletePost, getPost } from '@/actions/community/post';
+import { deletePost, getPost } from '@/actions/community/post';
+import { API_COMMUNITY_KEY, API_POST_KEY } from '@/actions/queryKeys';
 import { UserAvatar } from '@/components/common/UserAvatar';
 import { Button } from '@/components/ui/Button';
 import { Separator } from '@/components/ui/Separator';

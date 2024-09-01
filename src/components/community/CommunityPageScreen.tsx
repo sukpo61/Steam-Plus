@@ -1,4 +1,4 @@
-'use client';
+// 'use client';
 
 import { Community } from '@/components/community/Community';
 import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
@@ -11,9 +11,11 @@ interface CommunityPageScreenProps {
 
 const CommunityPageScreen = ({ params, searchParams }: CommunityPageScreenProps) => {
     return (
-        <QuerySuspenseErrorBoundary>
-            <Community params={params} searchParams={searchParams} />
-        </QuerySuspenseErrorBoundary>
+        <div className="flex h-full w-full flex-col items-center overflow-auto">
+            <QuerySuspenseErrorBoundary>
+                <Community params={params} searchParams={searchParams} />
+            </QuerySuspenseErrorBoundary>
+        </div>
     );
 };
 

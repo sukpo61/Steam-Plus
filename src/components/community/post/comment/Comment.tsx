@@ -1,6 +1,7 @@
 'use client';
 
-import { API_COMMENT_KEY, deleteComment, patchComment } from '@/actions/community/comment';
+import { deleteComment, patchComment } from '@/actions/community/comment';
+import { API_COMMENT_KEY } from '@/actions/queryKeys';
 import { UserAvatar } from '@/components/common/UserAvatar';
 import { DeleteIcon } from '@/components/icons/common/Delete.icon';
 import { DropDownIcon } from '@/components/icons/common/DropDown.icon';

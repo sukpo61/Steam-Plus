@@ -2,7 +2,23 @@ import { db } from '@/lib/db';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { refreshTokenValidate } from '../steam/callback/route';
+
+export async function refreshTokenValidate(refreshToken?: string) {
+    let isRefreshTokenValid = false;
+
+    if (refreshToken) {
+        try {
+            const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET!) as { type: string };
+            if (decoded.type === 'refresh') {
+                isRefreshTokenValid = true;
+            }
+        } catch (error) {
+            isRefreshTokenValid = false;
+        }
+    }
+
+    return isRefreshTokenValid;
+}
 
 export async function GET(req: Request) {
     try {
@@ -13,7 +29,7 @@ export async function GET(req: Request) {
         const validation = await refreshTokenValidate(refreshToken);
 
         if (!refreshToken) {
-            return new NextResponse('Refresh token missing', { status: 402 });
+            return new NextResponse('Refresh token missing', { status: 403 });
         }
 
         if (!validation) {

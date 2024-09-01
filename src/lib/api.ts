@@ -1,6 +1,11 @@
 import axios from 'axios';
 
+const isServer = typeof window === 'undefined';
+const baseURL = isServer ? process.env.API_BASE_URL : '';
+let refreshToken = '';
+
 const api = axios.create({
+    baseURL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -10,27 +15,32 @@ const api = axios.create({
 api.interceptors.request.use(
     async function (config) {
         let accessToken = api.defaults.headers.common['Authorization'];
+
         if (!accessToken) {
             try {
-                const response = await axios.get('/api/auth/renew-token');
+                const response = await axios.get(`${baseURL}/api/auth/renew-token`, {
+                    headers: {
+                        Cookie: `refreshToken=${refreshToken}`,
+                    },
+                });
                 accessToken = response.headers['authorization'];
                 api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
                 config.headers['Authorization'] = `Bearer ${accessToken}`;
             } catch (error: any) {
-                if (error.response.status === 402) {
+                if (error.response?.status === 403) {
                     return config;
                 }
-                if (error.response.status === 401) {
-                    alert('토큰 갱신에 실패했습니다. 로그인 페이지로 이동합니다.');
-                    window.location.href = '/signin';
-                    return Promise.reject(error);
+                if (error.response?.status === 401) {
+                    if (!isServer) {
+                        window.location.href = '/signin';
+                    }
                 }
                 return Promise.reject(error);
             }
         }
         return config;
     },
-    function (error) {
+    async function (error) {
         return Promise.reject(error);
     },
 );
@@ -42,13 +52,18 @@ api.interceptors.response.use(
     async function (error) {
         if (error.response && error.response.status === 401) {
             try {
-                const response = await axios.get('/api/auth/renew-token');
+                const response = await axios.get(`${baseURL}/api/auth/renew-token`, {
+                    headers: {
+                        Cookie: `refreshToken=${refreshToken}`,
+                    },
+                });
                 const accessToken = response.headers['authorization'];
                 api.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
                 return api.request(error.config);
             } catch (refreshError) {
-                alert('세션이 만료되었습니다. 로그인 페이지로 이동합니다.');
-                window.location.href = '/signin';
+                if (!isServer) {
+                    window.location.href = '/signin';
+                }
                 return Promise.reject(refreshError);
             }
         }

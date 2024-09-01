@@ -1,10 +1,9 @@
 import { getImageUrl } from '@/actions/image/getImageUrl';
+import { API_COMMENT_KEY } from '@/actions/queryKeys';
 import { CommentFormValue } from '@/components/community/post/comment/CommentInput';
 import api from '@/lib/api';
 import { variableAssignment } from '@/utils/variableAssignment';
 import { CommentParams } from 'types/params/community';
-
-export const API_COMMENT_KEY = '/api/comment/{{postId}}/{{commentId}}';
 
 const getComment = async ({
     params,

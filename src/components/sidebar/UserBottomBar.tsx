@@ -1,10 +1,11 @@
 'use client';
 
-import getUserInfo, { API_GET_USER_INFO_KEY } from '@/actions/user/user';
+import { API_GET_USER_INFO_KEY } from '@/actions/queryKeys';
+import getUserInfo from '@/actions/user/user';
+import { UserAvatar } from '@/components/common/UserAvatar';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { UserAvatar } from '../common/UserAvatar';
 
-const UserBottomBar = () => {
+export const UserBottomBar = () => {
     const { data } = useSuspenseQuery({
         queryKey: [API_GET_USER_INFO_KEY],
         queryFn: getUserInfo,
@@ -21,5 +22,3 @@ const UserBottomBar = () => {
         </div>
     );
 };
-
-export default UserBottomBar;

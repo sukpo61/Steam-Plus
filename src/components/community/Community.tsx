@@ -31,15 +31,6 @@ export const COMMUNIY_CATEGORY_LABEL = [
 export const Community = ({ params, searchParams }: CommunityProps) => {
     const { category, term } = searchParams;
 
-    // const { data } = useSuspenseQuery({
-    //     queryKey: [API_CHANNEL_KEY, params],
-    //     queryFn: () => getChannel({ params }),
-    // });
-
-    // const { channelDetail } = data;
-
-    // const { background, steam_appid } = channelDetail;
-
     const { push } = useRouter();
 
     const { updateParams } = useUpdateParams();
@@ -49,22 +40,20 @@ export const Community = ({ params, searchParams }: CommunityProps) => {
     };
 
     return (
-        <div className="flex h-full w-full flex-col items-center overflow-auto">
-            <div className="flex w-full max-w-[948px] flex-col items-center p-10">
-                <div className="mb-8 flex w-full flex-row">
-                    <span className="text-4xl">커뮤니티</span>
-                </div>
-                <ToggleButtonGroup
-                    data={COMMUNIY_CATEGORY_LABEL}
-                    onChange={handleCategoryChange}
-                    activeId={category}
-                />
-                <div className="mb-4 flex w-full items-center justify-around bg-primary-foreground/20 p-2">
-                    <SearchInput placeholder="검색어를 입력해주세요" term={term} />
-                    <Button onClick={() => push('/community/123/add')}>글쓰기</Button>
-                </div>
-                <CommunityList params={params} searchParams={searchParams} />
+        <div className="flex w-full max-w-[948px] flex-col items-center p-10">
+            <div className="mb-8 flex w-full flex-row">
+                <span className="text-4xl">커뮤니티</span>
             </div>
+            <ToggleButtonGroup
+                data={COMMUNIY_CATEGORY_LABEL}
+                onChange={handleCategoryChange}
+                activeId={category}
+            />
+            <div className="mb-4 flex w-full items-center justify-around bg-primary-foreground/20 p-2">
+                <SearchInput placeholder="검색어를 입력해주세요" term={term} />
+                <Button onClick={() => push('/community/123/add')}>글쓰기</Button>
+            </div>
+            <CommunityList params={params} searchParams={searchParams} />
         </div>
     );
 };

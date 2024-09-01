@@ -1,12 +1,10 @@
 import { getImageUrl } from '@/actions/image/getImageUrl';
+import { API_COMMUNITY_KEY, API_POST_KEY } from '@/actions/queryKeys';
 import { PostAddFormValue } from '@/components/community/add/PostAddController';
 import api from '@/lib/api';
 import { variableAssignment } from '@/utils/variableAssignment';
 import { PostResponse } from 'types/community/post';
 import { PostParams } from 'types/params/community';
-import { API_COMMUNITY_KEY } from './community';
-
-export const API_POST_KEY = '/api/post/{{postId}}';
 
 const getPost = async ({ params }: { params: PostParams }): Promise<PostResponse> => {
     try {

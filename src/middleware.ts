@@ -12,7 +12,9 @@ export async function middleware(request: NextRequest) {
     if (authHeader) {
         const token = authHeader.split(' ')[1];
         try {
-            const decodedToken = (await jose.jwtVerify(token, jwtConfig.secret)) as any;
+            const decodedToken = (await jose.jwtVerify(token, jwtConfig.secret)) as {
+                payload: { userId: string };
+            };
             const { userId } = decodedToken.payload;
 
             const requestHeaders = new Headers(request.headers);

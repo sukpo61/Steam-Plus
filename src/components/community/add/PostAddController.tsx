@@ -1,7 +1,7 @@
 'use client';
 
-import { API_COMMUNITY_KEY } from '@/actions/community/community';
-import { API_POST_KEY, getPost, patchPost, postPost } from '@/actions/community/post';
+import { getPost, patchPost, postPost } from '@/actions/community/post';
+import { API_COMMUNITY_KEY, API_POST_KEY } from '@/actions/queryKeys';
 import { ImageInputValue } from '@/components/ui/ImageInput';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';

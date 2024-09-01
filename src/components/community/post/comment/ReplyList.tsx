@@ -1,6 +1,7 @@
 'use client';
 
-import { API_COMMENT_KEY, getComment } from '@/actions/community/comment';
+import { getComment } from '@/actions/community/comment';
+import { API_COMMENT_KEY } from '@/actions/queryKeys';
 import { Button } from '@/components/ui/Button';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { CommentParams } from 'types/params/community';

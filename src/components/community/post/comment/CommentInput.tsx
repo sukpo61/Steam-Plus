@@ -1,6 +1,7 @@
 'use client';
 
-import { API_COMMENT_KEY, patchComment, postComment } from '@/actions/community/comment';
+import { patchComment, postComment } from '@/actions/community/comment';
+import { API_COMMENT_KEY } from '@/actions/queryKeys';
 import { ImageInputValue } from '@/components/ui/ImageInput';
 import { TextImageInput } from '@/components/ui/TextImageInput';
 import { zodResolver } from '@hookform/resolvers/zod';

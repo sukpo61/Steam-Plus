@@ -1,6 +1,7 @@
 'use client';
 
-import { API_COMMUNITY_KEY, getCommunity } from '@/actions/community/community';
+import { getCommunity } from '@/actions/community/community';
+import { API_COMMUNITY_KEY } from '@/actions/queryKeys';
 import { Pagination } from '@/components/ui/Pagination';
 import { useUpdateParams } from '@/hooks/useUpdateParams';
 import { useSuspenseQuery } from '@tanstack/react-query';
