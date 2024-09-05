@@ -1,4 +1,17 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
+const nextConfig = {
+    reactStrictMode: true,
+    swcMinify: true,
+    images: {
+        domains: ['firebasestorage.googleapis.com', 'shared.akamai.steamstatic.com'],
+    },
+    async rewrites() {
+        return [
+            {
+                source: '/api/steam/:path*',
+                destination: 'https://store.steampowered.com/api/:path*',
+            },
+        ];
+    },
+};
 export default nextConfig;
