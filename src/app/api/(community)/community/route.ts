@@ -5,16 +5,57 @@ export async function GET(req: Request) {
     try {
         const { searchParams } = new URL(req.url);
 
+        const term = searchParams.get('term');
+        const order = searchParams.get('order');
+
         const page = parseInt(searchParams.get('page') || '1', 10);
         const pageSize = parseInt(searchParams.get('pagesize') || '10', 10);
         const offset = (page - 1) * pageSize;
-        const totalCount = await db.post.count();
+        const totalCount = await db.post.count({
+            where: term
+                ? {
+                      OR: [
+                          {
+                              title: {
+                                  contains: term,
+                              },
+                          },
+                          {
+                              content: {
+                                  contains: term,
+                              },
+                          },
+                      ],
+                  }
+                : {},
+        });
 
         const posts = await db.post.findMany({
+            where: term
+                ? {
+                      OR: [
+                          {
+                              title: {
+                                  contains: term,
+                              },
+                          },
+                          {
+                              content: {
+                                  contains: term,
+                              },
+                          },
+                      ],
+                  }
+                : {},
             include: { images: true },
-            orderBy: {
-                createdAt: 'desc',
-            },
+            orderBy:
+                order === 'desc'
+                    ? {
+                          createdAt: 'desc',
+                      }
+                    : {
+                          viewCount: 'desc',
+                      },
             skip: offset,
             take: pageSize,
         });

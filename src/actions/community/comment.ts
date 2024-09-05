@@ -1,16 +1,16 @@
 import { getImageUrl } from '@/actions/image/getImageUrl';
 import { API_COMMENT_KEY } from '@/actions/queryKeys';
-import { CommentFormValue } from '@/components/community/post/comment/CommentInput';
 import api from '@/lib/api';
 import { variableAssignment } from '@/utils/variableAssignment';
+import { CommentRequest } from 'types/community/comment';
 import { CommentParams } from 'types/params/community';
 
-const getComment = async ({
+const getCommentList = async ({
     params,
     cursor,
 }: {
     params: CommentParams;
-    cursor: string | null;
+    cursor?: string | null;
 }): Promise<any> => {
     try {
         const { data } = await api.get(variableAssignment(API_COMMENT_KEY, params), {
@@ -23,7 +23,7 @@ const getComment = async ({
     }
 };
 
-const postComment = async ({ data, params }: { params: CommentParams; data: CommentFormValue }) => {
+const postComment = async ({ data, params }: { params: CommentParams; data: CommentRequest }) => {
     const { images } = data;
     const { parentId } = params;
     const commentParams = parentId ? { ...params, commentId: parentId } : params;
@@ -54,7 +54,7 @@ const patchComment = async ({
     data,
 }: {
     params: CommentParams;
-    data: CommentFormValue;
+    data: CommentRequest;
 }): Promise<void> => {
     const { images } = data;
     const url = variableAssignment(API_COMMENT_KEY, params);
@@ -76,4 +76,4 @@ const deleteComment = async ({ params }: { params: CommentParams }): Promise<voi
     }
 };
 
-export { deleteComment, getComment, patchComment, postComment };
+export { deleteComment, getCommentList, patchComment, postComment };

@@ -1,3 +1,4 @@
+import { getAppDetails } from '@/app/api/actions/steam';
 import { NextResponse } from 'next/server';
 import { db } from 'src/lib/db';
 
@@ -25,12 +26,27 @@ export async function GET(req: Request, { params }: { params: { postId: string }
             },
             include: {
                 images: true,
+                user: {
+                    select: {
+                        name: true,
+                        avatar: true,
+                    },
+                },
             },
         });
 
+        const appId = post?.appId;
+
+        let appInfo;
+
+        if (appId) {
+            const { name, header_image } = await getAppDetails(appId);
+            appInfo = { name, header_image };
+        }
+
         const isOwned = userId && userId === post?.userId;
 
-        return NextResponse.json({ ...post, isOwned });
+        return NextResponse.json({ ...post, isOwned, appInfo });
     } catch (error) {
         console.log('POST_GET', error);
         return new NextResponse('Internal Error', { status: 500 });

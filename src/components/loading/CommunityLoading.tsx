@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import DefaultLoading from './DefaultLoading';
+import { DefaultLoading } from '../common/DefaultLoading';
 
 const Container = styled.div`
     display: flex;

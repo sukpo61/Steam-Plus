@@ -106,6 +106,8 @@ export async function GET(req: Request, { params }: { params: { postId: string }
                     user: {
                         select: {
                             id: true,
+                            name: true,
+                            avatar: true,
                         },
                     },
                     content: true,

@@ -19,8 +19,6 @@ model Community {
   appId String? @unique
   name String @unique
 
-  posts Post[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -55,16 +53,16 @@ model Post {
 
   likes LikesOnPosts[]
 
-  channelId String
-  community Community @relation(fields: [channelId], references: [id])
+  appId Int 
+  appData Json
 
   images    Image[] 
-  comments  Comment[]
+  comments  Comment[] 
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([channelId])
+  @@index([appId])
 }
 
 model LikesOnPosts {

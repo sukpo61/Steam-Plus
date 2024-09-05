@@ -27,6 +27,7 @@ export async function middleware(request: NextRequest) {
             });
         } catch (error) {
             console.error('Invalid token:', error);
+            return NextResponse.next();
         }
     }
     return NextResponse.next();

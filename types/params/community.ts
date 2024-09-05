@@ -1,7 +1,7 @@
 export interface CommunityParams {
-    channelId: string;
+    appId?: string;
 }
-export interface PostParams extends CommunityParams {
+export interface PostParams {
     postId: string;
 }
 
@@ -15,8 +15,8 @@ export interface PostSearchParams {
 }
 
 export interface CommunitySearchParams {
-    page: string;
-    pagesize: string;
+    page?: string | number;
     category?: string;
     term?: string;
+    order?: string;
 }

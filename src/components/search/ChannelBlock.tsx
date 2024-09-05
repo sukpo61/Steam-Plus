@@ -7,7 +7,7 @@ interface ChannelBlockProps {
     count?: number;
 }
 
-const ChannelBlock = ({ data, count }: ChannelBlockProps) => {
+export const ChannelBlock = ({ data, count }: ChannelBlockProps) => {
     const { name, header_image, steam_appid } = data;
 
     const { push } = useRouter();
@@ -36,5 +36,3 @@ const ChannelBlock = ({ data, count }: ChannelBlockProps) => {
         </div>
     );
 };
-
-export default ChannelBlock;

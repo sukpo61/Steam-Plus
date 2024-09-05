@@ -1,18 +1,17 @@
 import api from '@/lib/api';
 import { variableAssignment } from '@/utils/variableAssignment';
-import { ChannelParams } from 'types/params/channel';
+import { AppParams } from 'types/params/app';
+import { API_APP_KEY } from '../queryKeys';
 
 interface getCommunityParameter {
-    params: ChannelParams;
+    params: AppParams;
 }
 
-export const API_CHANNEL_KEY = '/api/channel/{{channelId}}';
-
-export const getChannel = async ({ params }: getCommunityParameter): Promise<any> => {
-    const { channelId } = params;
-    if (!channelId) return;
+export const getApp = async ({ params }: getCommunityParameter): Promise<any> => {
+    const { appId } = params;
+    if (!appId) return;
     try {
-        const { data } = await api.get(variableAssignment(API_CHANNEL_KEY, params));
+        const { data } = await api.get(variableAssignment(API_APP_KEY, params));
         return data;
     } catch (error) {
         console.error('Full error:', error);

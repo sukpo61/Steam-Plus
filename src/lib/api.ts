@@ -1,3 +1,4 @@
+import { getCookie } from '@/lib/cookies';
 import axios from 'axios';
 
 const isServer = typeof window === 'undefined';
@@ -15,6 +16,11 @@ const api = axios.create({
 api.interceptors.request.use(
     async function (config) {
         let accessToken = api.defaults.headers.common['Authorization'];
+        refreshToken = (await getCookie('refreshToken')) || '';
+
+        if (!refreshToken) {
+            return config;
+        }
 
         if (!accessToken) {
             try {
@@ -59,7 +65,16 @@ api.interceptors.response.use(
                 });
                 const accessToken = response.headers['authorization'];
                 api.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
-                return api.request(error.config);
+
+                const config = {
+                    ...error.config,
+                    headers: {
+                        ...error.config.headers,
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                };
+
+                return api.request(config);
             } catch (refreshError) {
                 if (!isServer) {
                     window.location.href = '/signin';

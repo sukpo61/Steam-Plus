@@ -18,9 +18,22 @@ export interface PostResponse extends PostRequest {
     updatedAt: Date;
     commentsCount: number;
     likeCount?: number;
+    appId: number;
+    user: {
+        name: string;
+        avatar: string;
+    };
+    appData: PostAppData;
 }
-export interface PostPage {
+
+export interface CommunityResponse {
     data: PostResponse[];
+    appData: PostAppData;
     totalCount: number;
     pageSize: number;
+}
+export interface PostAppData {
+    name: string;
+    header_image: string;
+    background: string;
 }

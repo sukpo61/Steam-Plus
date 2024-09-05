@@ -52,7 +52,8 @@ export async function GET(req: Request) {
         const steamId = userRecord?.user?.steamId;
 
         if (!steamId || !userId) {
-            throw new Error('User or SteamId not found');
+            // throw new Error('User or SteamId not found');
+            return new NextResponse('User or SteamId not found', { status: 401 });
         }
 
         const newAccessToken = jwt.sign(
@@ -68,7 +69,7 @@ export async function GET(req: Request) {
 
         return response;
     } catch (error) {
-        console.log('C', error);
+        console.error('renew-token error', error);
         return new NextResponse('Internal Error', { status: 500 });
     }
 }

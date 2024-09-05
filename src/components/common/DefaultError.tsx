@@ -1,24 +1,18 @@
-import styled from '@emotion/styled';
-import { Text } from '@/components/ui/Text';
-import { FC, ReactEventHandler } from 'react';
+import { RestartIcon } from '@/components/icons/common/Restart.icon';
 import { Button } from '@/components/ui/Button';
+import { FC, ReactEventHandler } from 'react';
 
 interface DefaultErrorProps {
     onClick: ReactEventHandler<HTMLButtonElement>;
 }
 
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-`;
-
 const DefaultError: FC<DefaultErrorProps> = ({ onClick }) => {
     return (
-        <Container>
-            <Text text={`죄송합니다. 에러가 발생했습니다. \n 재시도 버튼을 눌러주세요.`} preLine />
-            {/* <Button text="재시도" onClick={onClick} /> */}
-        </Container>
+        <div className="flex h-full w-full items-center justify-center">
+            <Button onClick={onClick}>
+                <RestartIcon />
+            </Button>
+        </div>
     );
 };
 

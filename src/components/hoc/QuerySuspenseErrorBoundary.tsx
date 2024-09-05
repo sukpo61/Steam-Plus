@@ -1,7 +1,7 @@
 'use client';
 
 import DefaultError from '@/components/common/DefaultError';
-import DefaultLoading from '@/components/loading/DefaultLoading';
+import { DefaultLoading } from '@/components/common/DefaultLoading';
 import { Suspense } from '@suspensive/react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { FC, PropsWithChildren, ReactEventHandler } from 'react';

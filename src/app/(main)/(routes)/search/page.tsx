@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import SearchPageScreen from '@/components/search/SearchPageScreen';
+import SearchPageController from './_components/SearchPageController';
 
 interface SearchResultPageProps {
     searchParams: {
@@ -8,7 +8,7 @@ interface SearchResultPageProps {
 }
 
 const SearchResultPage: NextPage<SearchResultPageProps> = async ({ searchParams }) => {
-    return <SearchPageScreen searchParams={searchParams} />;
+    return <SearchPageController searchParams={searchParams} />;
 };
 
 export default SearchResultPage;

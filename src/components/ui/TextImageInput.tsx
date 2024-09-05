@@ -17,7 +17,6 @@ export interface TextImageInputProps {
     textMaxLength?: number;
     className?: string;
     disabled?: boolean;
-    isPending?: boolean;
 }
 
 export interface TextImageFormValue {
@@ -33,9 +32,13 @@ export const TextImageInput = ({
     className,
     textMaxHeight,
     textMaxLength = 3000,
-    isPending,
 }: TextImageInputProps) => {
-    const { register, setValue, control } = useFormContext<TextImageFormValue>();
+    const {
+        register,
+        setValue,
+        control,
+        formState: { isSubmitting },
+    } = useFormContext<TextImageFormValue>();
 
     const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -116,8 +119,12 @@ export const TextImageInput = ({
                 />
                 <div className="flex gap-4">
                     {cancle && <Button onClick={cancle}>취소</Button>}
-                    <Button disabled={isPending || isNoContents} ref={buttonRef} variant={'trans'}>
-                        {isPending && prevImages.length !== 0 ? <LoaderIcon /> : '등록'}
+                    <Button
+                        disabled={isSubmitting || isNoContents}
+                        ref={buttonRef}
+                        variant={'trans'}
+                    >
+                        {isSubmitting && prevImages.length !== 0 ? <LoaderIcon /> : '등록'}
                     </Button>
                 </div>
             </section>

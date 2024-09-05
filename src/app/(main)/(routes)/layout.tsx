@@ -1,6 +1,6 @@
-import Sidebar from '@/components/sidebar/SidebarController';
+import Sidebar from '@/components/layout/sidebar/SidebarController';
 
-const ChannelLayout = async ({ children }: { children: React.ReactNode }) => {
+const ChannelLayout = ({ children }: { children: React.ReactNode }) => {
     return (
         <div className="flex h-full w-full">
             <div className="flex w-[240px]">

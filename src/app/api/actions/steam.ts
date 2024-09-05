@@ -20,8 +20,6 @@ export const getPlayerSummaries = async (steamid: string) => {
         );
         const { personaname, profileurl, avatarfull } = data.response.players[0];
 
-        console.log('GetPlayerSummariesResponse', data.response.players[0]);
-
         const result = {
             name: personaname,
             avatar: avatarfull,
@@ -71,7 +69,7 @@ export const getOwnedGames = async (steamid: string) => {
     }
 };
 
-export const getChannelDetails = async (appid: number) => {
+export const getAppDetails = async (appid: number) => {
     const { data } = await axios.get<ChannelDetailsResponse>(
         'https://store.steampowered.com/api/appdetails',
         {
@@ -95,7 +93,7 @@ export const getChannelSearch = async (term: string) => {
         },
     );
     const appIds = channelSummary.items.map((item) => item.id);
-    const appDetailsRequests = appIds.map((id) => getChannelDetails(id));
+    const appDetailsRequests = appIds.map((id) => getAppDetails(id));
     const appDetailsResponses = await Promise.all(appDetailsRequests);
     const noneDlcResponses = appDetailsResponses.filter((item) => item.type === 'game');
     return noneDlcResponses;

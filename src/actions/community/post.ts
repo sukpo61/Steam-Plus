@@ -1,6 +1,6 @@
 import { getImageUrl } from '@/actions/image/getImageUrl';
 import { API_COMMUNITY_KEY, API_POST_KEY } from '@/actions/queryKeys';
-import { PostAddFormValue } from '@/components/community/add/PostAddController';
+import { PostAddFormValue } from '@/app/(main)/(routes)/community/_components/add/PostAddController';
 import api from '@/lib/api';
 import { variableAssignment } from '@/utils/variableAssignment';
 import { PostResponse } from 'types/community/post';

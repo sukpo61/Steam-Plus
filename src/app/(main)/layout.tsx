@@ -1,4 +1,4 @@
-import ChannelSidebar from '@/components/navigation/ChannelSidebar';
+import ChannelSidebar from '@/components/layout/navigationbar/ChannelSidebar';
 
 const NavigationLayout = ({ children }: { children: React.ReactNode }) => {
     return (

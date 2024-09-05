@@ -15,9 +15,9 @@ const SearchPageScreen = ({ searchParams }: SearchPageScreenProps) => {
     return (
         <div className="flex h-full w-full flex-col items-center px-8 pt-4">
             <div className="flex w-full max-w-[948px] flex-col">
-                <SearchInput placeholder="영어로 입력 해 주세요" term={term} />{' '}
+                <SearchInput placeholder="영어로 입력 해 주세요" term={term} />
                 {term && (
-                    <div className="mt-4 flex h-full w-full flex-1 flex-col overflow-y-auto">
+                    <div className="mt-4 flex h-full w-full flex-1 flex-col overflow-y-scroll">
                         <QuerySuspenseErrorBoundary>
                             <SearchResult term={term} />
                         </QuerySuspenseErrorBoundary>
