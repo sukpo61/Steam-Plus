@@ -4,8 +4,8 @@ import { db } from 'src/lib/db';
 
 export async function POST(req: Request, { params }: { params: { appId: string } }) {
     try {
+        const { appId } = await req.json();
         const userId = req.headers.get('User-Id');
-        const appId = parseInt(params.appId);
         const data = await req.json();
         const { images, ...postData } = data;
 

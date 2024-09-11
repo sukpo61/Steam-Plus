@@ -10,10 +10,44 @@ export async function GET(req: Request) {
         }
 
         const user = await db.user.findUnique({
-            where: {
-                id: userId,
+            where: { id: userId },
+            select: {
+                id: true,
+                steamId: true,
+                name: true,
+                avatar: true,
+                servers: {
+                    select: {
+                        id: true,
+                        app: {
+                            select: {
+                                header_image: true,
+                                name: true,
+                            },
+                        },
+                        name: true,
+                    },
+                },
             },
         });
+
+        // const user = await db.user.findUnique({
+        //     where: {
+        //         id: userId,
+        //     },
+        //     include: {
+        //         members: {
+        //             include: {
+        //                 server: true,
+        //             },
+        //         },
+        //     },
+        // });
+
+        // const userResult = {
+        //     ...user,
+        //     servers: user?.members.map((member) => member.server),
+        // };
 
         return NextResponse.json(user);
     } catch (error) {

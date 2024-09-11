@@ -1,6 +1,7 @@
+import { ModalProvider } from '@/provider/ModalProvider';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { QueryProvider } from 'src/provider/query-provider';
+import { QueryProvider } from 'src/provider/QueryProvider';
 import 'styles/globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -18,7 +19,10 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <QueryProvider>{children}</QueryProvider>
+                <QueryProvider>
+                    <ModalProvider />
+                    {children}
+                </QueryProvider>
             </body>
         </html>
     );

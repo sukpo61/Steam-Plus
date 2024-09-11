@@ -1,7 +1,7 @@
 'use client';
 
 import { API_GET_USER_INFO_KEY } from '@/actions/queryKeys';
-import getUserInfo from '@/actions/user/user';
+import { getUserInfo } from '@/actions/user/user';
 import { UserAvatar } from '@/components/common/UserAvatar';
 import { useSuspenseQuery } from '@tanstack/react-query';
 

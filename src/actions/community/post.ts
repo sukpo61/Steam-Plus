@@ -1,10 +1,10 @@
 import { getImageUrl } from '@/actions/image/getImageUrl';
-import { API_COMMUNITY_KEY, API_POST_KEY } from '@/actions/queryKeys';
-import { PostAddFormValue } from '@/app/(main)/(routes)/community/_components/add/PostAddController';
+import { API_POST_KEY } from '@/actions/queryKeys';
+import { PostAddFormValue } from '@/app/(main)/(routes)/(bg)/community/_components/add/PostAddController';
 import api from '@/lib/api';
 import { variableAssignment } from '@/utils/variableAssignment';
 import { PostResponse } from 'types/community/post';
-import { PostParams } from 'types/params/community';
+import { CommunityParams, PostParams } from 'types/params/community';
 
 const getPost = async ({ params }: { params: PostParams }): Promise<PostResponse> => {
     try {
@@ -33,9 +33,10 @@ const postPost = async ({
     params,
 }: {
     data: PostAddFormValue;
-    params: PostParams;
+    params: CommunityParams;
 }): Promise<string> => {
     const { images } = data;
+    const { appId } = params;
     try {
         const imagesUrl = images
             ? await getImageUrl({
@@ -43,8 +44,9 @@ const postPost = async ({
                   url: 'images',
               })
             : [];
-        const { data: resData } = await api.post(variableAssignment(API_COMMUNITY_KEY, params), {
+        const { data: resData } = await api.post(variableAssignment(API_POST_KEY, params), {
             ...data,
+            appId,
             images: imagesUrl,
         });
         return resData.id;

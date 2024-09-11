@@ -1,6 +1,6 @@
-import RedirectScreen from '@/components/singin/RedirectScreen';
-import SignInPageScreen from '@/components/singin/SignInPageScreen';
 import { NextPage } from 'next';
+import RedirectScreen from '../_components/RedirectScreen';
+import SignInPageScreen from '../_components/SignInPageScreen';
 
 interface CommunityPageParameter {
     searchParams: any;

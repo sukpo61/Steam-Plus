@@ -26,6 +26,7 @@ module.exports = {
                     dark: 'hsl(var(--primary-dark))',
                     darker: 'hsl(var(--primary-darker))',
                     darkest: 'hsl(var(--primary-darkest))',
+                    aaaaaaa: 'hsl(var(--primary-darkest))',
                 },
                 secondary: {
                     DEFAULT: 'hsl(var(--secondary))',
@@ -59,6 +60,15 @@ module.exports = {
             animation: {
                 'accordion-down': 'accordion-down 0.2s ease-out',
                 'accordion-up': 'accordion-up 0.2s ease-out',
+            },
+            screens: {
+                sm: '640px',
+                md: '800px',
+                lg: '1148px',
+                xl: '1412px',
+                '2xl': '1700px',
+                '3xl': '1920px',
+                '4xl': '2160px',
             },
         },
     },
