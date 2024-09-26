@@ -1,4 +1,4 @@
-import axios from 'axios';
+import steamApi from '@/lib/steamApi';
 import { ChannelDetailsResponse } from 'types/steam/SteamAppDetailResponse';
 import { ChannelSearchResponse } from 'types/steam/SteamSearchResponse';
 import {
@@ -9,7 +9,7 @@ import {
 
 export const getPlayerSummaries = async (steamid: string) => {
     try {
-        const { data } = await axios.get<PlayerSummariesResponse>(
+        const { data } = await steamApi.get<PlayerSummariesResponse>(
             `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2`,
             {
                 params: {
@@ -31,7 +31,7 @@ export const getPlayerSummaries = async (steamid: string) => {
 
 export const getRecentlyPlayedGames = async (steamid: string) => {
     try {
-        const { data } = await axios.get<RecentlyPlayedGamesResponse>(
+        const { data } = await steamApi.get<RecentlyPlayedGamesResponse>(
             `http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001`,
             {
                 params: {
@@ -50,9 +50,9 @@ export const getRecentlyPlayedGames = async (steamid: string) => {
     }
 };
 
-export const getOwnedGames = async (steamid: string) => {
+export const getOwnedGames = async (steamid: any) => {
     try {
-        const { data } = await axios.get<OwnedGamesResponse>(
+        const { data } = await steamApi.get<OwnedGamesResponse>(
             `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001`,
             {
                 params: {
@@ -63,28 +63,34 @@ export const getOwnedGames = async (steamid: string) => {
             },
         );
 
-        console.log('getOwnedGames', data);
+        return data.response.games;
     } catch (error) {
         console.log('GetRecentlyPlayedGames', error);
     }
 };
 
-export const getAppDetails = async (appid: number) => {
-    const { data } = await axios.get<ChannelDetailsResponse>(
+export const getAppDetails = async (appId: number) => {
+    const { data } = await steamApi.get<ChannelDetailsResponse>(
         'https://store.steampowered.com/api/appdetails',
         {
+            headers: {
+                Cookie: 'Steam_Language=koreana; steamCountry=KR%7Cb42f3af114641abdb663e8a269268c86;',
+            },
             params: {
-                appids: appid,
+                appids: appId,
             },
         },
     );
-    return data[appid].data;
+    return data[appId].data;
 };
 
 export const getChannelSearch = async (term: string) => {
-    const { data: channelSummary } = await axios.get<ChannelSearchResponse>(
+    const { data: channelSummary } = await steamApi.get<ChannelSearchResponse>(
         'https://store.steampowered.com/api/storesearch',
         {
+            headers: {
+                Cookie: 'Steam_Language=koreana;',
+            },
             params: {
                 cc: 'us',
                 l: 'en',
@@ -92,6 +98,7 @@ export const getChannelSearch = async (term: string) => {
             },
         },
     );
+    // https://steamcommunity.com/actions/SearchApps
     const appIds = channelSummary.items.map((item) => item.id);
     const appDetailsRequests = appIds.map((id) => getAppDetails(id));
     const appDetailsResponses = await Promise.all(appDetailsRequests);

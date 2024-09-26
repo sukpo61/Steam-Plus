@@ -27,6 +27,7 @@ model User {
   members Member[]
   channels Channel[]
   token RefreshToken?
+  library Library[]
 
   channelId String?
 
@@ -37,6 +38,7 @@ model Server {
   id String  @id @default(uuid())
 
   name String
+  description String @db.Text
 
   inviteCode String @unique @default(uuid())
 
@@ -61,7 +63,7 @@ model App {
   type                 String?
   name                 String?
   steam_appid          Int?
-  required_age         Int?
+  required_age         Json?
   is_free              Boolean?
   controller_support   String? @db.Text
   posted_description   String? @db.Text
@@ -74,6 +76,8 @@ model App {
   capsule_image        String? @db.Text
   capsule_imagev5      String? @db.Text
   website              String? @db.Text
+  drm_notice           String? @db.Text
+  ext_user_account_notice   String? @db.Text
   dlc                  Json?
   pc_requirements      Json?
   mac_requirements     Json?
@@ -98,11 +102,28 @@ model App {
   background_raw       String? @db.Text
   content_descriptors  Json?
   ratings              Json?
+  demos                Json?
 
   servers Server[]
+  librarys Library[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Library {
+  id String @id @default(uuid())
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  appId Int
+  app App @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([appId, userId])
 }
 
 enum MemberRole {

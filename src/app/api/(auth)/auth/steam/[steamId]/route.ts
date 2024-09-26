@@ -1,4 +1,4 @@
-import { getPlayerSummaries } from '@/app/api/actions/steam';
+import { getAppDetails, getOwnedGames, getPlayerSummaries } from '@/app/api/actions/steam';
 import { db } from '@/lib/db';
 import jwt from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
@@ -7,8 +7,6 @@ const EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 export async function GET(req: Request, { params }: { params: { steamId: string } }) {
     const { steamId } = params;
-    let accessToken;
-    let refreshToken;
 
     try {
         const userSummary = await getPlayerSummaries(steamId);
@@ -23,6 +21,37 @@ export async function GET(req: Request, { params }: { params: { steamId: string 
                 steamId,
             },
         });
+
+        const OwnedGames = await getOwnedGames(steamId);
+        const appIdList = OwnedGames?.map((item) => item.appid);
+
+        if (appIdList && appIdList.length > 0) {
+            const appPromises = appIdList?.map(async (appId) => {
+                const appData = (await getAppDetails(appId)) as any;
+
+                await db.app.upsert({
+                    where: { id: appId },
+                    update: appData,
+                    create: { id: appId, ...appData },
+                });
+
+                await db.library.upsert({
+                    where: {
+                        appId_userId: {
+                            appId: appId,
+                            userId: user.id,
+                        },
+                    },
+                    update: {},
+                    create: {
+                        appId: appId,
+                        userId: user.id,
+                    },
+                });
+            });
+            await Promise.all(appPromises);
+        }
+
         const accessToken = jwt.sign({ userId: user.id, type: 'access' }, process.env.JWT_SECRET!, {
             expiresIn: '1h',
         });

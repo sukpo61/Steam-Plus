@@ -1,16 +1,10 @@
 'use client';
 
-import { API_GET_USER_INFO_KEY } from '@/actions/queryKeys';
-import { getUserInfo } from '@/actions/user/user';
 import { UserAvatar } from '@/components/common/UserAvatar';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useUserStore } from '@/store/useUserStore';
 
 export const UserBottomBar = () => {
-    const { data } = useSuspenseQuery({
-        queryKey: [API_GET_USER_INFO_KEY],
-        queryFn: getUserInfo,
-    });
-
+    const { data } = useUserStore((state) => state);
     const { avatar, name } = data;
 
     return (

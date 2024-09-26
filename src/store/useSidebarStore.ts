@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type SidebarType = 'friend' | 'server';
+export type SidebarType = 'friend' | 'server' | 'library';
 
 interface SidebarData {
     serverId?: number;

@@ -9,7 +9,7 @@ interface ChannelBlockProps {
     count?: number;
 }
 
-export const ChannelBlock = ({ searchParams, data, count }: ChannelBlockProps) => {
+export const AppBlock = ({ searchParams, data, count }: ChannelBlockProps) => {
     const { purpose } = searchParams;
     const { name, header_image, steam_appid } = data;
 

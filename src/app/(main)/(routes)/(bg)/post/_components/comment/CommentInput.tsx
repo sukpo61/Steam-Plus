@@ -1,14 +1,16 @@
 'use client';
 
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { patchComment, postComment } from '@/actions/community/comment';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { API_COMMENT_KEY } from '@/actions/queryKeys';
+import { CommentParams } from 'types/params/community';
+import { CommentRequest } from 'types/community/comment';
 import { ImageInputValue } from '@/components/ui/ImageInput';
 import { TextImageInput } from '@/components/ui/TextImageInput';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { CommentParams } from 'types/params/community';
 import z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface CommentInputProps {
     params: CommentParams;
@@ -17,11 +19,7 @@ interface CommentInputProps {
     closeInput?: () => void;
 }
 
-export interface CommentFormValue {
-    content: string;
-    images: ImageInputValue[];
-    like?: string;
-}
+export interface CommentFormValue extends CommentRequest {}
 
 export const MAX_CONTENT_LENGTH = 3000;
 export const MAX_IMAGES_LENGTH = 1;

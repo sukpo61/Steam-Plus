@@ -1,5 +1,6 @@
 'use client';
 
+import { AddIcon } from '@/components/icons/common/Add.icon';
 import { SearchIcon } from '@/components/icons/navigation/Search.icon';
 import { useRouter } from 'next/navigation';
 
@@ -9,13 +10,13 @@ export const NavSearchButton = () => {
     return (
         <>
             <div
-                className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-primary pb-1 transition-colors hover:bg-primary-bright"
+                className="flex h-12 w-12 flex-shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary transition-colors hover:bg-primary-bright"
                 onClick={() => push(`/search`)}
             >
-                <span className="text-3xl">+</span>
+                <AddIcon />
             </div>
             <div
-                className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-primary pb-1 transition-colors hover:bg-primary-bright"
+                className="flex h-12 w-12 flex-shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary transition-colors hover:bg-primary-bright"
                 onClick={() => push(`/`)}
             >
                 <SearchIcon />

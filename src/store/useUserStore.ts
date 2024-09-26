@@ -5,7 +5,7 @@ interface UserData {
 }
 
 interface UserStore {
-    data: UserData;
+    data: any;
     setUserData: (data?: UserData) => void;
 }
 

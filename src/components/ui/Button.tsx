@@ -13,7 +13,8 @@ const buttonVariants = cva(
                 outline:
                     'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
                 secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-                primary: 'bg-primary-bright text-primary-foreground hover:bg-primary-brighter ',
+                primary: 'bg-primary-bright text-primary-foreground hover:bg-primary-brighter',
+                iconround: 'rounded-full',
             },
             size: {
                 default: 'h-10 px-4 py-2',
@@ -21,7 +22,7 @@ const buttonVariants = cva(
                 lg: 'h-11 rounded-md px-8',
                 icon: 'h-10 w-10',
                 iconround: 'h-10 w-10 rounded-full',
-                iconl: 'h-10 pl-2 pr-4 py-2',
+                iconlg: 'h-12 w-12 rounded-full',
             },
         },
         defaultVariants: {

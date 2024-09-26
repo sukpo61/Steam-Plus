@@ -17,7 +17,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         // );
 
         return (
-            <div className="relative flex h-10 w-full">
+            <div className="relative flex w-full">
                 <input
                     type={type}
                     className={cn(

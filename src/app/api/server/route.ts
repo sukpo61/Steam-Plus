@@ -6,25 +6,25 @@ import { getAppDetails } from '../actions/steam';
 export async function POST(req: Request) {
     try {
         const data = await req.json();
+        const { appId } = data;
         const userId = req.headers.get('User-Id');
 
         if (!userId) {
             return new NextResponse('Unauthorized', { status: 401 });
         }
 
-        const appData = (await getAppDetails(data.appId)) as any;
+        const appData = (await getAppDetails(appId)) as any;
 
         await db.app.upsert({
-            where: { id: data.appId },
+            where: { id: appId },
             update: appData,
-            create: { id: data.appId, ...appData },
+            create: { id: appId, ...appData },
         });
 
         const server = await db.server.create({
             data: {
                 ...data,
                 userId,
-                appId: data.appId,
                 channels: {
                     create: [{ name: 'general', userId }],
                 },

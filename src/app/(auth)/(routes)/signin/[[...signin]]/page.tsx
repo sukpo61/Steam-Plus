@@ -15,11 +15,7 @@ const SignInPage: NextPage<CommunityPageParameter> = async ({ searchParams }) =>
 
     const steamId = steamIdUrl.toString().split('/').pop() as string;
 
-    // const { data } = await axios.get(`http://localhost:3000/api/auth/steam/${steamId}`);
-
-    // console.log('data', data);
-
-    return <RedirectScreen steamId={steamId} />;
+    return <RedirectScreen steamId={steamId} searchParams={searchParams} />;
 };
 
 export default SignInPage;

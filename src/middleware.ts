@@ -1,6 +1,10 @@
 import * as jose from 'jose';
+
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+
+// import { getAllCookie } from '@/lib/cookies';
+// import steamApi from './lib/steamApi';
 
 const jwtConfig = {
     secret: new TextEncoder().encode(process.env.JWT_SECRET),
@@ -8,6 +12,8 @@ const jwtConfig = {
 
 export async function middleware(request: NextRequest) {
     const authHeader = request.headers.get('Authorization');
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-url', request.url);
 
     if (authHeader) {
         const token = authHeader.split(' ')[1];
@@ -16,10 +22,7 @@ export async function middleware(request: NextRequest) {
                 payload: { userId: string };
             };
             const { userId } = decodedToken.payload;
-
-            const requestHeaders = new Headers(request.headers);
             requestHeaders.set('User-Id', userId);
-
             return NextResponse.next({
                 request: {
                     headers: requestHeaders,
@@ -27,10 +30,18 @@ export async function middleware(request: NextRequest) {
             });
         } catch (error) {
             console.error('Invalid token:', error);
-            return NextResponse.next();
+            return NextResponse.next({
+                request: {
+                    headers: requestHeaders,
+                },
+            });
         }
     }
-    return NextResponse.next();
+    return NextResponse.next({
+        request: {
+            headers: requestHeaders,
+        },
+    });
 }
 
 export const config = {

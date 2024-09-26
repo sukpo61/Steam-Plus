@@ -25,7 +25,7 @@ export const NavbarClient = () => {
 
     return (
         <>
-            <UserAvatar src={avatar} className="h-12 w-12" />
+            <UserAvatar src={avatar} className="h-12 w-12 flex-shrink-0" />
             <NavServerButtonList data={servers} />
             <NavSearchButton />
         </>

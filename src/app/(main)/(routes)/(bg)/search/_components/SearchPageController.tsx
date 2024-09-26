@@ -1,12 +1,14 @@
 'use client';
 
-import { API_APP_SEARCH_KEY } from '@/actions/queryKeys';
-import { useUpdateParams } from '@/hooks/useUpdateParams';
-import { useQueryClient } from '@tanstack/react-query';
-import { useCallback } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { SearchParams } from 'types/params/search';
+
+import { API_APP_SEARCH_KEY } from '@/actions/queryKeys';
 import SearchPageScreen from './SearchPageScreen';
+import { SearchParams } from 'types/params/search';
+import { useCallback } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useUpdateParams } from '@/hooks/useUpdateParams';
+
 interface SearchPageControllerProps {
     searchParams: SearchParams;
 }
@@ -31,7 +33,7 @@ const SearchPageController = ({ searchParams }: SearchPageControllerProps) => {
     const onValid = useCallback(
         async ({ term }: SearchFormValue) => {
             updateParams({ term });
-            await queryCache.resetQueries({
+            await queryCache.invalidateQueries({
                 queryKey: [API_APP_SEARCH_KEY],
             });
         },

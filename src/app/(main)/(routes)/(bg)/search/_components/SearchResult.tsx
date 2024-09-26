@@ -2,7 +2,7 @@ import { API_APP_SEARCH_KEY } from '@/actions/queryKeys';
 import { getChannelSearch } from '@/actions/search/search';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { SearchParams } from 'types/params/search';
-import { ChannelBlock } from './ChannelBlock';
+import { AppBlock } from './ChannelBlock';
 
 interface SearchResultProps {
     searchParams: SearchParams;
@@ -25,11 +25,7 @@ export const SearchResult = ({ searchParams }: SearchResultProps) => {
             ) : (
                 <div className="flex flex-col gap-1">
                     {data.map((item) => (
-                        <ChannelBlock
-                            searchParams={searchParams}
-                            data={item}
-                            key={item.steam_appid}
-                        />
+                        <AppBlock searchParams={searchParams} data={item} key={item.steam_appid} />
                     ))}
                 </div>
             )}

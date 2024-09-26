@@ -16,6 +16,19 @@ export async function GET(req: Request) {
                 steamId: true,
                 name: true,
                 avatar: true,
+                library: {
+                    where: {
+                        userId,
+                    },
+                    select: {
+                        app: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
                 servers: {
                     select: {
                         id: true,

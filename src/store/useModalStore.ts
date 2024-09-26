@@ -15,6 +15,7 @@ export type ModalType =
 
 interface ModalData {
     appId?: number;
+    header_image?: string;
 }
 
 interface ModalStore {

@@ -13,7 +13,7 @@ export const NavServerButtonList = ({ data }: ButtonListProps) => {
     return (
         <>
             {data.map((server: any) => (
-                <NavServerButton data={server} />
+                <NavServerButton key={server.id} data={server} />
             ))}
         </>
     );

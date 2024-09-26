@@ -1,9 +1,9 @@
-import { getImageUrl } from '@/actions/image/getImageUrl';
 import { API_COMMENT_KEY } from '@/actions/queryKeys';
-import api from '@/lib/api';
-import { variableAssignment } from '@/utils/variableAssignment';
-import { CommentRequest } from 'types/community/comment';
 import { CommentParams } from 'types/params/community';
+import { CommentRequest } from 'types/community/comment';
+import api from '@/lib/api';
+import { getImageUrl } from '@/actions/image/getImageUrl';
+import { variableAssignment } from '@/utils/variableAssignment';
 
 const getCommentList = async ({
     params,

@@ -17,7 +17,7 @@ export const NavServerButton = ({ data }: NavServerButtonProps) => {
 
     return (
         <div
-            className="relative flex h-12 w-12 cursor-pointer items-center justify-center overflow-hidden rounded-full"
+            className="relative flex h-12 w-12 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full"
             onClick={() => push(`/server/${id}`)}
         >
             <Image

@@ -1,15 +1,15 @@
 'use client';
 
+import { Button } from '@/components/ui/Button';
+import { Comment } from './Comment';
+import { CommentParams } from 'types/params/community';
+import { CommentResponse } from 'types/community/comment';
 import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
+import ReplyList from './ReplyList';
+import { ReplyLoading } from '@/components/loading/ReplyLoading';
 import { Stat1 } from '@/components/icons/common/Stat1.icon';
 import { Stat2 } from '@/components/icons/common/Stat2.icon';
-import { ReplyLoading } from '@/components/loading/ReplyLoading';
-import { Button } from '@/components/ui/Button';
 import { useState } from 'react';
-import { CommentResponse } from 'types/community/comment';
-import { CommentParams } from 'types/params/community';
-import { Comment } from './Comment';
-import ReplyList from './ReplyList';
 
 export interface CommentReplyWrapProps {
     params: CommentParams;
@@ -31,11 +31,7 @@ export const CommentReplyWrap = ({ item, params }: CommentReplyWrapProps) => {
                 {replysCount !== 0 && (
                     <>
                         <div className="relative -left-2 mb-6">
-                            <Button
-                                variant="trans"
-                                size={'iconl'}
-                                onClick={() => setIsReply((e) => !e)}
-                            >
+                            <Button variant="trans" onClick={() => setIsReply((e) => !e)}>
                                 <div className="flex items-center">
                                     {isReply ? <Stat1 /> : <Stat2 />}
                                     <span>{` 답글 ${replysCount}개`}</span>

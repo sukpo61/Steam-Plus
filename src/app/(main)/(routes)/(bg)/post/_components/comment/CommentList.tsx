@@ -1,14 +1,15 @@
 'use client';
 
-import { getCommentList } from '@/actions/community/comment';
+import { CommentParams, PostSearchParams } from 'types/params/community';
+
 import { API_COMMENT_KEY } from '@/actions/queryKeys';
+import { CommentInput } from './CommentInput';
+import { CommentReplyWrap } from './CommentReplyWrap';
 import { DefaultLoading } from '@/components/common/DefaultLoading';
 import { ObserverTrigger } from '@/components/hoc/ObserverTrigger';
 import { RestartIcon } from '@/components/icons/common/Restart.icon';
+import { getCommentList } from '@/actions/community/comment';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { CommentParams, PostSearchParams } from 'types/params/community';
-import { CommentInput } from './CommentInput';
-import { CommentReplyWrap } from './CommentReplyWrap';
 
 interface CommentListProps {
     searchParams: PostSearchParams;
@@ -37,7 +38,7 @@ export const CommentList = ({ params, searchParams }: CommentListProps) => {
 
     const commentsData = data.pages;
 
-    const commentCount = commentsData[0].data[0]?.commentCount || 0;
+    const commentCount = commentsData[0].commentCount;
 
     return (
         <div className="flex w-full max-w-[948px] flex-1 flex-col items-center bg-primary px-8 py-4">
@@ -56,8 +57,8 @@ export const CommentList = ({ params, searchParams }: CommentListProps) => {
                     <span className="base">댓글이 없습니다.</span>
                 ) : (
                     <ObserverTrigger onObserve={onObserve}>
-                        {commentsData.map((item: any) =>
-                            item.data.map((item: any) => (
+                        {commentsData.map((page: any) =>
+                            page.data.map((item: any) => (
                                 <CommentReplyWrap
                                     key={item.id}
                                     item={item}

@@ -1,13 +1,16 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { ImageInput, ImageInputValue } from './ImageInput';
 import { KeyboardEvent, useCallback, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { LoaderIcon } from '../icons/common/Loader.icon';
+
 import { Button } from './Button';
-import { ImageInput, ImageInputValue } from './ImageInput';
 import { ImagePreview } from './ImagePreview';
+import { LoaderIcon } from '../icons/common/Loader.icon';
 import { TextArea } from './TextArea';
+import { cn } from '@/lib/utils';
+import { useUserStore } from '@/store/useUserStore';
+
 export interface TextImageInputProps {
     cancle?: () => void;
     placeholder?: string;
@@ -39,6 +42,7 @@ export const TextImageInput = ({
         control,
         formState: { isSubmitting },
     } = useFormContext<TextImageFormValue>();
+    const { data } = useUserStore((state) => state);
 
     const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -82,7 +86,7 @@ export const TextImageInput = ({
             )}
         >
             <header className="mb-2 flex w-full justify-between">
-                <span className="text-base">user</span>
+                <span className="text-base">{data.name}</span>
                 <div className="flex">
                     {content.length !== 0 && (
                         <span className="text-sm">{`${content.length}/${textMaxLength}`}</span>

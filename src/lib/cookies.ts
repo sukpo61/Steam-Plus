@@ -1,5 +1,6 @@
 'use server';
 
+import { cookieString } from '@/utils/cookieString';
 import { cookies } from 'next/headers';
 
 export const createCookie = (data: any) => {
@@ -9,4 +10,9 @@ export const createCookie = (data: any) => {
 export const getCookie = async (key: string) => {
     const cookieStore = cookies();
     return cookieStore.get(key)?.value;
+};
+export const getAllCookie = () => {
+    const cookieStore = cookies();
+    const result = cookieString(cookieStore.getAll());
+    return result;
 };

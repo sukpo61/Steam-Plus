@@ -26,7 +26,13 @@ const SearchPageLoading = () => {
 
     const BlockList = Array(10).fill(<LoadingBlock />);
 
-    return <div className="flex flex-col gap-1">{BlockList}</div>;
+    return (
+        <div className="flex flex-col gap-1">
+            {BlockList.map((_, index) => (
+                <LoadingBlock key={index} />
+            ))}
+        </div>
+    );
 };
 
 const SearchPageScreen = ({ searchParams }: SearchPageScreenProps) => {

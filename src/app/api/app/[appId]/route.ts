@@ -1,40 +1,73 @@
-import { getAppDetails } from '@/app/api/actions/steam';
-import { db } from '@/lib/db';
 import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { getAppDetails } from '../../actions/steam';
+
+const SERVERS_BATCH = 18;
 
 export async function GET(req: Request, { params }: { params: { appId: string } }) {
     try {
         const appId = parseInt(params.appId);
         const { searchParams } = new URL(req.url);
 
-        const appDetail = await getAppDetails(appId);
-
-        const page = parseInt(searchParams.get('page') || '1', 10);
-        const pageSize = parseInt(searchParams.get('pagesize') || '10', 10);
-        const offset = (page - 1) * pageSize;
-        const totalCount = await db.server.count({
+        let appDetail = (await db.app.findUnique({
             where: {
-                appId,
+                id: appId,
             },
-        });
+        })) as any;
 
-        const servers = await db.server.findMany({
-            where: {
-                appId,
-            },
-            orderBy: {
-                createdAt: 'desc',
-            },
-            include: {
-                user: {
-                    select: {
-                        avatar: true,
+        if (!appDetail) {
+            appDetail = await getAppDetails(appId);
+        }
+
+        const cursor = searchParams.get('cursor');
+
+        let servers = [];
+
+        if (cursor) {
+            servers = await db.server.findMany({
+                take: SERVERS_BATCH,
+                skip: 1,
+                cursor: {
+                    id: cursor,
+                },
+                where: {
+                    appId,
+                },
+                orderBy: {
+                    createdAt: 'desc',
+                },
+                include: {
+                    user: {
+                        select: {
+                            avatar: true,
+                        },
                     },
                 },
-            },
-            skip: offset,
-            take: pageSize,
-        });
+            });
+        } else {
+            servers = await db.server.findMany({
+                take: SERVERS_BATCH,
+                where: {
+                    appId,
+                },
+                orderBy: {
+                    createdAt: 'desc',
+                },
+                include: {
+                    user: {
+                        select: {
+                            avatar: true,
+                        },
+                    },
+                },
+            });
+        }
+
+        let nextCursor = null;
+
+        if (servers.length === SERVERS_BATCH) {
+            nextCursor = servers[SERVERS_BATCH - 1].id;
+        }
 
         const serversPromise = servers.map(async (server) => ({
             ...server,
@@ -47,7 +80,11 @@ export async function GET(req: Request, { params }: { params: { appId: string } 
 
         const serversResult = await Promise.all(serversPromise);
 
-        return NextResponse.json({ servers: serversResult, appDetail, totalCount });
+        return NextResponse.json({
+            data: serversResult,
+            nextCursor,
+            appDetail,
+        });
     } catch (error) {
         console.log('POST_GET', error);
         return new NextResponse('Internal Error', { status: 500 });

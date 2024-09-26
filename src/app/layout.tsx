@@ -1,3 +1,4 @@
+import { CookiesProvider } from '@/provider/CookiesProvider';
 import { ModalProvider } from '@/provider/ModalProvider';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -20,8 +21,10 @@ export default function RootLayout({
         <html lang="en">
             <body>
                 <QueryProvider>
-                    <ModalProvider />
-                    {children}
+                    <CookiesProvider>
+                        <ModalProvider />
+                        {children}
+                    </CookiesProvider>
                 </QueryProvider>
             </body>
         </html>

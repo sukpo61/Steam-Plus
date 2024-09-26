@@ -6,11 +6,18 @@ export async function GET(req: Request) {
         const { searchParams } = new URL(req.url);
 
         const apps = await db.app.findMany({
+            // where: {
+            //     servers: {
+            //         some: {},
+            //     },
+            // },
             select: {
                 id: true,
                 name: true,
                 header_image: true,
                 short_description: true,
+                categories: true,
+                genres: true,
                 servers: {
                     select: {
                         members: {
@@ -24,7 +31,7 @@ export async function GET(req: Request) {
         });
 
         const result = apps.map((app) => {
-            const { id, name, header_image, short_description, servers } = app;
+            const { id, name, header_image, short_description, servers, categories, genres } = app;
             const membersCount = servers.reduce(
                 (accumulator, server) => accumulator + server.members.length,
                 0,
@@ -34,6 +41,8 @@ export async function GET(req: Request) {
                 name,
                 header_image,
                 short_description,
+                categories,
+                genres,
                 serversCount: servers.length,
                 membersCount,
             };

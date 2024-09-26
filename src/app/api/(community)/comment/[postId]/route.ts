@@ -134,7 +134,6 @@ export async function GET(req: Request, { params }: { params: { postId: string }
                 const isOwned = userId && comment.user?.id === userId;
                 return {
                     comment: { ...comment, isOwned },
-                    commentCount,
                     replysCount: await db.comment.count({
                         where: {
                             postId,
@@ -153,6 +152,7 @@ export async function GET(req: Request, { params }: { params: { postId: string }
 
         return NextResponse.json({
             data: result,
+            commentCount,
             nextCursor,
         });
     } catch (error) {

@@ -1,4 +1,4 @@
-import { getCookie } from '@/lib/cookies';
+import { getAllCookie, getCookie } from '@/lib/cookies';
 import axios from 'axios';
 
 const isServer = typeof window === 'undefined';
@@ -15,6 +15,11 @@ const api = axios.create({
 
 api.interceptors.request.use(
     async function (config) {
+        if (isServer) {
+            const cookie = await getAllCookie();
+            api.defaults.headers.Cookie = cookie;
+        }
+
         let accessToken = api.defaults.headers.common['Authorization'];
         refreshToken = (await getCookie('refreshToken')) || '';
 

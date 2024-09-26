@@ -1,14 +1,15 @@
 'use client';
 
-import { getPost, patchPost, postPost } from '@/actions/community/post';
 import { API_COMMUNITY_KEY, API_POST_KEY } from '@/actions/queryKeys';
-import { ImageInputValue } from '@/components/ui/ImageInput';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { CommunityParams, PostParams } from 'types/params/community';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { getPost, patchPost, postPost } from '@/actions/community/post';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+import { ImageInputValue } from '@/components/ui/ImageInput';
+import { useRouter } from 'next/navigation';
 import z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface PostAddControllerProps {
     params: PostParams & CommunityParams;
@@ -64,10 +65,13 @@ export const PostAddController = ({ params, children }: PostAddControllerProps) 
     });
 
     const onSuccess = async (id: string) => {
-        await queryCache.resetQueries({
+        // await queryCache.removeQueries({
+        //     queryKey: [API_COMMUNITY_KEY],
+        // });
+        await queryCache.invalidateQueries({
             queryKey: [API_COMMUNITY_KEY],
         });
-        await queryCache.resetQueries({
+        await queryCache.invalidateQueries({
             queryKey: [API_POST_KEY, { postId }],
         });
         replace(`/post/${id}`);
