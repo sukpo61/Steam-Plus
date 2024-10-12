@@ -25,7 +25,7 @@ export const ServerHeader = ({ data }: ServerHeaderProps) => {
     // }, [background]);
 
     return (
-        <div className="flex h-12 w-full bg-primary">
+        <div className="flex h-12 w-full items-center border-b border-solid border-b-primary-darker px-2">
             <span>{name}</span>
         </div>
     );

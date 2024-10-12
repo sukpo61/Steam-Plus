@@ -1,13 +1,17 @@
 'use client';
 
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+
 import { API_SERVER_KEY } from '@/actions/queryKeys';
+import { Channel } from './Channel';
+import { ServerHeader } from './ServerHeader';
+import { ServerParams } from 'types/params/server';
+import { UserAvatar } from '@/components/common/UserAvatar';
+import { UserList } from './UserList';
 import { getServer } from '@/actions/server/server';
 import { useBgStore } from '@/store/useBgStore';
-import { useSidebarStore } from '@/store/useSidebarStore';
-import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { ServerParams } from 'types/params/server';
-import { ServerHeader } from './ServerHeader';
+import { useSidebarStore } from '@/store/useSidebarStore';
 
 interface ServerProps {
     params: ServerParams;
@@ -48,6 +52,14 @@ export const ServerClient = ({ params }: ServerProps) => {
     return (
         <div className="flex h-full w-full flex-col">
             <ServerHeader data={data.app} />
+            <div className="flex flex-1">
+                <div className="flex flex-1">
+                    <Channel />
+                </div>
+                <div className="flex h-full w-[240px]">
+                    <UserList />
+                </div>
+            </div>
         </div>
     );
 };

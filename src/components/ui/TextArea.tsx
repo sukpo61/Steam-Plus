@@ -14,13 +14,15 @@ interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 }
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-    ({ maxLength, maxHeight = 48, onChange, className, ...props }, ref) => {
+    ({ maxHeight = 48, onChange, className, ...props }, ref) => {
         const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
         const resizeTextarea = useCallback(() => {
             if (!inputRef.current) return;
             inputRef.current.style.height = 'auto';
             const scrollHeight = inputRef.current.scrollHeight;
+            console.log('scrollHeight', scrollHeight);
+
             inputRef.current.style.height =
                 scrollHeight < maxHeight ? `${scrollHeight}px` : `${maxHeight}px`;
         }, [inputRef.current]);
@@ -56,7 +58,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
                     className,
                 )}
                 ref={combineRef}
-                maxLength={maxLength}
+                rows={1}
                 onChange={handleOnChange}
                 {...props}
             />

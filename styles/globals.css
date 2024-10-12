@@ -11,14 +11,34 @@
 /* scrollbar */
 ::-webkit-scrollbar {
     width: 6px;
-    height: 5px;
-    padding: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
     border-radius: 3px;
     background-color: hsl(var(--primary-brighter));
-    margin: 4px;
+}
+
+.thumb-sm::-webkit-scrollbar {
+    width: 4px;
+}
+
+.thumb-sm::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background-color: hsl(var(--primary-brighter));
+}
+
+.thumb-lg::-webkit-scrollbar {
+    width: 8px;
+}
+
+.thumb-lg::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: hsl(var(--primary-darker));
+}
+
+.thumb-bg::-webkit-scrollbar-track {
+    border-radius: 4px;
+    background: hsl(var(--primary-bright));
 }
 
 /* font d*/

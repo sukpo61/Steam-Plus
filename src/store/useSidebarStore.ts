@@ -4,6 +4,7 @@ export type SidebarType = 'friend' | 'server' | 'library';
 
 interface SidebarData {
     serverId?: number;
+    name?: string;
 }
 
 interface SidebarStore {
@@ -14,6 +15,6 @@ interface SidebarStore {
 
 export const useSidebarStore = create<SidebarStore>((set) => ({
     type: 'friend',
-    data: {},
+    data: { name: '기본이름' },
     setType: (type, data = {}) => set({ type, data }),
 }));

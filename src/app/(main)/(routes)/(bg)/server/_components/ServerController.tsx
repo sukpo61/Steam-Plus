@@ -1,10 +1,11 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface ServerControllerProps {
     params: any;
@@ -20,7 +21,10 @@ const ServerController = ({ params, children }: ServerControllerProps) => {
 
     const form = useForm<ServerControllerValue>({
         resolver: zodResolver(formSchema),
-        values: {},
+        values: {
+            content: '',
+            images: [],
+        },
     });
 
     const { handleSubmit } = form;

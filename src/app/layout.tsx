@@ -1,9 +1,10 @@
-import { CookiesProvider } from '@/provider/CookiesProvider';
-import { ModalProvider } from '@/provider/ModalProvider';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { QueryProvider } from 'src/provider/QueryProvider';
 import 'styles/globals.css';
+
+import { CookiesProvider } from '@/provider/CookiesProvider';
+import { Inter } from 'next/font/google';
+import type { Metadata } from 'next';
+import { ModalProvider } from '@/provider/ModalProvider';
+import { QueryProvider } from 'src/provider/QueryProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 

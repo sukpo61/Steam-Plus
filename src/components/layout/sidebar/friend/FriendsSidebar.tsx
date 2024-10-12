@@ -1,12 +1,12 @@
 'use client';
 
-import { CommunityIcon } from '@/components/icons/common/Community.icon';
 import { Button } from '@/components/ui/Button';
-import { Separator } from '@/components/ui/Separator';
-import { useSidebarStore } from '@/store/useSidebarStore';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { CommunityIcon } from '@/components/icons/common/Community.icon';
 import { LibrarySidebar } from './LibrarySidebar';
+import { Separator } from '@/components/ui/Separator';
+import { useRouter } from 'next/navigation';
+import { useSidebarStore } from '@/store/useSidebarStore';
+import { useState } from 'react';
 
 const Library = () => {
     return (
@@ -27,7 +27,7 @@ export const FriendsSidebar = () => {
     }
 
     return (
-        <div className="flex h-full w-full flex-col">
+        <div className="flex h-full w-full flex-col pr-0.5">
             <div className="w-full p-2">
                 <div
                     className="flex h-7 cursor-pointer items-center rounded-sm bg-primary-dark px-2"
@@ -36,8 +36,8 @@ export const FriendsSidebar = () => {
                     <span className="text-sm">대화 찾기</span>
                 </div>
             </div>
-            <Separator />
-            <div className="flex flex-col p-2">
+            <Separator className="bg-primary-dark" />
+            <div className="thumb-sm flex flex-1 basis-0 flex-col overflow-y-scroll py-2 pl-2 pr-1">
                 <Button
                     variant={'trans'}
                     className="flex h-10 w-full justify-start gap-2 rounded-md p-2"
@@ -63,7 +63,7 @@ export const FriendsSidebar = () => {
                         </>
                     )}
                 </Button>
-                {state ? <LibrarySidebar /> : <div></div>}
+                <div className="flex flex-col">{state ? <LibrarySidebar /> : <div></div>}</div>
             </div>
         </div>
     );

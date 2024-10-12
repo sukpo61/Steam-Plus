@@ -1,9 +1,6 @@
-import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
-import { SidebarClient } from './SidebarClient';
+import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
 
-const SidebarLoading = () => {
-    return <></>;
-};
+import { SidebarClient } from './SidebarClient';
 
 export const SidebarServer = async () => {
     const queryClient = new QueryClient();
