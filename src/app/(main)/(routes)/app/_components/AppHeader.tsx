@@ -16,7 +16,7 @@ interface ChannelInfoProps {
 export const AppHeader = ({ data }: ChannelInfoProps) => {
     const { header_image, steam_appid: appId, name } = data;
     const { push } = useRouter();
-    const { onOpen } = useModalStore();
+    const { onOpen } = useModalStore((state) => state);
 
     return (
         <div className="flex w-full overflow-hidden rounded-xl">
@@ -38,7 +38,7 @@ export const AppHeader = ({ data }: ChannelInfoProps) => {
                         </Button>
                         <Button
                             size={'iconlg'}
-                            onClick={() => onOpen('createChannel', { appId, header_image })}
+                            onClick={() => onOpen('createServer', { appId, header_image })}
                             className="bg-primary-foreground/10 backdrop-blur-lg hover:bg-primary-foreground/20"
                         >
                             <AddIcon />

@@ -3,8 +3,13 @@ import { create } from 'zustand';
 export type SidebarType = 'friend' | 'server' | 'library';
 
 interface SidebarData {
-    serverId?: number;
+    id?: string;
     name?: string;
+    channels?: {
+        id: string;
+        name: string;
+        type: 'TEXT' | 'AUDIO' | 'VIDEO';
+    }[];
 }
 
 interface SidebarStore {

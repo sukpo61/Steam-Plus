@@ -59,6 +59,15 @@ export async function GET(req: Request, { params }: { params: { appId: string } 
                             avatar: true,
                         },
                     },
+                    channels: {
+                        take: 1,
+                        orderBy: {
+                            createdAt: 'asc',
+                        },
+                        select: {
+                            id: true,
+                        },
+                    },
                 },
             });
         }

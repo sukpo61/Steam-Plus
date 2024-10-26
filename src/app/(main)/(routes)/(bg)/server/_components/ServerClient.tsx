@@ -1,20 +1,22 @@
 'use client';
 
+import { ServerParams, ServerSearchParams } from 'types/params/server';
 import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 
 import { API_SERVER_KEY } from '@/actions/queryKeys';
 import { Channel } from './Channel';
+import { MemberList } from './MemberList';
+import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
 import { ServerHeader } from './ServerHeader';
-import { ServerParams } from 'types/params/server';
-import { UserAvatar } from '@/components/common/UserAvatar';
-import { UserList } from './UserList';
 import { getServer } from '@/actions/server/server';
 import { useBgStore } from '@/store/useBgStore';
 import { useEffect } from 'react';
 import { useSidebarStore } from '@/store/useSidebarStore';
+import { useUserStore } from '@/store/useUserStore';
 
 interface ServerProps {
     params: ServerParams;
+    searchParams: ServerSearchParams;
 }
 
 export interface SearchFormValue {
@@ -23,12 +25,13 @@ export interface SearchFormValue {
     content: string;
 }
 
-export const ServerClient = ({ params }: ServerProps) => {
-    const { serverId } = params;
+export const ServerClient = ({ params, searchParams }: ServerProps) => {
+    const { channelId } = searchParams;
     const { setBackground } = useBgStore((state) => state);
     const { setType } = useSidebarStore((state) => state);
-
-    const queryCache = useQueryClient();
+    const {
+        data: { id: userId },
+    } = useUserStore((state) => state);
 
     const { data } = useSuspenseQuery({
         queryKey: [API_SERVER_KEY, params],
@@ -37,6 +40,7 @@ export const ServerClient = ({ params }: ServerProps) => {
 
     const {
         app: { background, steam_appid: appId },
+        members,
     } = data;
 
     useEffect(() => {
@@ -46,18 +50,25 @@ export const ServerClient = ({ params }: ServerProps) => {
     }, [background]);
 
     useEffect(() => {
-        setType('server');
-    }, []);
+        if (data) {
+            setType('server', data);
+        }
+        if (members.map(({ user }: any) => user.id).includes(userId)) {
+            console.log('include');
+        }
+    }, [data]);
 
     return (
         <div className="flex h-full w-full flex-col">
             <ServerHeader data={data.app} />
             <div className="flex flex-1">
                 <div className="flex flex-1">
-                    <Channel />
+                    <QuerySuspenseErrorBoundary>
+                        {channelId && <Channel params={params} searchParams={searchParams} />}
+                    </QuerySuspenseErrorBoundary>
                 </div>
                 <div className="flex h-full w-[240px]">
-                    <UserList />
+                    <MemberList data={members} />
                 </div>
             </div>
         </div>

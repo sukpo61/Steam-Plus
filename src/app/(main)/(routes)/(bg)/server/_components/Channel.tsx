@@ -1,31 +1,60 @@
 'use client';
 
-import { API_COMMENT_KEY } from '@/actions/queryKeys';
-import { ChatInput } from '@/components/ui/ChatInput';
-import { Input } from '@/components/ui/Input';
-import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { ServerParams, ServerSearchParams } from 'types/params/server';
 
-// import { ChatInput } from '@/components/chat/chat-input';
+import { API_MESSAGE_KEY } from '@/actions/queryKeys';
+import { ChatInput } from '@/components/ui/ChatInput';
+import { Message } from './Message';
+import { ObserverTrigger } from '@/components/hoc/ObserverTrigger';
+import ServerController from './ServerController';
+import { getMessages } from '@/actions/messages/messages';
+import { useChatSocket } from '@/hooks/useChatSocket';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
 interface ChannelProps {
     data?: any;
+    params: ServerParams;
+    searchParams: ServerSearchParams;
 }
 
-export const Channel = () => {
-    // const { fetchNextPage, hasNextPage, data, refetch, isPending } = useSuspenseInfiniteQuery({
-    //     queryKey: [API_COMMENT_KEY],
-    //     queryFn: () => {},
-    //     initialPageParam: null,
-    //     getNextPageParam: ({}) => {
-    //         return null;
-    //     },
-    // });
+export const Channel = ({ params, searchParams }: ChannelProps) => {
+    const { serverId } = params;
+    const addKey = `messages/${serverId}/add`;
+    const updateKey = `messages/${serverId}/update`;
+    const deleteKey = `messages/${serverId}/delete`;
+
+    useChatSocket({ queryKey: [API_MESSAGE_KEY, searchParams], addKey, updateKey, deleteKey });
+
+    const { fetchNextPage, hasNextPage, data, refetch, isPending } = useSuspenseInfiniteQuery({
+        queryKey: [API_MESSAGE_KEY, searchParams],
+        queryFn: ({ pageParam: cursor }) => getMessages({ searchParams, cursor }),
+        initialPageParam: null,
+        getNextPageParam: ({ nextCursor }) => {
+            return nextCursor ?? null;
+        },
+    });
+
+    const onObserve = () => {
+        hasNextPage && fetchNextPage();
+    };
+
+    const messagesData = data.pages;
 
     return (
         <div className="flex h-full w-full flex-col pr-1 pt-1">
-            <div className="thumb-bg thumb-lg flex w-full flex-1 basis-0 flex-col-reverse gap-4 overflow-y-scroll pl-3 pr-1"></div>
-            <div className="flex w-full px-3 pb-6">
-                <ChatInput />
+            <div className="thumb-bg thumb-lg flex w-full flex-1 basis-0 flex-col-reverse overflow-y-scroll px-4">
+                <ObserverTrigger onObserve={onObserve}>
+                    {messagesData.map((page: any) =>
+                        page.items?.map((item: any) => (
+                            <Message key={item.id} item={item} params={params} />
+                        )),
+                    )}
+                </ObserverTrigger>
+            </div>
+            <div className="flex w-full pb-6 pl-4 pr-3">
+                <ServerController params={params} searchParams={searchParams}>
+                    <ChatInput />
+                </ServerController>
             </div>
         </div>
     );

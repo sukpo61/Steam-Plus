@@ -17,7 +17,6 @@ export interface ChatInputProps {
     placeholder?: string;
     multiple?: boolean;
     imageMaxlength?: number;
-    textMaxHeight?: number;
     textMaxLength?: number;
     className?: string;
     disabled?: boolean;
@@ -34,7 +33,6 @@ export const ChatInput = ({
     multiple,
     imageMaxlength = 3,
     className,
-    textMaxHeight = 400,
     textMaxLength = 3000,
 }: ChatInputProps) => {
     const {
@@ -49,7 +47,6 @@ export const ChatInput = ({
     const buttonRef = useRef<HTMLButtonElement>(null);
 
     const prevImages = useWatch({ control, name: 'images' });
-    const content = useWatch({ control, name: 'content' });
 
     const getImageSource = useCallback((src: File | string) => {
         if (typeof src === 'string') return src;
@@ -67,16 +64,6 @@ export const ChatInput = ({
         const filteredImages = prevImages?.filter((image) => image.id !== id);
         setValue('images', filteredImages);
     };
-
-    const handleKeyDown = useCallback<(event: KeyboardEvent<HTMLTextAreaElement>) => void>(
-        (event) => {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                buttonRef.current?.click();
-            }
-        },
-        [],
-    );
 
     return (
         <div
@@ -97,23 +84,25 @@ export const ChatInput = ({
                 </>
             )}
             <div className="flex w-full items-center">
-                <div className="flex h-full">
+                <section className="flex h-full">
                     <ImageInput
-                        onChange={(images) => setValue('images', images)}
                         prevValue={prevImages}
+                        onChange={(images) => setValue('images', images)}
                         maxLength={imageMaxlength}
                         multiple={multiple}
                         replaceable
                     />
-                </div>
-                <TextArea
-                    onKeyDown={handleKeyDown}
-                    maxLength={textMaxLength}
-                    maxHeight={400}
-                    placeholder={placeholder}
-                    className="p-1"
-                    {...register('content')}
-                />
+                </section>
+                <section className="flex flex-1">
+                    <TextArea
+                        maxLength={textMaxLength}
+                        maxHeight={400}
+                        placeholder={placeholder}
+                        className="p-1"
+                        {...register('content')}
+                    />
+                </section>
+                <Button className="hidden" ref={buttonRef} />
             </div>
         </div>
     );

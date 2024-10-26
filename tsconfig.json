@@ -1,4 +1,8 @@
 {
+    "ts-node": {
+        "transpileOnly": true,
+        "require": ["tsconfig-paths/register"]
+    },
     "compilerOptions": {
         "target": "es5",
         "lib": ["dom", "dom.iterable", "esnext"],
@@ -28,10 +32,9 @@
         "next-env.d.ts",
         "**/*.ts",
         "**/*.tsx",
+        "**/*.mts",
         "pages/**/*.tsx",
-        ".next/types/**/*.ts",
-        "server/server.mts",
-        "server/server.js"
+        ".next/types/**/*.ts"
     ],
     "exclude": ["node_modules"]
 }

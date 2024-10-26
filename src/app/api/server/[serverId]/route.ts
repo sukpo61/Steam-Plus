@@ -10,6 +10,7 @@ export async function GET(req: Request, { params }: { params: { serverId: string
                 id: serverId,
             },
             select: {
+                id: true,
                 name: true,
                 description: true,
                 app: {
@@ -19,12 +20,33 @@ export async function GET(req: Request, { params }: { params: { serverId: string
                         background: true,
                     },
                 },
+                channels: {
+                    select: {
+                        id: true,
+                        name: true,
+                        type: true,
+                    },
+                    orderBy: {
+                        createdAt: 'asc',
+                    },
+                },
+                members: {
+                    select: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                avatar: true,
+                            },
+                        },
+                    },
+                },
             },
         });
 
         return NextResponse.json(server);
     } catch (error) {
-        console.log('[SERVER_ID_DELETE]', error);
+        console.log('[SERVER_GET]', error);
         return new NextResponse('Internal Error', { status: 500 });
     }
 }

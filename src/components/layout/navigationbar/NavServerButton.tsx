@@ -11,6 +11,7 @@ export const NavServerButton = ({ data }: NavServerButtonProps) => {
     const {
         id,
         app: { header_image },
+        channels,
     } = data;
 
     const { push } = useRouter();
@@ -18,7 +19,7 @@ export const NavServerButton = ({ data }: NavServerButtonProps) => {
     return (
         <div
             className="relative flex h-12 w-12 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full"
-            onClick={() => push(`/server/${id}`)}
+            onClick={() => push(`/server/${id}?channelId=${channels[0].id}`)}
         >
             <Image
                 src={header_image}

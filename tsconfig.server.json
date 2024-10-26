@@ -1,0 +1,16 @@
+{
+    "extends": "./tsconfig.json",
+    "include": ["server/server.ts"],
+    "exclude": ["node_modules", "dist", "out"],
+    "compilerOptions": {
+        "module": "CommonJS",
+        "outDir": "./dist",
+        "noEmit": false
+    },
+    "ts-node": {
+        "transpileOnly": true,
+        "compilerOptions": {
+            "module": "CommonJS"
+        }
+    }
+}

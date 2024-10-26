@@ -29,11 +29,11 @@ const bgVariants = cva('relative h-[128px] w-full', {
 
 export const ServerBlock = ({ data }: any) => {
     const { push } = useRouter();
-    const { id, name, memberCount, user, description } = data;
+    const { id, name, memberCount, user, description, channels } = data;
     const { avatar } = user;
 
     const onClickHandler = () => {
-        push(`/server/${id}`);
+        push(`/server/${id}?channelId=${channels[0].id}`);
     };
 
     return (

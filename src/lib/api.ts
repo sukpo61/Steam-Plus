@@ -1,4 +1,5 @@
 import { getAllCookie, getCookie } from '@/lib/cookies';
+
 import axios from 'axios';
 
 const isServer = typeof window === 'undefined';

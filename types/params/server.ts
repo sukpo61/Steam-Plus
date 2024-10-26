@@ -1,4 +1,6 @@
 export interface ServerParams {
     serverId: string;
 }
-export interface ServerSearchParams {}
+export interface ServerSearchParams {
+    channelId: string;
+}

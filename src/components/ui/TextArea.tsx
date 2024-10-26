@@ -1,5 +1,6 @@
 import {
     ChangeEvent,
+    KeyboardEvent,
     TextareaHTMLAttributes,
     forwardRef,
     useCallback,
@@ -14,14 +15,14 @@ interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 }
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-    ({ maxHeight = 48, onChange, className, ...props }, ref) => {
+    ({ maxHeight = 48, onChange, className, onKeyDown, ...props }, ref) => {
         const inputRef = useRef<HTMLTextAreaElement | null>(null);
+        const buttonRef = useRef<HTMLButtonElement>(null);
 
         const resizeTextarea = useCallback(() => {
             if (!inputRef.current) return;
             inputRef.current.style.height = 'auto';
             const scrollHeight = inputRef.current.scrollHeight;
-            console.log('scrollHeight', scrollHeight);
 
             inputRef.current.style.height =
                 scrollHeight < maxHeight ? `${scrollHeight}px` : `${maxHeight}px`;
@@ -33,6 +34,17 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
                 onChange?.(event);
             },
             [onChange],
+        );
+
+        const handleKeyDown = useCallback<(event: KeyboardEvent<HTMLTextAreaElement>) => void>(
+            (event) => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    buttonRef.current?.click();
+                }
+                onKeyDown?.(event);
+            },
+            [],
         );
 
         const combineRef = useCallback(
@@ -52,16 +64,20 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         }, [inputRef.current?.value]);
 
         return (
-            <textarea
-                className={cn(
-                    'w-full resize-none border-none bg-transparent p-0 text-base placeholder:text-primary-foreground/50 focus:outline-none',
-                    className,
-                )}
-                ref={combineRef}
-                rows={1}
-                onChange={handleOnChange}
-                {...props}
-            />
+            <>
+                <textarea
+                    className={cn(
+                        'w-full resize-none border-none bg-transparent p-0 text-base placeholder:text-primary-foreground/50 focus:outline-none',
+                        className,
+                    )}
+                    ref={combineRef}
+                    rows={1}
+                    onChange={handleOnChange}
+                    onKeyDown={handleKeyDown}
+                    {...props}
+                />
+                <button className="hidden" ref={buttonRef} />
+            </>
         );
     },
 );

@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { ModalFormValue } from './CreateChannelModal';
+import { ModalFormValue } from './CreateServerModal';
 import { MouseEventHandler } from 'react';
 import { TextArea } from '@/components/ui/TextArea';
 import { useFormContext } from 'react-hook-form';

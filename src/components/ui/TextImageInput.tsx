@@ -44,12 +44,10 @@ export const TextImageInput = ({
     } = useFormContext<TextImageFormValue>();
     const { data } = useUserStore((state) => state);
 
-    const buttonRef = useRef<HTMLButtonElement>(null);
-
     const prevImages = useWatch({ control, name: 'images' });
     const content = useWatch({ control, name: 'content' });
 
-    const isNoContents = prevImages.length === 0 && content.length === 0;
+    const isNoContents = prevImages?.length === 0 && content?.length === 0;
 
     const getImageSource = useCallback((src: File | string) => {
         if (typeof src === 'string') return src;
@@ -68,16 +66,6 @@ export const TextImageInput = ({
         setValue('images', filteredImages);
     };
 
-    const handleKeyDown = useCallback<(event: KeyboardEvent<HTMLTextAreaElement>) => void>(
-        (event) => {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                buttonRef.current?.click();
-            }
-        },
-        [],
-    );
-
     return (
         <div
             className={cn(
@@ -95,11 +83,13 @@ export const TextImageInput = ({
             </header>
             <section className="flex flex-1">
                 <TextArea
-                    onKeyDown={handleKeyDown}
                     maxLength={textMaxLength}
                     maxHeight={textMaxHeight}
                     placeholder={placeholder}
                     {...register('content')}
+                    onSubmit={() => {
+                        console.log('submit');
+                    }}
                 />
             </section>
             {imageList.length !== 0 && (
@@ -123,11 +113,7 @@ export const TextImageInput = ({
                 />
                 <div className="flex gap-4">
                     {cancle && <Button onClick={cancle}>취소</Button>}
-                    <Button
-                        disabled={isSubmitting || isNoContents}
-                        ref={buttonRef}
-                        variant={'trans'}
-                    >
+                    <Button disabled={isSubmitting || isNoContents} variant={'trans'}>
                         {isSubmitting && prevImages.length !== 0 ? <LoaderIcon /> : '등록'}
                     </Button>
                 </div>

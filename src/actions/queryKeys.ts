@@ -11,6 +11,8 @@ const API_APP_SEARCH_KEY = '/api/search';
 const API_APP_KEY = '/api/app/{{appId}}';
 
 const API_SERVER_KEY = '/api/server/{{serverId}}';
+const API_MESSAGE_KEY = '/api/messages';
+const API_CHANNEL_KEY = '/api/channel/{{serverId}}';
 
 export {
     API_APP_KEY,
@@ -22,4 +24,6 @@ export {
     API_MAIN_KEY,
     API_POST_KEY,
     API_SERVER_KEY,
+    API_MESSAGE_KEY,
+    API_CHANNEL_KEY,
 };

@@ -5,6 +5,8 @@ export async function GET(req: Request) {
     try {
         const userId = req.headers.get('User-Id');
 
+        console.log('userId12', userId);
+
         if (!userId) {
             return new NextResponse('Unauthorized', { status: 401 });
         }
@@ -39,6 +41,15 @@ export async function GET(req: Request) {
                             },
                         },
                         name: true,
+                        channels: {
+                            take: 1,
+                            select: {
+                                id: true,
+                            },
+                            orderBy: {
+                                createdAt: 'asc',
+                            },
+                        },
                     },
                 },
             },

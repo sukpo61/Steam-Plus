@@ -1,17 +1,26 @@
-import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
-import { ServerParams } from 'types/params/server';
-import { ServerClient } from './ServerClient';
+import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
+import { ServerParams, ServerSearchParams } from 'types/params/server';
 
-interface ServerPageServerProps {
+import { API_SERVER_KEY } from '@/actions/queryKeys';
+import { ServerClient } from './ServerClient';
+import { getServer } from '@/actions/server/server';
+
+interface ServerPageProps {
     params: ServerParams;
+    searchParams: ServerSearchParams;
 }
 
-export const ServerPageServer = ({ params }: ServerPageServerProps) => {
+export const ServerPageServer = async ({ params, searchParams }: ServerPageProps) => {
     const queryClient = new QueryClient();
+
+    await queryClient.prefetchQuery({
+        queryKey: [API_SERVER_KEY, params],
+        queryFn: () => getServer({ params }),
+    });
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <ServerClient params={params} />
+            <ServerClient params={params} searchParams={searchParams} />
         </HydrationBoundary>
     );
 };

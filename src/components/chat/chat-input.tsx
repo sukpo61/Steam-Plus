@@ -27,7 +27,7 @@ const formSchema = z.object({
 });
 
 export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
-    const { onOpen } = useModalStore();
+    const { onOpen } = useModalStore((state) => state);
     const router = useRouter();
 
     const form = useForm<z.infer<typeof formSchema>>({

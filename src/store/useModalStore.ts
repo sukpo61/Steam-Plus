@@ -16,6 +16,8 @@ export type ModalType =
 interface ModalData {
     appId?: number;
     header_image?: string;
+
+    serverId?: string;
 }
 
 interface ModalStore {
@@ -30,6 +32,8 @@ export const useModalStore = create<ModalStore>((set) => ({
     type: null,
     data: {},
     isOpen: false,
-    onOpen: (type, data = {}) => set({ isOpen: true, type, data }),
+    onOpen: (type, data = {}) => {
+        return set({ isOpen: true, type: type, data });
+    },
     onClose: () => set({ type: null, isOpen: false }),
 }));

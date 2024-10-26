@@ -1,21 +1,21 @@
 'use client';
 
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { patchComment, postComment } from '@/actions/community/comment';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { API_COMMENT_KEY } from '@/actions/queryKeys';
-import { CommentParams } from 'types/params/community';
 import { CommentRequest } from 'types/community/comment';
+import { ServerParams } from 'types/params/server';
 import { TextImageInput } from '@/components/ui/TextImageInput';
+import { useQueryClient } from '@tanstack/react-query';
+import { useSocket } from '@/provider/SocketProvider';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-interface CommentInputProps {
-    params: CommentParams;
+interface EditInputProps {
+    item?: any;
+    params: ServerParams;
     id?: string;
     defaultValues?: CommentFormValue;
-    closeInput?: () => void;
+    closeInput: () => void;
 }
 
 export interface CommentFormValue extends CommentRequest {}
@@ -23,10 +23,16 @@ export interface CommentFormValue extends CommentRequest {}
 export const MAX_CONTENT_LENGTH = 3000;
 export const MAX_IMAGES_LENGTH = 1;
 
-export const CommentInput = ({ id, params, defaultValues, closeInput }: CommentInputProps) => {
-    const { postId, commentId } = params;
+export const EditInput = ({ item, params, closeInput }: EditInputProps) => {
+    const { serverId } = params;
+
+    const { id, content, images } = item;
+
+    const defaultValues = { content, images: [] };
 
     const queryCache = useQueryClient();
+
+    const { socket } = useSocket();
 
     const formSchema = z
         .object({
@@ -52,33 +58,14 @@ export const CommentInput = ({ id, params, defaultValues, closeInput }: CommentI
 
     const { handleSubmit, reset } = form;
 
-    const onSuccess = async () => {
-        await queryCache.invalidateQueries({
-            queryKey: [API_COMMENT_KEY, { postId }],
-        });
-        await queryCache.invalidateQueries({
-            queryKey: [API_COMMENT_KEY, { commentId }],
-        });
-        reset();
-        closeInput?.();
-    };
-
-    const { mutateAsync: postMutate } = useMutation({
-        mutationFn: postComment,
-        onSuccess: onSuccess,
-    });
-
-    const { mutateAsync: patchMutate } = useMutation({
-        mutationFn: patchComment,
-        onSuccess: onSuccess,
-    });
-
     const onSubmit: SubmitHandler<CommentFormValue> = async (data) => {
-        if (defaultValues && id) {
-            await patchMutate({ data, params: { ...params, postId } });
+        console.log('edit', { id, serverId, ...data });
+
+        if (defaultValues) {
+            socket.emit('edit', { id, serverId, ...data });
+            closeInput();
             return;
         }
-        await postMutate({ data, params });
     };
 
     const onSubmitError = (errors: Object) => {
@@ -93,7 +80,7 @@ export const CommentInput = ({ id, params, defaultValues, closeInput }: CommentI
             <form className="flex w-full" onSubmit={handleSubmit(onSubmit, onSubmitError)}>
                 <TextImageInput
                     placeholder="댓글을 입력하세요."
-                    cancle={closeInput}
+                    // cancle={closeInput}
                     imageMaxlength={MAX_IMAGES_LENGTH}
                     textMaxHeight={240}
                     textMaxLength={MAX_CONTENT_LENGTH}

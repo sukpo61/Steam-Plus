@@ -2,7 +2,7 @@ import { Observer } from '@/components/common/Observer';
 import { ReactNode } from 'react';
 
 interface ObserverTriggerProps {
-    children: ReactNode;
+    children?: ReactNode;
     onObserve: VoidFunction;
     observerMinHeight?: string;
 }
