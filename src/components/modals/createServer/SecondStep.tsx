@@ -28,7 +28,7 @@ export const SecondStep = ({ step, onClick }: SecondStepProps) => {
                         maxHeight={64}
                         className="rounded-md bg-primary-dark p-2"
                     />
-                    <div className="mt-2 flex justify-between">
+                    <div className="mt-2 flex justify-end gap-2">
                         <Button variant="trans" type="button" onClick={onClick}>
                             뒤로
                         </Button>

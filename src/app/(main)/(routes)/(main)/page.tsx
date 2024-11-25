@@ -1,10 +1,10 @@
-import { SearchInput } from '@/components/common/SearchInput';
-import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
-import { BgLayout } from '@/components/layout/main/bgLayout';
-import { NextPage } from 'next';
+import { BgLayout } from '@/components/layout/main/BgLayout';
 import { Fragment } from 'react';
 import { MainController } from './_components/MainController';
 import { MainServer } from './_components/MainServer';
+import { NextPage } from 'next';
+import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
+import { SearchInput } from '@/components/common/SearchInput';
 
 interface MainPageProps {
     searchParams: any;

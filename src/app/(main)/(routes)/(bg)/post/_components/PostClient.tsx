@@ -1,17 +1,18 @@
 'use client';
 
-import { deletePost, getPost } from '@/actions/community/post';
 import { API_COMMUNITY_KEY, API_POST_KEY } from '@/actions/queryKeys';
-import { UserAvatar } from '@/components/common/UserAvatar';
-import { Button } from '@/components/ui/Button';
-import { Separator } from '@/components/ui/Separator';
-import { useBgStore } from '@/store/useBgStore';
-import { timeFormat } from '@/utils/timeFormat';
+import { deletePost, getPost } from '@/actions/community/post';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+
+import { Button } from '@/components/ui/Button';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { PostParams } from 'types/params/community';
+import { Separator } from '@/components/ui/Separator';
+import { UserAvatar } from '@/components/common/UserAvatar';
+import { timeFormat } from '@/utils/timeFormat';
+import { useBgStore } from '@/store/useBgStore';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface PostProps {
     params: PostParams;

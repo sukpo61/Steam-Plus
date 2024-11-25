@@ -4,7 +4,7 @@ import { headers } from 'next/headers';
 
 export const Sidebar = async ({ params }: any) => {
     // await queryClient.prefetchQuery({
-    //     queryKey: [API_GET_USER_INFO_KEY],
+    //     queryKey: [API_USER_KEY],
     //     queryFn: getUserInfo,
     // });
     const headersList = headers();

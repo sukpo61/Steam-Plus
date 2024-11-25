@@ -4,6 +4,7 @@ import axios from 'axios';
 
 const isServer = typeof window === 'undefined';
 const baseURL = isServer ? process.env.API_BASE_URL : '';
+
 let refreshToken = '';
 
 const api = axios.create({
@@ -22,34 +23,35 @@ api.interceptors.request.use(
         }
 
         let accessToken = api.defaults.headers.common['Authorization'];
+
         refreshToken = (await getCookie('refreshToken')) || '';
 
         if (!refreshToken) {
             return config;
         }
 
-        if (!accessToken) {
-            try {
-                const response = await axios.get(`${baseURL}/api/auth/renew-token`, {
-                    headers: {
-                        Cookie: `refreshToken=${refreshToken}`,
-                    },
-                });
-                accessToken = response.headers['authorization'];
-                api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-                config.headers['Authorization'] = `Bearer ${accessToken}`;
-            } catch (error: any) {
-                if (error.response?.status === 403) {
-                    return config;
-                }
-                if (error.response?.status === 401) {
-                    if (!isServer) {
-                        window.location.href = '/signin';
-                    }
-                }
-                return Promise.reject(error);
+        // if (!accessToken) {
+        try {
+            const response = await axios.get(`${baseURL}/api/auth/renew-token`, {
+                headers: {
+                    Cookie: `refreshToken=${refreshToken}`,
+                },
+            });
+            accessToken = response.headers['authorization'];
+            api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+            config.headers['Authorization'] = `Bearer ${accessToken}`;
+        } catch (error: any) {
+            if (error.response?.status === 403) {
+                return config;
             }
+            if (error.response?.status === 401) {
+                if (!isServer) {
+                    window.location.href = '/signin';
+                }
+            }
+            return Promise.reject(error);
         }
+        // }
         return config;
     },
     async function (error) {

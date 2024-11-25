@@ -26,10 +26,23 @@ export async function POST(req: Request) {
                 ...data,
                 userId,
                 channels: {
-                    create: [{ name: 'general', userId }],
+                    create: [{ name: 'general', userId, isDefault: true }],
                 },
                 members: {
                     create: [{ userId, role: MemberRole.ADMIN }],
+                },
+            },
+            include: {
+                channels: {
+                    where: {
+                        isDefault: true,
+                    },
+                    select: {
+                        id: true,
+                    },
+                    orderBy: {
+                        createdAt: 'asc',
+                    },
                 },
             },
         });

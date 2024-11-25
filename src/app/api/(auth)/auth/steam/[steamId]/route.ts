@@ -1,7 +1,8 @@
 import { getAppDetails, getOwnedGames, getPlayerSummaries } from '@/app/api/actions/steam';
+
+import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import jwt from 'jsonwebtoken';
-import { NextResponse } from 'next/server';
 
 const EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000; // 7 days
 

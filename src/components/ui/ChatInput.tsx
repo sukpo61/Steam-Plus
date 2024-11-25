@@ -1,7 +1,7 @@
 'use client';
 
 import { ImageInput, ImageInputValue } from './ImageInput';
-import { KeyboardEvent, useCallback, useRef } from 'react';
+import { KeyboardEvent, MouseEventHandler, useCallback, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { Button } from './Button';
@@ -10,6 +10,7 @@ import { LoaderIcon } from '../icons/common/Loader.icon';
 import { Separator } from './Separator';
 import { TextArea } from './TextArea';
 import { cn } from '@/lib/utils';
+import { useModalStore } from '@/store/useModalStore';
 import { useUserStore } from '@/store/useUserStore';
 
 export interface ChatInputProps {
@@ -20,6 +21,7 @@ export interface ChatInputProps {
     textMaxLength?: number;
     className?: string;
     disabled?: boolean;
+    onClick?: MouseEventHandler;
 }
 
 export interface TextImageFormValue {
@@ -34,6 +36,8 @@ export const ChatInput = ({
     imageMaxlength = 3,
     className,
     textMaxLength = 3000,
+    disabled,
+    onClick,
 }: ChatInputProps) => {
     const {
         register,
@@ -67,7 +71,11 @@ export const ChatInput = ({
 
     return (
         <div
-            className={cn('relative flex w-full flex-col rounded-lg bg-primary-bright', className)}
+            className={cn(
+                'relative flex min-h-10 w-full flex-col rounded-lg bg-primary-bright',
+                className,
+            )}
+            onClick={onClick}
         >
             {imageList?.length !== 0 && (
                 <>
@@ -83,22 +91,25 @@ export const ChatInput = ({
                     <Separator className="bg-primary-brighter" />
                 </>
             )}
-            <div className="flex w-full items-center">
-                <section className="flex h-full">
-                    <ImageInput
-                        prevValue={prevImages}
-                        onChange={(images) => setValue('images', images)}
-                        maxLength={imageMaxlength}
-                        multiple={multiple}
-                        replaceable
-                    />
-                </section>
-                <section className="flex flex-1">
+            <div className="flex h-full w-full items-center">
+                {!disabled && (
+                    <section className="flex h-full">
+                        <ImageInput
+                            prevValue={prevImages}
+                            onChange={(images) => setValue('images', images)}
+                            maxLength={imageMaxlength}
+                            multiple={multiple}
+                            replaceable
+                        />
+                    </section>
+                )}
+                <section className="ml-2 flex flex-1">
                     <TextArea
                         maxLength={textMaxLength}
                         maxHeight={400}
-                        placeholder={placeholder}
+                        placeholder={disabled ? '권한이 없습니다' : placeholder}
                         className="p-1"
+                        disabled={disabled}
                         {...register('content')}
                     />
                 </section>

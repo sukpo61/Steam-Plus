@@ -58,6 +58,7 @@ export const useChatSocket = ({ queryKey, addKey, updateKey, deleteKey }: useCha
                 };
             });
         };
+
         const deleteMessage = async ({ id }: any) => {
             await queryCaches.setQueryData(queryKey, (prevData: any) => {
                 if (!prevData || !prevData.pages || prevData.pages.length === 0) {
@@ -76,14 +77,14 @@ export const useChatSocket = ({ queryKey, addKey, updateKey, deleteKey }: useCha
             });
         };
 
-        socket.once(addKey, addMessage);
-        socket.once(updateKey, updateMessage);
-        socket.once(deleteKey, deleteMessage);
+        socket?.once(addKey, addMessage);
+        socket?.once(updateKey, updateMessage);
+        socket?.once(deleteKey, deleteMessage);
 
         return () => {
-            socket.off(addKey, addMessage);
-            socket.off(updateKey, updateMessage);
-            socket.off(deleteKey, deleteMessage);
+            socket?.off(addKey, addMessage);
+            socket?.off(updateKey, updateMessage);
+            socket?.off(deleteKey, deleteMessage);
         };
     }, [addKey, queryKey, queryCaches, socket]);
 };

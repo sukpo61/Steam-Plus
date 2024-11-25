@@ -33,7 +33,7 @@ export const ServerBlock = ({ data }: any) => {
     const { avatar } = user;
 
     const onClickHandler = () => {
-        push(`/server/${id}?channelId=${channels[0].id}`);
+        push(`/server/${id}?channelId=${channels[0]?.id}`);
     };
 
     return (

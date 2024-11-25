@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { ModalFormValue } from './CreateChannelModal';
+import { ModalFormValue } from './EditServerModal';
 import { MouseEventHandler } from 'react';
 import { TextArea } from '@/components/ui/TextArea';
 import { useFormContext } from 'react-hook-form';
@@ -28,7 +28,7 @@ export const SecondStep = ({ step, onClick }: SecondStepProps) => {
                         maxHeight={64}
                         className="rounded-md bg-primary-dark p-2"
                     />
-                    <div className="mt-2 flex justify-between">
+                    <div className="mt-2 flex justify-end gap-2">
                         <Button variant="trans" type="button" onClick={onClick}>
                             뒤로
                         </Button>

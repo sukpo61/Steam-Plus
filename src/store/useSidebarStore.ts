@@ -5,11 +5,16 @@ export type SidebarType = 'friend' | 'server' | 'library';
 interface SidebarData {
     id?: string;
     name?: string;
+    appId?: number;
+    channelId?: string;
     channels?: {
         id: string;
         name: string;
         type: 'TEXT' | 'AUDIO' | 'VIDEO';
     }[];
+    role?: string;
+    memberId?: string;
+    description?: string;
 }
 
 interface SidebarStore {

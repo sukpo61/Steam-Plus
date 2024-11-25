@@ -1,10 +1,10 @@
 import 'tsconfig-paths/register';
 
-import * as jose from 'jose';
+import { Socket as InitSocket, Server } from 'socket.io';
 
-import { Server } from 'socket.io';
 import { createServer } from 'node:http';
 import { db } from '@/lib/db';
+import jwt from 'jsonwebtoken';
 import next from 'next';
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -13,9 +13,9 @@ const port = 3000;
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
-const jwtConfig = {
-    secret: new TextEncoder().encode(process.env.JWT_SECRET),
-};
+interface Socket extends InitSocket {
+    user?: { userId: string };
+}
 
 app.prepare().then(() => {
     const httpServer = createServer(handler);
@@ -28,26 +28,58 @@ app.prepare().then(() => {
         },
     });
 
-    io.on('connection', (socket) => {
-        console.log('connection');
+    io.use(async (socket: Socket, next: (err?: Error) => void) => {
+        try {
+            const authHeader = socket.handshake.auth.token;
+            if (!authHeader) {
+                console.error('No Authorization header provided');
+                return next(new Error('Authorization header is missing'));
+            }
 
-        socket.on('message', async ({ content, channelId, serverId }) => {
-            const accessToken = socket.handshake.auth.token?.split(' ')[1];
+            const parts = authHeader.split(' ');
+            if (parts.length !== 2 || parts[0] !== 'Bearer') {
+                console.error('Invalid Authorization header format');
+                return next(new Error('Invalid Authorization header format'));
+            }
+
+            const accessToken = parts[1];
 
             if (!accessToken) {
-                console.error('No Authorization token found in cookies');
-                return;
+                console.error('Token is missing after Bearer');
+                return next(new Error('Token is missing'));
             }
 
             try {
-                // JWT 검증
-                const decodedToken = (await jose.jwtVerify(accessToken, jwtConfig.secret)) as {
-                    payload: { userId: string };
-                };
-                const { userId } = decodedToken.payload;
+                const decodedToken = jwt.verify(accessToken, process.env.JWT_SECRET!) as any;
 
-                console.log(`Decoded user ID: ${userId}`);
+                const { userId } = decodedToken;
+                if (!userId) {
+                    console.error('Invalid token payload: userId is missing');
+                    return next(new Error('Invalid token payload'));
+                }
 
+                socket.user = { userId };
+            } catch (err: any) {
+                if (err.name === 'TokenExpiredError') {
+                    console.error('Token has expired');
+                    return next(new Error('Token has expired'));
+                }
+                console.error('Unexpected error during token verification:', err);
+                return next(new Error('Unexpected token verification error'));
+            }
+
+            next();
+        } catch (err) {
+            console.error('Unexpected error in authentication middleware:', err);
+            next(new Error('Unexpected authentication error'));
+        }
+    });
+
+    io.on('connection', (socket: Socket) => {
+        const { userId } = socket.user || {};
+
+        socket.on('message', async ({ content, channelId, serverId, images }) => {
+            try {
                 const member = await db.member.findFirst({
                     where: {
                         serverId: serverId,
@@ -65,12 +97,16 @@ app.prepare().then(() => {
                     return;
                 }
 
-                // 메시지 생성
                 const message = await db.message.create({
                     data: {
                         content,
                         channelId: channelId as string,
                         memberId: memberId,
+                        images: {
+                            create: images?.map((image: any) => ({
+                                src: image.src,
+                            })),
+                        },
                     },
                     include: {
                         member: {
@@ -78,35 +114,20 @@ app.prepare().then(() => {
                                 user: true,
                             },
                         },
+                        images: true,
                     },
                 });
 
                 const addKey = `messages/${serverId}/add`;
-                // 소켓을 통해 메시지 전송
+
                 io.emit(addKey, { message, channelId });
             } catch (error) {
-                console.error('Invalid token:', error);
+                console.error('MESSAGE_POST', error);
             }
         });
 
-        socket.on('edit', async ({ id, content }: any) => {
-            const accessToken = socket.handshake.auth.token?.split(' ')[1];
-
-            if (!accessToken) {
-                console.error('No Authorization token found in cookies');
-                return;
-            }
-
+        socket.on('edit', async ({ id, content }) => {
             try {
-                // JWT 검증
-                const decodedToken = (await jose.jwtVerify(accessToken, jwtConfig.secret)) as {
-                    payload: { userId: string };
-                };
-                const { userId } = decodedToken.payload;
-
-                console.log(`Decoded user ID: ${userId}`);
-
-                // 메시지 생성
                 const message = await db.message.update({
                     where: {
                         id,
@@ -134,27 +155,12 @@ app.prepare().then(() => {
 
                 io.emit(updateKey, { message });
             } catch (error) {
-                console.error('Invalid token:', error);
+                console.error('MESSAGE_EDIT', error);
             }
         });
-        socket.on('delete', async ({ id }: any) => {
-            const accessToken = socket.handshake.auth.token?.split(' ')[1];
 
-            if (!accessToken) {
-                console.error('No Authorization token found in cookies');
-                return;
-            }
-
+        socket.on('delete', async ({ id }) => {
             try {
-                // JWT 검증
-                const decodedToken = (await jose.jwtVerify(accessToken, jwtConfig.secret)) as {
-                    payload: { userId: string };
-                };
-                const { userId } = decodedToken.payload;
-
-                console.log(`Decoded user ID: ${userId}`);
-
-                // 메시지 생성
                 const message = await db.message.delete({
                     where: {
                         id,
@@ -174,7 +180,7 @@ app.prepare().then(() => {
 
                 io.emit(deleteKey, { id });
             } catch (error) {
-                console.error('Invalid token:', error);
+                console.error('MESSAGE_DELETE', error);
             }
         });
     });

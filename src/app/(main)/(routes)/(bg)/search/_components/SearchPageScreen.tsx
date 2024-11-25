@@ -1,8 +1,8 @@
 'use client';
 
-import { SearchInput } from '@/components/common/SearchInput';
+import { BgLayout } from '@/components/layout/main/BgLayout';
 import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
-import { BgLayout } from '@/components/layout/main/bgLayout';
+import { SearchInput } from '@/components/common/SearchInput';
 import { SearchParams } from 'types/params/search';
 import { SearchResult } from './SearchResult';
 

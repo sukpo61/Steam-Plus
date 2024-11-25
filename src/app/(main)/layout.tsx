@@ -1,4 +1,5 @@
 import Navbar from '@/components/layout/navigationbar/Navbar';
+import { PreviewLayout } from '@/components/layout/main/PreviewLayout';
 
 const NavigationLayout = ({ children }: { children: React.ReactNode }) => {
     return (
@@ -6,7 +7,9 @@ const NavigationLayout = ({ children }: { children: React.ReactNode }) => {
             <div className="flex w-[72px] flex-shrink-0">
                 <Navbar />
             </div>
-            <main className="flex-1">{children}</main>
+            <main className="flex-1">
+                <PreviewLayout>{children}</PreviewLayout>
+            </main>
         </div>
     );
 };

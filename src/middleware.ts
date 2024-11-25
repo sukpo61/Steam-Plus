@@ -23,7 +23,6 @@ export async function middleware(request: NextRequest) {
                 payload: { userId: string };
             };
             const { userId } = decodedToken.payload;
-            console.log('userId_middleware', userId);
             requestHeaders.set('User-Id', userId);
             return NextResponse.next({
                 request: {

@@ -126,8 +126,12 @@ table {
 }
 button {
     background: none;
-    border: none;
     cursor: pointer;
+}
+
+button:focus {
+    outline: none;
+    border-color: white;
 }
 
 button:disabled {

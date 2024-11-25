@@ -4,7 +4,7 @@ import { CommunityParams, CommunitySearchParams } from 'types/params/community';
 import { FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { useCallback, useEffect, useState } from 'react';
 
-import { API_APP_SEARCH_KEY } from '@/actions/queryKeys';
+import { API_SEARCH_KEY } from '@/actions/queryKeys';
 import { getChangedProperties } from '@/utils/getFirstSentence';
 import { useQueryClient } from '@tanstack/react-query';
 import { useUpdateParams } from '@/hooks/useUpdateParams';
@@ -36,7 +36,7 @@ export const CommunityController = ({
         async ({ term }: CommunityFormValue) => {
             updateParams({ term }, 'push');
             await queryCache.invalidateQueries({
-                queryKey: [API_APP_SEARCH_KEY],
+                queryKey: [API_SEARCH_KEY],
             });
         },
         [updateParams],

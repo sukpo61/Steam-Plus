@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { API_SERVER_KEY } from '@/actions/queryKeys';
+import { Button } from '@/components/ui/Button';
 import { FormProvider } from 'react-hook-form';
 import { Input } from '@/components/ui/Input';
 import { postChannel } from '@/actions/channel/channel';
@@ -11,7 +12,6 @@ import { useModalStore } from '@/store/useModalStore';
 import { useMutation } from '@tanstack/react-query';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -26,7 +26,6 @@ export const CreateChannelModal = () => {
     const { push } = useRouter();
     const queryCache = useQueryClient();
     const { isOpen, onClose, type, data } = useModalStore((state) => state);
-    const [step, setStep] = useState(1);
     const isModalOpen = isOpen && type === 'createChannel';
     const { serverId } = data;
 
@@ -54,7 +53,6 @@ export const CreateChannelModal = () => {
     const { mutateAsync: postMutate } = useMutation({
         mutationFn: postChannel,
         onSuccess: async () => {
-            console.log('querykey', [API_SERVER_KEY, { serverId }]);
             await queryCache.invalidateQueries({
                 queryKey: [API_SERVER_KEY],
             });
@@ -65,24 +63,13 @@ export const CreateChannelModal = () => {
     const handleClose = () => {
         reset();
         onClose();
-        setStep(1);
-    };
-
-    const onValid = async (data: ModalFormValue) => {
-        console.log('data', data, serverId);
-        serverId && postMutate({ data, params: { serverId } });
     };
 
     const onSubmit: SubmitHandler<ModalFormValue> = async (data, event) => {
         if (event) {
             event.preventDefault();
         }
-        if (event instanceof KeyboardEvent && event.key === 'Enter' && step === 1) {
-            setStep(2);
-            return;
-        }
-
-        onValid(data);
+        serverId && postMutate({ data, params: { serverId } });
     };
 
     const onSubmitError = (errors: Object) => {
@@ -97,7 +84,7 @@ export const CreateChannelModal = () => {
             <DialogContent className="overflow-hidden bg-primary p-4">
                 <DialogHeader>
                     <DialogTitle className="text-center text-2xl font-bold text-primary-foreground">
-                        채널를 만들어보세요.
+                        채널을 만들어 보세요.
                     </DialogTitle>
                 </DialogHeader>
                 <FormProvider {...form}>
@@ -105,7 +92,16 @@ export const CreateChannelModal = () => {
                         onSubmit={handleSubmit(onSubmit, onSubmitError)}
                         className="flex w-full flex-col items-center justify-center"
                     >
-                        <Input {...register('name')} />
+                        <section className="flex w-full flex-col gap-2">
+                            <span className="pl-1">채널이름</span>
+                            <Input {...register('name')} />
+                            <div className="mt-2 flex justify-end gap-2">
+                                <Button variant="trans" type="button" onClick={onClose}>
+                                    취소
+                                </Button>
+                                <Button variant="primary">생성</Button>
+                            </div>
+                        </section>
                     </form>
                 </FormProvider>
             </DialogContent>

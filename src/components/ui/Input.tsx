@@ -1,21 +1,11 @@
-import { cn } from '@/lib/utils';
 import * as React from 'react';
+
+import { cn } from '@/lib/utils';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ({ className, type, ...props }, ref) => {
-        // const handleOnInput = useCallback<(event: FormEvent<HTMLTextAreaElement>) => void>(
-        //     (event) => {
-        //         const target = event.currentTarget.value;
-        //         if (maxLength && target.length > maxLength) {
-        //             event.currentTarget.value = target.slice(0, maxLength);
-        //         }
-        //         onInput?.(event);
-        //     },
-        //     [maxLength, onInput],
-        // );
-
         return (
             <div className="relative flex w-full">
                 <input
@@ -31,6 +21,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         );
     },
 );
+
 Input.displayName = 'Input';
 
 export { Input };

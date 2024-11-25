@@ -7,28 +7,32 @@ import {
     DropdownMenuPortal,
     DropdownMenuTrigger,
 } from '@/components/ui/DropDown';
+import { ServerParams, ServerSearchParams } from 'types/params/server';
 import { useMemo, useState } from 'react';
 
-import { Button } from '@/components/ui/Button';
 import { DeleteIcon } from '@/components/icons/common/Delete.icon';
 import { DropDownIcon } from '@/components/icons/common/DropDown.icon';
 import { EditIcon } from '@/components/icons/common/Edit.icon';
 import { EditInput } from './EditInput';
-import { KeyboardEvent } from 'react';
+import { MessageImage } from './MessageImages';
 import { Separator } from '@/components/ui/Separator';
-import { ServerParams } from 'types/params/server';
 import { UserAvatar } from '@/components/common/UserAvatar';
 import { useSocket } from '@/provider/SocketProvider';
+import { useUserStore } from '@/store/useUserStore';
 
 interface MessageProps {
     item: any;
-    params: any;
+    params: ServerParams;
+    searchParams: ServerSearchParams;
 }
 
-export const Message = ({ item, params }: MessageProps) => {
+export const Message = ({ item, params, searchParams }: MessageProps) => {
     const [isOver, setIsOver] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
     const [editState, setEditState] = useState(false);
+    const {
+        data: { id: userId },
+    } = useUserStore();
 
     const isOpen = useMemo(() => isOver || isClicked, [isOver, isClicked]);
 
@@ -38,9 +42,10 @@ export const Message = ({ item, params }: MessageProps) => {
         id,
         content,
         member: { user },
+        images,
     } = item;
 
-    const { name, avatar } = user;
+    const { id: messageUserId, name, avatar } = user;
 
     const deleteHandler = () => {
         const userConfirm = window.confirm('정말 삭제하시겠습니까?');
@@ -75,27 +80,41 @@ export const Message = ({ item, params }: MessageProps) => {
                             <div className="flex">
                                 <span className="pre-wrap">{content}</span>
                             </div>
+                            <div className="flex gap-1">
+                                {images?.map((image: any) => (
+                                    <MessageImage
+                                        key={image.id}
+                                        data={image}
+                                        imageOnly={content}
+                                        searchParams={searchParams}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     )}
                 </div>
                 {!editState && (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger onClick={() => setIsClicked(true)}>
-                            <DropDownIcon />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuPortal>
-                            <DropdownMenuContent align="start" side="top">
-                                <DropdownMenuItem onClick={editHandler}>
-                                    <EditIcon />
-                                    <span>수정</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={deleteHandler}>
-                                    <DeleteIcon />
-                                    <span>삭제</span>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenuPortal>
-                    </DropdownMenu>
+                    <>
+                        {userId === messageUserId && (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger onClick={() => setIsClicked(true)}>
+                                    <DropDownIcon />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuPortal>
+                                    <DropdownMenuContent align="start" side="top">
+                                        <DropdownMenuItem onClick={editHandler}>
+                                            <EditIcon />
+                                            <span>수정</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={deleteHandler}>
+                                            <DeleteIcon />
+                                            <span>삭제</span>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenuPortal>
+                            </DropdownMenu>
+                        )}
+                    </>
                 )}
             </div>
         </div>

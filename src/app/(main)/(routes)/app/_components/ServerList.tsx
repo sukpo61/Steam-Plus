@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { ServerBlock } from './ServerBlock';
 
 interface ServerListProps {
@@ -22,7 +23,11 @@ const ServerList = ({ data }: ServerListProps) => {
                 ) : (
                     <>
                         {data.map((page: any) =>
-                            page.data.map((server: any) => <ServerBlock data={server} />),
+                            page.data.map((server: any) => (
+                                <Fragment key={server.id}>
+                                    <ServerBlock data={server} />
+                                </Fragment>
+                            )),
                         )}
                     </>
                 )}

@@ -1,6 +1,7 @@
 export interface ServerRequest {
     name: string;
-    appId: number;
+    description: string;
+    appId?: number;
 }
 
 export interface ServerResponse extends ServerRequest {

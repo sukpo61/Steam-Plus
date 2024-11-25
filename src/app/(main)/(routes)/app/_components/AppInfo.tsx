@@ -1,7 +1,7 @@
 'use client';
 
 import { AddIcon } from '@/components/icons/common/Add.icon';
-import { BgLayout } from '@/components/layout/main/bgLayout';
+import { BgLayout } from '@/components/layout/main/BgLayout';
 import { Button } from '@/components/ui/Button';
 import { Carousel } from '@/components/carousel/EmblaCarousel';
 import { CommunityIcon } from '@/components/icons/common/Community.icon';

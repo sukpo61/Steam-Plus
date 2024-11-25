@@ -1,9 +1,9 @@
 'use client';
 
+import { API_APP_KEY, API_USER_KEY } from '@/actions/queryKeys';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Dialog';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { API_APP_KEY } from '@/actions/queryKeys';
 import { FirstStep } from './FirstStep';
 import { FormProvider } from 'react-hook-form';
 import Image from 'next/image';
@@ -64,12 +64,13 @@ export const CreateServerModal = () => {
 
     const { mutateAsync: postMutate } = useMutation({
         mutationFn: postServer,
-        onSuccess: async (serverId) => {
+        onSuccess: async ({ serverId, channelId }) => {
             handleClose();
             await queryCache.invalidateQueries({
                 queryKey: [API_APP_KEY, { appId: String(appId) }],
             });
-            push(`/server/${serverId}`);
+            await queryCache.invalidateQueries({ queryKey: [API_USER_KEY] });
+            push(`/server/${serverId}?channelId=${channelId}`);
         },
     });
 

@@ -30,6 +30,11 @@ module.exports = {
                 },
                 secondary: {
                     DEFAULT: 'hsl(var(--secondary))',
+                    dark: 'hsl(var(--secondary-dark))',
+                },
+                destructive: {
+                    DEFAULT: 'hsl(var(--destructive))',
+                    foreground: 'hsl(var(--destructive-foreground))',
                 },
                 border: 'hsl(var(--border))',
                 input: 'hsl(var(--input))',

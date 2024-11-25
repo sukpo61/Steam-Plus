@@ -1,3 +1,3 @@
 export interface AppParams {
-    appId: string;
+    appId: number;
 }

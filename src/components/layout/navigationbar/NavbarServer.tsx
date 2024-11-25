@@ -1,13 +1,14 @@
-import { API_GET_USER_INFO_KEY } from '@/actions/queryKeys';
-import { getUserInfo } from '@/actions/user/user';
-import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
+import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
+
+import { API_USER_KEY } from '@/actions/queryKeys';
 import { NavbarClient } from './NavbarClient';
+import { getUserInfo } from '@/actions/user/user';
 
 export const NavbarServer = async () => {
     const queryClient = new QueryClient();
 
     await queryClient.prefetchQuery({
-        queryKey: [API_GET_USER_INFO_KEY],
+        queryKey: [API_USER_KEY],
         queryFn: getUserInfo,
     });
 

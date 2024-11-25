@@ -1,7 +1,11 @@
 'use client';
 
-import { BgLayout } from '@/components/layout/main/bgLayout';
-import { Input } from '@/components/ui/Input';
+import {
+    MAX_CONTENT_LENGTH,
+    MAX_IMAGES_LENGTH,
+    MAX_TITLE_LENGTH,
+    PostAddFormValue,
+} from './PostAddController';
 import {
     Select,
     SelectContent,
@@ -9,15 +13,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/Select';
+
+import { BgLayout } from '@/components/layout/main/BgLayout';
+import { Input } from '@/components/ui/Input';
+import { PostParams } from 'types/params/community';
 import { TextImageInput } from '@/components/ui/TextImageInput';
 import { useFormContext } from 'react-hook-form';
-import { PostParams } from 'types/params/community';
-import {
-    MAX_CONTENT_LENGTH,
-    MAX_IMAGES_LENGTH,
-    MAX_TITLE_LENGTH,
-    PostAddFormValue,
-} from './PostAddController';
 
 interface PostAddClientProps {
     params: PostParams;

@@ -80,7 +80,7 @@ export const EditInput = ({ item, params, closeInput }: EditInputProps) => {
             <form className="flex w-full" onSubmit={handleSubmit(onSubmit, onSubmitError)}>
                 <TextImageInput
                     placeholder="댓글을 입력하세요."
-                    // cancle={closeInput}
+                    cancle={closeInput}
                     imageMaxlength={MAX_IMAGES_LENGTH}
                     textMaxHeight={240}
                     textMaxLength={MAX_CONTENT_LENGTH}

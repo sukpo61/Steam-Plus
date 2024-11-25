@@ -3,24 +3,26 @@
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { ServerParams, ServerSearchParams } from 'types/params/server';
 
+import { ImageInputValue } from '@/components/ui/ImageInput';
+import { getImageUrl } from '@/actions/image/getImageUrl';
 import { useSocket } from '@/provider/SocketProvider';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-interface ServerControllerProps {
+interface ChatControllerProps {
     params: ServerParams;
     searchParams: ServerSearchParams;
     children: React.ReactNode;
 }
 
 export const MAX_CONTENT_LENGTH = 3000;
-export const MAX_IMAGES_LENGTH = 1;
-export interface ServerControllerValue {
+export const MAX_IMAGES_LENGTH = 3;
+export interface ChatControllerValue {
     content: string;
-    images: string[];
+    images: ImageInputValue[];
 }
 
-const ServerController = ({ params, searchParams, children }: ServerControllerProps) => {
+const ChatController = ({ params, searchParams, children }: ChatControllerProps) => {
     const { serverId } = params;
     const { channelId } = searchParams;
     const { socket } = useSocket();
@@ -39,7 +41,7 @@ const ServerController = ({ params, searchParams, children }: ServerControllerPr
             path: ['content'],
         });
 
-    const form = useForm<ServerControllerValue>({
+    const form = useForm<ChatControllerValue>({
         resolver: zodResolver(formSchema),
         values: {
             content: '',
@@ -49,9 +51,22 @@ const ServerController = ({ params, searchParams, children }: ServerControllerPr
 
     const { handleSubmit, reset } = form;
 
-    const onSubmit: SubmitHandler<ServerControllerValue> = async (data) => {
+    const onSubmit: SubmitHandler<ChatControllerValue> = async (data) => {
         const { content, images } = data;
-        socket.emit('message', { content, channelId, serverId });
+
+        try {
+            const imagesUrl = images
+                ? await getImageUrl({
+                      images,
+                      url: 'images',
+                  })
+                : [];
+            socket.emit('message', { content, channelId, serverId, images: imagesUrl });
+        } catch (error) {
+            console.error(error);
+            return Promise.reject(error);
+        }
+
         reset();
     };
 
@@ -71,4 +86,4 @@ const ServerController = ({ params, searchParams, children }: ServerControllerPr
     );
 };
 
-export default ServerController;
+export default ChatController;

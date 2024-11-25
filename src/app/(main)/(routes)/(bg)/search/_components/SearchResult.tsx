@@ -1,8 +1,8 @@
-import { API_APP_SEARCH_KEY } from '@/actions/queryKeys';
+import { API_SEARCH_KEY } from '@/actions/queryKeys';
+import { AppBlock } from './ChannelBlock';
+import { SearchParams } from 'types/params/search';
 import { getChannelSearch } from '@/actions/search/search';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { SearchParams } from 'types/params/search';
-import { AppBlock } from './ChannelBlock';
 
 interface SearchResultProps {
     searchParams: SearchParams;
@@ -12,7 +12,7 @@ export const SearchResult = ({ searchParams }: SearchResultProps) => {
     const { term } = searchParams;
 
     const { data } = useSuspenseQuery({
-        queryKey: [API_APP_SEARCH_KEY, { term }],
+        queryKey: [API_SEARCH_KEY, { term }],
         queryFn: () => getChannelSearch({ term }),
     });
 

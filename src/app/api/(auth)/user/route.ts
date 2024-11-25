@@ -5,13 +5,11 @@ export async function GET(req: Request) {
     try {
         const userId = req.headers.get('User-Id');
 
-        console.log('userId12', userId);
-
         if (!userId) {
             return new NextResponse('Unauthorized', { status: 401 });
         }
 
-        const user = await db.user.findUnique({
+        const userRecord = await db.user.findUnique({
             where: { id: userId },
             select: {
                 id: true,
@@ -31,47 +29,46 @@ export async function GET(req: Request) {
                         },
                     },
                 },
-                servers: {
+                members: {
                     select: {
-                        id: true,
-                        app: {
-                            select: {
-                                header_image: true,
-                                name: true,
-                            },
-                        },
-                        name: true,
-                        channels: {
-                            take: 1,
+                        server: {
                             select: {
                                 id: true,
-                            },
-                            orderBy: {
-                                createdAt: 'asc',
+                                userId: true,
+                                app: {
+                                    select: {
+                                        id: true,
+                                        header_image: true,
+                                        name: true,
+                                    },
+                                },
+                                name: true,
+                                channels: {
+                                    take: 1,
+                                    select: {
+                                        id: true,
+                                    },
+                                    orderBy: {
+                                        createdAt: 'asc',
+                                    },
+                                },
                             },
                         },
+                        role: true,
                     },
                 },
             },
         });
 
-        // const user = await db.user.findUnique({
-        //     where: {
-        //         id: userId,
-        //     },
-        //     include: {
-        //         members: {
-        //             include: {
-        //                 server: true,
-        //             },
-        //         },
-        //     },
-        // });
+        const user = {
+            ...userRecord,
+            servers: userRecord?.members.map(({ server, role }) => ({
+                ...server,
+                role,
+            })),
+        };
 
-        // const userResult = {
-        //     ...user,
-        //     servers: user?.members.map((member) => member.server),
-        // };
+        delete user.members;
 
         return NextResponse.json(user);
     } catch (error) {

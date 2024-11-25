@@ -3,26 +3,23 @@ import { db } from 'src/lib/db';
 
 export async function POST(req: Request, { params }: { params: { serverId: string } }) {
     try {
-        const data = await req.json();
         const { serverId } = params;
-
         const userId = req.headers.get('User-Id');
 
         if (!userId) {
             return new NextResponse('Unauthorized', { status: 401 });
         }
 
-        const channel = await db.channel.create({
+        const member = await db.member.create({
             data: {
-                ...data,
                 userId,
                 serverId,
             },
         });
 
-        return NextResponse.json(channel);
+        return NextResponse.json(member);
     } catch (error) {
-        console.log('[SERVERS_POST]', error);
+        console.log('[MEMBER_POST]', error);
         return new NextResponse('Internal Error', { status: 500 });
     }
 }

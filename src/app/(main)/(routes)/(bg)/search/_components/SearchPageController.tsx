@@ -2,7 +2,7 @@
 
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
-import { API_APP_SEARCH_KEY } from '@/actions/queryKeys';
+import { API_SEARCH_KEY } from '@/actions/queryKeys';
 import SearchPageScreen from './SearchPageScreen';
 import { SearchParams } from 'types/params/search';
 import { useCallback } from 'react';
@@ -34,7 +34,7 @@ const SearchPageController = ({ searchParams }: SearchPageControllerProps) => {
         async ({ term }: SearchFormValue) => {
             updateParams({ term });
             await queryCache.invalidateQueries({
-                queryKey: [API_APP_SEARCH_KEY],
+                queryKey: [API_SEARCH_KEY],
             });
         },
         [updateParams],

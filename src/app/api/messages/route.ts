@@ -34,6 +34,7 @@ export async function GET(req: Request) {
                             user: true,
                         },
                     },
+                    images: true,
                 },
                 orderBy: {
                     createdAt: 'desc',
@@ -51,6 +52,7 @@ export async function GET(req: Request) {
                             user: true,
                         },
                     },
+                    images: true,
                 },
                 orderBy: {
                     createdAt: 'desc',
@@ -64,8 +66,13 @@ export async function GET(req: Request) {
             nextCursor = messages[MESSAGES_BATCH - 1].id;
         }
 
+        const messagesResult = messages.map((message: any) => ({
+            ...message,
+            isOwned: userId === message.member.userId,
+        }));
+
         return NextResponse.json({
-            items: messages,
+            items: messagesResult,
             nextCursor,
         });
     } catch (error) {

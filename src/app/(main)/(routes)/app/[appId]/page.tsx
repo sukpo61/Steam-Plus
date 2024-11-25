@@ -1,8 +1,8 @@
-import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
-import { NextPage } from 'next';
-import { Fragment } from 'react';
 import { AppParams } from 'types/params/app';
 import { AppServer } from '../_components/AppServer';
+import { Fragment } from 'react';
+import { NextPage } from 'next';
+import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
 
 interface AppPageProps {
     params: AppParams;
@@ -34,11 +34,13 @@ const AppPageLoading = () => {
 };
 
 const AppPage: NextPage<AppPageProps> = ({ params }) => {
+    const { appId } = params;
+
     return (
         <div className="flex h-full w-full flex-col items-center overflow-y-scroll px-8 py-8">
             <div className="flex w-full max-w-[1600px] flex-col gap-4">
                 <QuerySuspenseErrorBoundary suspenseFallback={<AppPageLoading />}>
-                    <AppServer params={params} />
+                    <AppServer params={{ ...params, appId: Number(appId) }} />
                 </QuerySuspenseErrorBoundary>
             </div>
         </div>

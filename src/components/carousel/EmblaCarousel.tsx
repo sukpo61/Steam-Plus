@@ -25,8 +25,8 @@ export const Carousel: React.FC<PropType> = (props) => {
             <div className="flex h-full w-full overflow-hidden" ref={emblaRef}>
                 <div className="flex h-full w-full touch-pan-y">
                     {slides.map((image: any) => (
-                        <div className="flex h-full w-full min-w-0 flex-none" key={image}>
-                            <div className="relative h-full w-full" key={image}>
+                        <div className="flex h-full w-full min-w-0 flex-none" key={image.path_full}>
+                            <div className="relative h-full w-full">
                                 <Image
                                     src={image.path_full}
                                     alt="screenshot"

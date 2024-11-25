@@ -146,8 +146,7 @@ model Member {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([userId])
-  @@index([serverId])
+  @@unique([userId, serverId])
 }
 
 enum ChannelType {
@@ -159,6 +158,7 @@ model Channel {
   id String @id @default(uuid())
   name String
   type ChannelType @default(TEXT)
+  isDefault Boolean @default(false)
 
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -188,6 +188,8 @@ model Message {
   channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
 
   deleted Boolean @default(false)
+
+  images    Image[] 
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -231,6 +233,9 @@ model Image {
 
   postId    String?
   post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  messageId    String?
+  message      Message?    @relation(fields: [messageId], references: [id], onDelete: Cascade)
 
   @@index([commentId])
   @@index([postId])

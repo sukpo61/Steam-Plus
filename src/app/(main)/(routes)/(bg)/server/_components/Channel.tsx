@@ -3,10 +3,10 @@
 import { ServerParams, ServerSearchParams } from 'types/params/server';
 
 import { API_MESSAGE_KEY } from '@/actions/queryKeys';
+import ChatController from './ChatController';
 import { ChatInput } from '@/components/ui/ChatInput';
 import { Message } from './Message';
 import { ObserverTrigger } from '@/components/hoc/ObserverTrigger';
-import ServerController from './ServerController';
 import { getMessages } from '@/actions/messages/messages';
 import { useChatSocket } from '@/hooks/useChatSocket';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
@@ -15,9 +15,10 @@ interface ChannelProps {
     data?: any;
     params: ServerParams;
     searchParams: ServerSearchParams;
+    isPreview: boolean;
 }
 
-export const Channel = ({ params, searchParams }: ChannelProps) => {
+export const Channel = ({ params, searchParams, isPreview }: ChannelProps) => {
     const { serverId } = params;
     const addKey = `messages/${serverId}/add`;
     const updateKey = `messages/${serverId}/update`;
@@ -46,15 +47,20 @@ export const Channel = ({ params, searchParams }: ChannelProps) => {
                 <ObserverTrigger onObserve={onObserve}>
                     {messagesData.map((page: any) =>
                         page.items?.map((item: any) => (
-                            <Message key={item.id} item={item} params={params} />
+                            <Message
+                                key={item.id}
+                                item={item}
+                                params={params}
+                                searchParams={searchParams}
+                            />
                         )),
                     )}
                 </ObserverTrigger>
             </div>
             <div className="flex w-full pb-6 pl-4 pr-3">
-                <ServerController params={params} searchParams={searchParams}>
-                    <ChatInput />
-                </ServerController>
+                <ChatController params={params} searchParams={searchParams}>
+                    <ChatInput disabled={isPreview} multiple />
+                </ChatController>
             </div>
         </div>
     );

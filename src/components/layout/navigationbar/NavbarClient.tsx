@@ -1,19 +1,19 @@
 'use client';
 
-import { API_GET_USER_INFO_KEY } from '@/actions/queryKeys';
-import { getUserInfo } from '@/actions/user/user';
-import { UserAvatar } from '@/components/common/UserAvatar';
-import { useUserStore } from '@/store/useUserStore';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { API_USER_KEY } from '@/actions/queryKeys';
 import { NavSearchButton } from './NavSearchButton';
-import { NavServerButtonList } from './NavServerButtonList';
+import { NavServerButton } from './NavServerButton';
+import { UserAvatar } from '@/components/common/UserAvatar';
+import { getUserInfo } from '@/actions/user/user';
+import { useEffect } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { useUserStore } from '@/store/useUserStore';
 
 export const NavbarClient = () => {
     const { setUserData } = useUserStore((state) => state);
 
     const { data } = useSuspenseQuery({
-        queryKey: [API_GET_USER_INFO_KEY],
+        queryKey: [API_USER_KEY],
         queryFn: getUserInfo,
     });
 
@@ -26,7 +26,9 @@ export const NavbarClient = () => {
     return (
         <>
             <UserAvatar src={avatar} className="h-12 w-12 flex-shrink-0" />
-            <NavServerButtonList data={servers} />
+            {servers.map((server: any) => (
+                <NavServerButton key={server.id} data={server} />
+            ))}
             <NavSearchButton />
         </>
     );

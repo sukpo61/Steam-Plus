@@ -74,7 +74,11 @@
         --primary-darker: var(--gray-900);
         --primary-darkest: var(--gray-950);
 
-        --secondary: var(--blue-400);
+        --secondary: var(--sky-400);
+        --secondary-dark: var(--sky-800);
+
+        --destructive-foreground: var(--red-100);
+        --destructive: var(--red-500);
 
         --border: var(--primary-bright);
         --input: var(--primary-dark);

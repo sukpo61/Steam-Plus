@@ -2,17 +2,38 @@
 
 import { AddIcon } from '@/components/icons/common/Add.icon';
 import { Button } from '@/components/ui/Button';
+import Channel from './Channel';
+import { ServerDropDown } from './ServerDropDown';
 import { useModalStore } from '@/store/useModalStore';
+import { usePreviewStore } from '@/store/usePreviewStore';
 import { useSidebarStore } from '@/store/useSidebarStore';
 import { useUpdateParams } from '@/hooks/useUpdateParams';
 
 export const ServerSidebar = () => {
     const { type, data } = useSidebarStore((state) => state);
-    const { name, channels, id } = data;
+    const { name, channels, id, appId, channelId, role, memberId, description } = data;
+    const isAdmin = role === 'ADMIN';
 
     const { onOpen } = useModalStore((state) => state);
-
+    const { isPreview } = usePreviewStore();
     const { updateParams } = useUpdateParams();
+
+    const deleteServer = () => {
+        onOpen(isAdmin ? 'deleteServer' : 'leaveServer', { name, serverId: id, appId, memberId });
+    };
+    const editServer = () => {
+        onOpen('editServer', { name, serverId: id, appId, description });
+    };
+
+    const createChannel = () => {
+        !isPreview && onOpen('createChannel', { serverId: id });
+    };
+    const deleteChannel = (channelId: string) => {
+        onOpen('deleteChannel', { name, channelId, appId, defaultChannelId: channels?.[0].id });
+    };
+    const editChannel = ({ id, name }: any) => {
+        onOpen('editChannel', { name, channelId: id, appId, description });
+    };
 
     if (type !== 'server') {
         return <></>;
@@ -20,35 +41,39 @@ export const ServerSidebar = () => {
 
     return (
         <div className="flex h-full w-full flex-col">
-            <div className="z-50 flex h-12 w-full items-center border-b border-solid border-b-primary-darker p-4">
-                <span>{name}</span>
-            </div>
+            <ServerDropDown
+                name={name}
+                hasPermission={isAdmin}
+                onDelete={deleteServer}
+                onEdit={editServer}
+            />
             <div className="flex flex-col gap-1 px-2 pt-4">
                 <div className="flex items-center justify-between">
                     <span className="text-xs">채팅채널</span>
-                    <Button
-                        size={'iconround'}
-                        className="h-4 w-4"
-                        variant={'trans'}
-                        onClick={() => onOpen('createChannel', { serverId: id })}
-                    >
-                        <AddIcon className="h-4 w-4" />
-                    </Button>
+                    {!isPreview && (
+                        <Button
+                            size={'iconround'}
+                            className="h-4 w-4"
+                            variant={'trans'}
+                            onClick={createChannel}
+                        >
+                            <AddIcon className="h-4 w-4" />
+                        </Button>
+                    )}
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-0.5">
                     {channels?.map(
-                        ({ id, name, type }) =>
-                            type === 'TEXT' && (
-                                <div
+                        (channel) =>
+                            channel.type === 'TEXT' && (
+                                <Channel
                                     key={id}
-                                    className="flex cursor-pointer items-center justify-between rounded-md px-2 py-1 transition-colors hover:bg-primary-bright"
-                                    onClick={() => updateParams({ channelId: id })}
-                                >
-                                    <div className="flex items-center justify-between gap-1">
-                                        <span className="text-xl">#</span>
-                                        <span className="text-sm">{name}</span>
-                                    </div>
-                                </div>
+                                    data={channel}
+                                    isSelected={channel.id === channelId}
+                                    onClick={() => updateParams({ channelId: channel.id })}
+                                    hasPermission={isAdmin}
+                                    onDelete={() => deleteChannel(channel.id)}
+                                    onEdit={() => editChannel({ id: channel.id, name })}
+                                />
                             ),
                     )}
                 </div>
