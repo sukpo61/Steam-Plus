@@ -3,18 +3,15 @@
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 import { CommentRequest } from 'types/community/comment';
-import { ServerParams } from 'types/params/server';
-import { TextImageInput } from '@/components/ui/TextImageInput';
-import { useQueryClient } from '@tanstack/react-query';
 import { useSocket } from '@/provider/SocketProvider';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 interface EditInputProps {
     item?: any;
-    params: ServerParams;
-    id?: string;
     defaultValues?: CommentFormValue;
+    isDM?: boolean;
+    children: React.ReactNode;
     closeInput: () => void;
 }
 
@@ -23,14 +20,10 @@ export interface CommentFormValue extends CommentRequest {}
 export const MAX_CONTENT_LENGTH = 3000;
 export const MAX_IMAGES_LENGTH = 1;
 
-export const EditInput = ({ item, params, closeInput }: EditInputProps) => {
-    const { serverId } = params;
-
+export const EditController = ({ children, item, closeInput, isDM }: EditInputProps) => {
     const { id, content, images } = item;
 
-    const defaultValues = { content, images: [] };
-
-    const queryCache = useQueryClient();
+    const defaultValues = { content, images };
 
     const { socket } = useSocket();
 
@@ -56,13 +49,11 @@ export const EditInput = ({ item, params, closeInput }: EditInputProps) => {
         },
     });
 
-    const { handleSubmit, reset } = form;
+    const { handleSubmit } = form;
 
     const onSubmit: SubmitHandler<CommentFormValue> = async (data) => {
-        console.log('edit', { id, serverId, ...data });
-
         if (defaultValues) {
-            socket.emit('edit', { id, serverId, ...data });
+            socket.emit(isDM ? 'dmEdit' : 'edit', { id, ...data });
             closeInput();
             return;
         }
@@ -78,13 +69,7 @@ export const EditInput = ({ item, params, closeInput }: EditInputProps) => {
     return (
         <FormProvider {...form}>
             <form className="flex w-full" onSubmit={handleSubmit(onSubmit, onSubmitError)}>
-                <TextImageInput
-                    placeholder="댓글을 입력하세요."
-                    cancle={closeInput}
-                    imageMaxlength={MAX_IMAGES_LENGTH}
-                    textMaxHeight={240}
-                    textMaxLength={MAX_CONTENT_LENGTH}
-                />
+                {children}
             </form>
         </FormProvider>
     );

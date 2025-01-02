@@ -78,12 +78,30 @@ app.prepare().then(() => {
     io.on('connection', (socket: Socket) => {
         const { userId } = socket.user || {};
 
-        socket.on('message', async ({ content, channelId, serverId, images }) => {
+        if (!userId) {
+            console.error('userId is missing');
+            return;
+        }
+
+        socket.on('message', async ({ content, channelId, images }) => {
+            console.log('userId', userId);
+
             try {
+                const channel = await db.channel.findUnique({
+                    where: {
+                        id: channelId,
+                    },
+                    select: {
+                        serverId: true,
+                    },
+                });
+
+                const serverId = channel?.serverId;
+
                 const member = await db.member.findFirst({
                     where: {
-                        serverId: serverId,
-                        userId: userId,
+                        serverId,
+                        userId,
                     },
                     select: {
                         id: true,
@@ -97,7 +115,7 @@ app.prepare().then(() => {
                     return;
                 }
 
-                const message = await db.message.create({
+                const messageRecord = await db.message.create({
                     data: {
                         content,
                         channelId: channelId as string,
@@ -120,13 +138,20 @@ app.prepare().then(() => {
 
                 const addKey = `messages/${serverId}/add`;
 
-                io.emit(addKey, { message, channelId });
+                const message = {
+                    ...messageRecord,
+                    user: messageRecord.member.user,
+                } as any;
+
+                delete message.member;
+
+                io.emit(addKey, { message });
             } catch (error) {
                 console.error('MESSAGE_POST', error);
             }
         });
 
-        socket.on('edit', async ({ id, content }) => {
+        socket.on('edit', async ({ id, content, images }) => {
             try {
                 const message = await db.message.update({
                     where: {
@@ -150,7 +175,6 @@ app.prepare().then(() => {
                 });
 
                 const serverId = message.channel.serverId;
-
                 const updateKey = `messages/${serverId}/update`;
 
                 io.emit(updateKey, { message });
@@ -181,6 +205,103 @@ app.prepare().then(() => {
                 io.emit(deleteKey, { id });
             } catch (error) {
                 console.error('MESSAGE_DELETE', error);
+            }
+        });
+
+        socket.on('dmMessage', async ({ userId: dmUserId, content, images }) => {
+            try {
+                const conversation = await db.conversation.findFirst({
+                    where: {
+                        OR: [
+                            { userOneId: userId, userTwoId: dmUserId },
+                            { userOneId: dmUserId, userTwoId: userId },
+                        ],
+                    },
+                });
+
+                const conversationId = conversation?.id;
+
+                if (!conversationId) {
+                    console.error('No conversation');
+                    return;
+                }
+
+                const message = await db.directMessage.create({
+                    data: {
+                        content,
+                        conversationId,
+                        userId,
+                        images: {
+                            create: images?.map((image: any) => ({
+                                src: image.src,
+                            })),
+                        },
+                    },
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                avatar: true,
+                            },
+                        },
+                        images: true,
+                    },
+                });
+
+                const addKey = `messages/${conversationId}/add`;
+
+                io.emit(addKey, { message });
+            } catch (error) {
+                console.error('DMMESSAGE_POST', error);
+            }
+        });
+
+        socket.on('dmEdit', async ({ id, content }) => {
+            try {
+                const message = await db.directMessage.update({
+                    where: {
+                        id,
+                    },
+                    data: {
+                        content,
+                    },
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                avatar: true,
+                            },
+                        },
+                    },
+                });
+
+                const conversationId = message?.conversationId;
+
+                const updateKey = `messages/${conversationId}/update`;
+
+                io.emit(updateKey, { message });
+            } catch (error) {
+                console.error('DMMESSAGE_EDIT', error);
+            }
+        });
+
+        socket.on('dmDelete', async ({ id }) => {
+            try {
+                const message = await db.directMessage.delete({
+                    where: {
+                        id,
+                    },
+                });
+
+                const conversationId = message?.conversationId;
+
+                const deleteKey = `messages/${conversationId}/delete`;
+
+                io.emit(deleteKey, { id });
+            } catch (error) {
+                console.error('DMMESSAGE_DELETE', error);
             }
         });
     });

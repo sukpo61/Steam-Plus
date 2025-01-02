@@ -1,3 +1,4 @@
+import { log } from 'node:console';
 import { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSocket } from '@/provider/SocketProvider';
@@ -46,7 +47,7 @@ export const useChatSocket = ({ queryKey, addKey, updateKey, deleteKey }: useCha
                     ...page,
                     items: page.items.map((item: any) => {
                         if (item.id === message.id) {
-                            return message;
+                            return { ...item, ...message };
                         }
                         return item;
                     }),

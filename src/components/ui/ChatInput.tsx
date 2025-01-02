@@ -1,17 +1,14 @@
 'use client';
 
 import { ImageInput, ImageInputValue } from './ImageInput';
-import { KeyboardEvent, MouseEventHandler, useCallback, useRef } from 'react';
+import { MouseEventHandler, useCallback, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { Button } from './Button';
 import { ImagePreview } from './ImagePreview';
-import { LoaderIcon } from '../icons/common/Loader.icon';
 import { Separator } from './Separator';
 import { TextArea } from './TextArea';
 import { cn } from '@/lib/utils';
-import { useModalStore } from '@/store/useModalStore';
-import { useUserStore } from '@/store/useUserStore';
 
 export interface ChatInputProps {
     cancle?: () => void;
@@ -45,8 +42,6 @@ export const ChatInput = ({
         control,
         formState: { isSubmitting },
     } = useFormContext<TextImageFormValue>();
-
-    const { data } = useUserStore((state) => state);
 
     const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -108,7 +103,7 @@ export const ChatInput = ({
                         maxLength={textMaxLength}
                         maxHeight={400}
                         placeholder={disabled ? '권한이 없습니다' : placeholder}
-                        className="p-1"
+                        className={cn('p-1', className)}
                         disabled={disabled}
                         {...register('content')}
                     />

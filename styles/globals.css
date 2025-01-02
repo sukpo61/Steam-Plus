@@ -80,6 +80,9 @@
         --destructive-foreground: var(--red-100);
         --destructive: var(--red-500);
 
+        --publish-foreground: var(--green-100);
+        --publish: var(--green-700);
+
         --border: var(--primary-bright);
         --input: var(--primary-dark);
 

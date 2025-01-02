@@ -51,8 +51,9 @@ export async function GET(req: Request, { params }: { params: { serverId: string
             ...server,
             memberId: currentMember?.id || null,
             role: currentMember?.role || null,
-            members: server?.members.map(({ id, role, user: { name, avatar } }) => ({
+            members: server?.members.map(({ id, role, user: { id: userId, name, avatar } }) => ({
                 id,
+                userId,
                 role,
                 name,
                 avatar,

@@ -28,12 +28,40 @@ model User {
   channels Channel[]
   token RefreshToken?
   library Library[]
+  directMessages DirectMessage[]
+
+  conversationsInitiated Conversation[] @relation("UserOne")
+  conversationsReceived Conversation[] @relation("UserTwo")
 
   channelId String?
+
+  friendshipsSent Friendship[] @relation("FriendshipSender")
+  friendshipsReceived Friendship[] @relation("FriendshipReceiver")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+enum FriendshipStatus {
+  PENDING 
+  ACCEPTED 
+  REJECTED 
+}
+model Friendship {
+  id String @id @default(uuid())
+  senderId String
+  receiverId String
+  status FriendshipStatus @default(PENDING) 
+
+  sender User @relation("FriendshipSender", fields: [senderId], references: [id])
+  receiver User @relation("FriendshipReceiver", fields: [receiverId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([senderId, receiverId]) 
+}
+
 model Server {
   id String  @id @default(uuid())
 
@@ -138,8 +166,8 @@ model Member {
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  serverId String
-  server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  serverId String?
+  server Server? @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
   messages Message[]
 
@@ -198,6 +226,38 @@ model Message {
   @@index([memberId])
 }
 
+model Conversation {
+  id String @id @default(uuid())
+
+  userOneId String
+  userOne User @relation("UserOne",fields: [userOneId], references: [id], onDelete: Cascade)
+
+  userTwoId String
+  userTwo User @relation("UserTwo",fields: [userTwoId], references: [id], onDelete: Cascade)
+
+  directMessages DirectMessage[]
+
+  @@unique([userOneId, userTwoId])
+}
+
+model DirectMessage {
+  id String @id @default(uuid())
+  content String @db.Text
+
+  images    Image[] 
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  conversationId String
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([conversationId])
+}
+
 
 model Post {
   id        String   @id @default(uuid())
@@ -236,6 +296,9 @@ model Image {
 
   messageId    String?
   message      Message?    @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  directMessageId    String?
+  directMessage      DirectMessage?    @relation(fields: [directMessageId], references: [id], onDelete: Cascade)
 
   @@index([commentId])
   @@index([postId])

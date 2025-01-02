@@ -6,11 +6,13 @@ import { API_SERVER_KEY } from '@/actions/queryKeys';
 import { Channel } from './Channel';
 import { Member } from './Member';
 import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
-import { ServerHeader } from './ServerHeader';
+import { ServerHeader } from '@/components/chat/ServerHeader';
 import { getServer } from '@/actions/server/server';
+import { postFriend } from '@/actions/friend/friend';
 import { useBgStore } from '@/store/useBgStore';
 import { useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
+import { useMutation } from '@tanstack/react-query';
 import { usePreviewStore } from '@/store/usePreviewStore';
 import { useSidebarStore } from '@/store/useSidebarStore';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -46,6 +48,11 @@ export const ServerClient = ({ params, searchParams }: ServerProps) => {
 
     const { app, members, role } = data;
     const { background, steam_appid: appId } = app;
+
+    const { mutate: postFriendMutate } = useMutation({
+        mutationFn: postFriend,
+        onSuccess: async () => {},
+    });
 
     useEffect(() => {
         if (appId && background) {
@@ -84,7 +91,7 @@ export const ServerClient = ({ params, searchParams }: ServerProps) => {
                 <div className="flex h-full w-[240px] flex-col gap-2 px-2 pt-4">
                     <span className="text-sm">온라인</span>
                     {members.map((member: any) => {
-                        const { id, name } = member;
+                        const { id, userId, name } = member;
                         const hasPermission = role === 'ADMIN' && member.role !== 'ADMIN';
 
                         return (
@@ -98,6 +105,9 @@ export const ServerClient = ({ params, searchParams }: ServerProps) => {
                                         serverId,
                                         appId,
                                     })
+                                }
+                                postFriend={() =>
+                                    postFriendMutate({ params: { friendId: userId } })
                                 }
                             />
                         );

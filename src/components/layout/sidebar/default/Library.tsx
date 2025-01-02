@@ -1,10 +1,10 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useSidebarStore } from '@/store/useSidebarStore';
 import { useUserStore } from '@/store/useUserStore';
-import { useRouter } from 'next/navigation';
 
-export const LibrarySidebar = () => {
+export const Library = () => {
     const { type } = useSidebarStore((state) => state);
     const { push } = useRouter();
     const {

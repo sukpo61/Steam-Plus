@@ -66,10 +66,16 @@ export async function GET(req: Request) {
             nextCursor = messages[MESSAGES_BATCH - 1].id;
         }
 
-        const messagesResult = messages.map((message: any) => ({
-            ...message,
-            isOwned: userId === message.member.userId,
-        }));
+        const messagesResult = messages.map((message: any) => {
+            const result = {
+                ...message,
+                user: message.member.user,
+            };
+
+            delete result.member;
+
+            return result;
+        });
 
         return NextResponse.json({
             items: messagesResult,

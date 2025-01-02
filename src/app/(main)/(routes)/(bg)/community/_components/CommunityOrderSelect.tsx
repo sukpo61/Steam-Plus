@@ -8,6 +8,7 @@ import {
     SelectValue,
 } from '@/components/ui/Select';
 import { useFormContext, useWatch } from 'react-hook-form';
+
 import { CommunityFormValue } from './CommunityController';
 
 export const COMMUNIY_ORDER_LABEL = [
@@ -28,7 +29,7 @@ export const CommunityOrderSelect = () => {
 
     const onValueChange = (value: string) => {
         setValue('order', value);
-        setValue('page', 1);
+        setValue('page', '1');
     };
 
     return (

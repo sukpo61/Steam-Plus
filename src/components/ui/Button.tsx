@@ -10,6 +10,7 @@ const buttonVariants = cva(
             variant: {
                 default: 'bg-primary-bright text-primary-foreground hover:bg-primary-brighter ',
                 destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+                publish: 'bg-publish text-publish-foreground hover:bg-publish/90',
                 trans: 'bg-transparent hover:bg-primary-brighter',
                 outline:
                     'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
@@ -25,7 +26,48 @@ const buttonVariants = cva(
                 iconround: 'h-10 w-10 rounded-full',
                 iconlg: 'h-12 w-12 rounded-full',
             },
+            selected: {
+                true: '',
+                false: '',
+            },
         },
+        compoundVariants: [
+            {
+                selected: true,
+                variant: 'default',
+                class: 'bg-primary-brighter',
+            },
+            {
+                selected: true,
+                variant: 'destructive',
+                class: 'bg-destructive/90',
+            },
+            {
+                selected: true,
+                variant: 'publish',
+                class: 'bg-publish/90',
+            },
+            {
+                selected: true,
+                variant: 'trans',
+                class: 'bg-primary-brighter',
+            },
+            {
+                selected: true,
+                variant: 'outline',
+                class: 'bg-accent text-accent-foreground',
+            },
+            {
+                selected: true,
+                variant: 'secondary',
+                class: 'bg-secondary/80',
+            },
+            {
+                selected: true,
+                variant: 'primary',
+                class: 'bg-primary-brighter',
+            },
+        ],
         defaultVariants: {
             variant: 'default',
             size: 'default',
@@ -40,11 +82,11 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant, size, asChild = false, ...props }, ref) => {
+    ({ className, variant, size, selected, asChild = false, ...props }, ref) => {
         const Comp = asChild ? Slot : 'button';
         return (
             <Comp
-                className={cn(buttonVariants({ variant, size, className }))}
+                className={cn(buttonVariants({ variant, size, selected, className }))}
                 ref={ref}
                 {...props}
             />

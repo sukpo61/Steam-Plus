@@ -1,7 +1,13 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+
 import { useCallback } from 'react';
 
-export const useUpdateParams = () => {
+interface Params {
+    defaultParams?: Record<any, any>;
+}
+
+export const useUpdateParams = (params?: Params) => {
+    const { defaultParams } = params || {};
     const { replace, push } = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -10,7 +16,8 @@ export const useUpdateParams = () => {
         (paramsObject: Record<string, string | undefined>) => {
             const params = new URLSearchParams(searchParams.toString());
             Object.entries(paramsObject).forEach(([name, value]) => {
-                if (value === null || value === undefined || value === '') {
+                const isDefaultValue = defaultParams && defaultParams[name] === value;
+                if (value === null || value === undefined || value === '' || isDefaultValue) {
                     params.delete(name);
                 } else {
                     params.set(name, value);
@@ -18,15 +25,18 @@ export const useUpdateParams = () => {
             });
             return params.toString();
         },
-        [searchParams],
+        [searchParams, defaultParams],
     );
 
     const updateParams = (data: Record<any, any>, option?: string) => {
+        const result = `${pathname}?${createQueryString(data)}`;
+        console.log('result', result);
+
         if (option === 'push') {
-            push(`${pathname}?${createQueryString(data)}`, { scroll: true });
+            push(result, { scroll: true });
             return;
         }
-        replace(`${pathname}?${createQueryString(data)}`, { scroll: true });
+        replace(result, { scroll: true });
     };
 
     return {

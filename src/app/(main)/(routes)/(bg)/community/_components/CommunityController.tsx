@@ -2,10 +2,9 @@
 
 import { CommunityParams, CommunitySearchParams } from 'types/params/community';
 import { FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { API_SEARCH_KEY } from '@/actions/queryKeys';
-import { getChangedProperties } from '@/utils/getFirstSentence';
 import { useQueryClient } from '@tanstack/react-query';
 import { useUpdateParams } from '@/hooks/useUpdateParams';
 
@@ -17,13 +16,10 @@ interface CommunityPageControllerProps {
 
 export interface CommunityFormValue extends CommunitySearchParams {}
 
-export const CommunityController = ({
-    params,
-    searchParams,
-    children,
-}: CommunityPageControllerProps) => {
-    const [isInitialRender, setIsInitialRender] = useState(true);
-    const { updateParams } = useUpdateParams();
+export const CommunityController = ({ searchParams, children }: CommunityPageControllerProps) => {
+    const { updateParams } = useUpdateParams({
+        defaultParams: { category: 'all', order: 'popular', page: '1' },
+    });
     const queryCache = useQueryClient();
 
     const form = useForm<CommunityFormValue>({
@@ -54,20 +50,12 @@ export const CommunityController = ({
     const page = useWatch({ control, name: 'page' });
 
     useEffect(() => {
-        if (!isInitialRender) {
-            updateParams(
-                getChangedProperties(searchParams, {
-                    category: category === 'all' ? '' : category,
-                    order: order === 'popular' ? '' : order,
-                    page: page === 1 ? '' : page,
-                }),
-            );
-        }
+        updateParams({
+            category,
+            order,
+            page,
+        });
     }, [category, order, page]);
-
-    useEffect(() => {
-        setIsInitialRender(false);
-    }, []);
 
     return (
         <FormProvider {...form}>

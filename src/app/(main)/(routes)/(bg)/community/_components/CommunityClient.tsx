@@ -1,16 +1,18 @@
 'use client';
 
-import { getCommunity } from '@/actions/community/community';
+import { CommunityParams, CommunitySearchParams } from 'types/params/community';
+
 import { API_COMMUNITY_KEY } from '@/actions/queryKeys';
 import { Button } from '@/components/ui/Button';
-import { Pagination } from '@/components/ui/Pagination';
-import { useBgStore } from '@/store/useBgStore';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { CommunityParams, CommunitySearchParams } from 'types/params/community';
 import { CommunityHeader } from './CommunityHeader';
+import { Pagination } from '@/components/ui/Pagination';
 import { PostTile } from './PostTile';
+import { getCommunity } from '@/actions/community/community';
+import { useBgStore } from '@/store/useBgStore';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSidebarStore } from '@/store/useSidebarStore';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 interface CommunityProps {
     params: CommunityParams;
@@ -20,6 +22,7 @@ interface CommunityProps {
 export const CommunityClient = ({ params, searchParams }: CommunityProps) => {
     const { push } = useRouter();
     const { setBackground } = useBgStore((state) => state);
+    const { setType } = useSidebarStore((state) => state);
 
     const onClickHandler = ({ postId }: any) => {
         push(`/post/${postId}`);
@@ -39,6 +42,10 @@ export const CommunityClient = ({ params, searchParams }: CommunityProps) => {
             setBackground({ appId, background });
         }
     }, [background]);
+
+    useEffect(() => {
+        setType('library');
+    }, []);
 
     return (
         <div className="flex h-full w-full flex-col items-center overflow-y-scroll">

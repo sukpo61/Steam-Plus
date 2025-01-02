@@ -13,6 +13,7 @@ interface ChatControllerProps {
     params: ServerParams;
     searchParams: ServerSearchParams;
     children: React.ReactNode;
+    isDM: boolean;
 }
 
 export const MAX_CONTENT_LENGTH = 3000;

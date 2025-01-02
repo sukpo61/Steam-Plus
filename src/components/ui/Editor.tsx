@@ -1,7 +1,6 @@
 'use client';
 
 import { ImageInput, ImageInputValue } from './ImageInput';
-import { KeyboardEvent, useCallback, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { Button } from './Button';
@@ -9,16 +8,18 @@ import { ImagePreview } from './ImagePreview';
 import { LoaderIcon } from '../icons/common/Loader.icon';
 import { TextArea } from './TextArea';
 import { cn } from '@/lib/utils';
+import { useCallback } from 'react';
 import { useUserStore } from '@/store/useUserStore';
+import { type ClassValue } from 'clsx';
 
-export interface TextImageInputProps {
+export interface EditorProps {
     cancle?: () => void;
     placeholder?: string;
     multiple?: boolean;
-    imageMaxlength: number;
+    imageMaxlength?: number;
     textMaxHeight?: number;
     textMaxLength?: number;
-    className?: string;
+    className?: ClassValue;
     disabled?: boolean;
 }
 
@@ -27,7 +28,7 @@ export interface TextImageFormValue {
     images: ImageInputValue[];
 }
 
-export const TextImageInput = ({
+export const Editor = ({
     cancle,
     placeholder,
     multiple,
@@ -35,13 +36,14 @@ export const TextImageInput = ({
     className,
     textMaxHeight,
     textMaxLength = 3000,
-}: TextImageInputProps) => {
+}: EditorProps) => {
     const {
         register,
         setValue,
         control,
         formState: { isSubmitting },
     } = useFormContext<TextImageFormValue>();
+
     const { data } = useUserStore((state) => state);
 
     const prevImages = useWatch({ control, name: 'images' });

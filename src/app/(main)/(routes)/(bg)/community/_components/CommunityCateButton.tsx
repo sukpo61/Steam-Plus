@@ -1,8 +1,9 @@
 'use client';
 
-import { CommunityFormValue } from '@/app/(main)/(routes)/(bg)/community/_components/CommunityPageController';
-import { ToggleButtonGroup } from '@/components/ui/ToggleButtonGroup';
 import { useFormContext, useWatch } from 'react-hook-form';
+
+import { CommunityFormValue } from './CommunityController';
+import { ToggleButtonGroup } from '@/components/ui/ToggleButtonGroup';
 
 export const COMMUNIY_CATEGORY_LABEL = [
     {

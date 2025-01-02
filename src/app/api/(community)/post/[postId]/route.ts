@@ -1,6 +1,6 @@
-import { getAppDetails } from '@/app/api/actions/steam';
 import { NextResponse } from 'next/server';
 import { db } from 'src/lib/db';
+import { getAppDetails } from '@/app/api/actions/steam';
 
 const IMAGE_UPLOAD_LIMIT = 5;
 

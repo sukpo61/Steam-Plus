@@ -6,7 +6,6 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/DropDown';
 
-import { DeleteIcon } from '@/components/icons/common/Delete.icon';
 import { MouseEventHandler } from 'react';
 import { Stat2 } from '@/components/icons/common/Stat2.icon';
 

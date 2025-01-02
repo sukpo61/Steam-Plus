@@ -57,8 +57,38 @@ export async function GET(req: Request) {
                         role: true,
                     },
                 },
+                conversationsInitiated: {
+                    where: {
+                        userOneId: userId,
+                    },
+                    include: {
+                        userTwo: {
+                            select: {
+                                id: true,
+                                name: true,
+                                avatar: true,
+                            },
+                        },
+                    },
+                },
+                conversationsReceived: {
+                    where: {
+                        userTwoId: userId,
+                    },
+                    include: {
+                        userOne: {
+                            select: {
+                                id: true,
+                                name: true,
+                                avatar: true,
+                            },
+                        },
+                    },
+                },
             },
         });
+
+        if (!userRecord) return;
 
         const user = {
             ...userRecord,
@@ -66,9 +96,21 @@ export async function GET(req: Request) {
                 ...server,
                 role,
             })),
-        };
+            conversations: [
+                ...userRecord.conversationsInitiated.map(({ id, userTwo }) => ({
+                    id,
+                    user: userTwo,
+                })),
+                ...userRecord.conversationsReceived.map(({ id, userOne }) => ({
+                    id,
+                    user: userOne,
+                })),
+            ],
+        } as any;
 
         delete user.members;
+        delete user.conversationsInitiated;
+        delete user.conversationsReceived;
 
         return NextResponse.json(user);
     } catch (error) {

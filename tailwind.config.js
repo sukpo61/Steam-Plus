@@ -26,7 +26,6 @@ module.exports = {
                     dark: 'hsl(var(--primary-dark))',
                     darker: 'hsl(var(--primary-darker))',
                     darkest: 'hsl(var(--primary-darkest))',
-                    aaaaaaa: 'hsl(var(--primary-darkest))',
                 },
                 secondary: {
                     DEFAULT: 'hsl(var(--secondary))',
@@ -35,6 +34,10 @@ module.exports = {
                 destructive: {
                     DEFAULT: 'hsl(var(--destructive))',
                     foreground: 'hsl(var(--destructive-foreground))',
+                },
+                publish: {
+                    DEFAULT: 'hsl(var(--publish))',
+                    foreground: 'hsl(var(--publish-foreground))',
                 },
                 border: 'hsl(var(--border))',
                 input: 'hsl(var(--input))',

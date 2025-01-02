@@ -18,6 +18,11 @@ const API_MESSAGE_KEY = '/api/messages';
 const API_CHANNEL_KEY = '/api/channel/{{channelId}}';
 const API_IMAGE_KEY = '/api/image/{{imageId}}';
 
+const API_FRIEND_KEY = '/api/friend/{{friendId}}';
+const API_FRIEND_REQUEST_KEY = '/api/friend/request/{{requestId}}';
+
+const API_DM_KEY = '/api/dm/{{userId}}';
+
 export {
     API_APP_KEY,
     API_SEARCH_KEY,
@@ -33,4 +38,7 @@ export {
     API_CHANNEL_KEY,
     API_IMAGE_KEY,
     API_SERVER_JOIN_KEY,
+    API_FRIEND_KEY,
+    API_FRIEND_REQUEST_KEY,
+    API_DM_KEY,
 };

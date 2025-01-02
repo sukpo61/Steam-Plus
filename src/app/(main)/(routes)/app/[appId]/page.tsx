@@ -4,11 +4,11 @@ import { Fragment } from 'react';
 import { NextPage } from 'next';
 import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
 
-interface AppPageProps {
+interface FriendPageProps {
     params: AppParams;
 }
 
-const AppPageLoading = () => {
+const FriendPageLoading = () => {
     const LoadingBlock = () => {
         return <div className="flex h-[320px] w-full animate-pulse rounded-lg bg-primary" />;
     };
@@ -33,13 +33,13 @@ const AppPageLoading = () => {
     );
 };
 
-const AppPage: NextPage<AppPageProps> = ({ params }) => {
+const FriendPage: NextPage<FriendPageProps> = ({ params }) => {
     const { appId } = params;
 
     return (
         <div className="flex h-full w-full flex-col items-center overflow-y-scroll px-8 py-8">
             <div className="flex w-full max-w-[1600px] flex-col gap-4">
-                <QuerySuspenseErrorBoundary suspenseFallback={<AppPageLoading />}>
+                <QuerySuspenseErrorBoundary suspenseFallback={<FriendPageLoading />}>
                     <AppServer params={{ ...params, appId: Number(appId) }} />
                 </QuerySuspenseErrorBoundary>
             </div>
@@ -47,4 +47,4 @@ const AppPage: NextPage<AppPageProps> = ({ params }) => {
     );
 };
 
-export default AppPage;
+export default FriendPage;
