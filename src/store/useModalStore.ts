@@ -26,6 +26,7 @@ interface ModalData {
     defaultChannelId?: string;
     name?: string;
     description?: string;
+    onConfirm?: () => void;
 }
 
 interface ModalStore {

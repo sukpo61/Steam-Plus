@@ -1,7 +1,6 @@
+import { GradientBg } from '@/components/common/GradientBg';
 import { UserAvatar } from '@/components/common/UserAvatar';
-import { cn } from '@/lib/utils';
 import { cva } from 'class-variance-authority';
-import { seededRandom } from '@/utils/seededRandom';
 import { useRouter } from 'next/navigation';
 
 export interface ChannelTileProps {}
@@ -42,7 +41,7 @@ export const ServerBlock = ({ data }: any) => {
             onClick={onClickHandler}
         >
             <div className="relative flex flex-col">
-                <div className={cn(bgVariants({ variant: Math.floor(seededRandom(id) * 10) }))} />
+                <GradientBg id={id} className="h-[128px]" />
                 <div className="absolute -bottom-6 left-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary">
                     <UserAvatar className="h-10 w-10" src={avatar} />
                 </div>

@@ -1,4 +1,3 @@
-import { log } from 'node:console';
 import { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSocket } from '@/provider/SocketProvider';

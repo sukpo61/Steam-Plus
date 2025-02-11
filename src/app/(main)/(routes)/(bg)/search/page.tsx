@@ -1,5 +1,6 @@
 import { NextPage } from 'next';
 import SearchPageController from './_components/SearchPageController';
+import { SidebarLayout } from '@/components/layout/sidebar/SidebarLayout';
 
 interface SearchResultPageProps {
     searchParams: {
@@ -8,7 +9,11 @@ interface SearchResultPageProps {
 }
 
 const SearchResultPage: NextPage<SearchResultPageProps> = async ({ searchParams }) => {
-    return <SearchPageController searchParams={searchParams} />;
+    return (
+        <SidebarLayout type="library">
+            <SearchPageController searchParams={searchParams} />;
+        </SidebarLayout>
+    );
 };
 
 export default SearchResultPage;

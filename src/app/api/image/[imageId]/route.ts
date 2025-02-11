@@ -14,7 +14,45 @@ export async function DELETE(req: Request, { params }: { params: { imageId: stri
             where: {
                 id: imageId,
             },
+            include: {
+                message: true,
+                directMessage: true,
+            },
         });
+
+        const { message, directMessage } = image;
+
+        if (message) {
+            const { id, content } = message;
+            const images = await db.image.count({
+                where: {
+                    messageId: id,
+                },
+            });
+            if (!content && images === 0) {
+                await db.message.delete({
+                    where: {
+                        id,
+                    },
+                });
+            }
+        }
+
+        if (directMessage) {
+            const { id, content } = directMessage;
+            const images = await db.image.count({
+                where: {
+                    directMessageId: id,
+                },
+            });
+            if (!content && images === 0) {
+                await db.message.delete({
+                    where: {
+                        id,
+                    },
+                });
+            }
+        }
 
         return NextResponse.json(image);
     } catch (error) {

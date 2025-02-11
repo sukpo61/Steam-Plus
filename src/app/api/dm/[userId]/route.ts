@@ -92,9 +92,31 @@ export async function GET(req: Request, { params }: { params: { userId: string }
             nextCursor = dmMessages[DM_MESSAGES_BATCH - 1].id;
         }
 
+        const friendShip = await db.friendship.findFirst({
+            where: {
+                status: 'ACCEPTED',
+                OR: [
+                    { senderId: userId, receiverId: dmuserId },
+                    { senderId: dmuserId, receiverId: userId },
+                ],
+            },
+        });
+
+        const user = await db.user.findUnique({
+            where: {
+                id: dmuserId,
+            },
+            select: {
+                id: true,
+                avatar: true,
+                name: true,
+            },
+        });
+
         return NextResponse.json({
             items: dmMessages,
             conversationId: conversation?.id,
+            user: { ...user, friendShipId: friendShip?.id },
             nextCursor: null,
         });
     } catch (error) {

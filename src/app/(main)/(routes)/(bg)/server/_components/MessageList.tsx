@@ -54,12 +54,7 @@ export const MessageList = ({ data, params, searchParams, isDM }: MessageListPro
                     const { id, user } = item;
                     const { id: messageUserId } = user || {};
                     return (
-                        <MessageController
-                            key={id}
-                            item={item}
-                            onClose={() => setEditId(null)}
-                            isDM={isDM}
-                        >
+                        <MessageController item={item} onClose={() => setEditId(null)} isDM={isDM}>
                             <Message
                                 key={id}
                                 item={item}

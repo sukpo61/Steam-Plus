@@ -17,35 +17,14 @@ export interface ModalFormValue {
 export const MAX_NAME_LENGTH = 15;
 
 export const LeaveServerModal = () => {
-    const { replace } = useRouter();
-    const queryCache = useQueryClient();
     const { isOpen, onClose, type, data } = useModalStore((state) => state);
-    const { serverId, memberId, appId, name } = data;
+    const { name, onConfirm } = data;
 
     const isModalOpen = isOpen && (type === 'leaveServer' || type === 'kickMember');
 
-    const { mutateAsync: leaveMutate } = useMutation({
-        mutationFn: kickMember,
-        onSuccess: async () => {
-            await queryCache.invalidateQueries({
-                queryKey: [API_MAIN_KEY],
-            });
-            await queryCache.invalidateQueries({
-                queryKey: [API_USER_KEY],
-            });
-            await queryCache.invalidateQueries({
-                queryKey: [API_APP_KEY, { appId }],
-            });
-            queryCache.invalidateQueries({
-                queryKey: [API_SERVER_KEY, { serverId }],
-            });
-            onClose();
-            type === 'leaveServer' && replace('/');
-        },
-    });
-
-    const onClickHandler = () => {
-        memberId && leaveMutate({ params: { memberId } });
+    const onConfirmHandler = () => {
+        onConfirm?.();
+        onClose();
     };
 
     return (
@@ -64,7 +43,7 @@ export const LeaveServerModal = () => {
                     <Button variant="trans" type="button" onClick={onClose}>
                         취소
                     </Button>
-                    <Button variant="destructive" onClick={onClickHandler}>
+                    <Button variant="destructive" onClick={onConfirmHandler}>
                         확인
                     </Button>
                 </div>

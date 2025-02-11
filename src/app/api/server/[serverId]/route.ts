@@ -6,6 +6,10 @@ export async function GET(req: Request, { params }: { params: { serverId: string
         const { serverId } = params;
         const userId = req.headers.get('User-Id');
 
+        if (!userId) {
+            return new NextResponse('Unauthorized', { status: 401 });
+        }
+
         const server = await db.server.findUnique({
             where: { id: serverId },
             select: {
@@ -47,17 +51,36 @@ export async function GET(req: Request, { params }: { params: { serverId: string
 
         const currentMember = server?.members.find((member) => member.user.id === userId);
 
+        const friendsRecord = await db.friendship.findMany({
+            where: {
+                status: 'ACCEPTED',
+                OR: [{ senderId: userId }, { receiverId: userId }],
+            },
+            include: {
+                sender: { select: { id: true } },
+                receiver: { select: { id: true } },
+            },
+        });
+
+        const friendsId = friendsRecord.map((item) => {
+            const isSender = item.senderId === userId;
+            return isSender ? item.receiverId : item.senderId;
+        });
+
         const serverResult = {
             ...server,
             memberId: currentMember?.id || null,
             role: currentMember?.role || null,
-            members: server?.members.map(({ id, role, user: { id: userId, name, avatar } }) => ({
-                id,
-                userId,
-                role,
-                name,
-                avatar,
-            })),
+            members: server?.members.map(
+                ({ id, role, user: { id: memberUserId, name, avatar } }) => ({
+                    id,
+                    userId: memberUserId,
+                    role,
+                    isFriend: friendsId.includes(memberUserId) || memberUserId === userId,
+                    name,
+                    avatar,
+                }),
+            ),
         };
 
         return NextResponse.json(serverResult);

@@ -15,9 +15,9 @@ import {
 } from '@/components/ui/Select';
 
 import { BgLayout } from '@/components/layout/main/BgLayout';
+import { Editor } from '@/components/ui/Editor';
 import { Input } from '@/components/ui/Input';
 import { PostParams } from 'types/params/community';
-import { TextImageInput } from '@/components/ui/TextImageInput';
 import { useFormContext } from 'react-hook-form';
 
 interface PostAddClientProps {
@@ -77,7 +77,7 @@ export const PostAddClient = ({ params }: PostAddClientProps) => {
                         </section>
                         <section className="flex flex-col items-start gap-4 py-4">
                             <span className="text-base">내용</span>
-                            <TextImageInput
+                            <Editor
                                 className="min-h-[400px]"
                                 placeholder="댓글을 입력하세요."
                                 textMaxLength={MAX_CONTENT_LENGTH}

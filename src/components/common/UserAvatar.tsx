@@ -1,6 +1,22 @@
 import { Avatar, AvatarImage } from '@radix-ui/react-avatar';
-import { cva } from 'class-variance-authority';
+import {
+    ContextMenu,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuPortal,
+    ContextMenuTrigger,
+} from '@/components/ui/ContextMenu';
+
 import { cn } from 'src/lib/utils';
+import { cva } from 'class-variance-authority';
+
+interface UserAvatarProps {
+    src?: string;
+    className?: string;
+    size?: any;
+    isFriend?: boolean;
+    isContext?: boolean;
+}
 
 const avatarVariants = cva('rounded-full overflow-hidden', {
     variants: {
@@ -14,20 +30,37 @@ const avatarVariants = cva('rounded-full overflow-hidden', {
         size: 'default',
     },
 });
-interface UserAvatarProps {
-    src?: string;
-    className?: string;
-    size?: any;
-}
 
 export const UserAvatar = ({
     src = '/images/profile/profile.png',
     className,
     size,
+    isFriend,
+    isContext = false,
 }: UserAvatarProps) => {
     return (
-        <Avatar className={cn(avatarVariants({ size, className }))}>
-            <AvatarImage src={src} />
-        </Avatar>
+        <>
+            <ContextMenu>
+                <ContextMenuTrigger asChild>
+                    <Avatar className={cn(avatarVariants({ size, className }))}>
+                        <AvatarImage src={src} />
+                    </Avatar>
+                </ContextMenuTrigger>
+                <ContextMenuPortal>
+                    {isContext && (
+                        <ContextMenuContent>
+                            {!isFriend && (
+                                <ContextMenuItem>
+                                    <span className="">친구추가</span>
+                                </ContextMenuItem>
+                            )}
+                            <ContextMenuItem>
+                                <span className="">프로필 보기</span>
+                            </ContextMenuItem>
+                        </ContextMenuContent>
+                    )}
+                </ContextMenuPortal>
+            </ContextMenu>
+        </>
     );
 };

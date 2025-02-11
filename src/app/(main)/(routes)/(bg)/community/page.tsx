@@ -1,11 +1,13 @@
-import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
-import { Separator } from '@/components/ui/Separator';
-import { NextPage } from 'next';
-import { Fragment } from 'react';
 import { CommunityParams, CommunitySearchParams } from 'types/params/community';
+
 import { CommunityController } from './_components/CommunityController';
 import { CommunityHeader } from './_components/CommunityHeader';
 import { CommunityServer } from './_components/CommunityServer';
+import { Fragment } from 'react';
+import { NextPage } from 'next';
+import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
+import { Separator } from '@/components/ui/Separator';
+import { SidebarLayout } from '@/components/layout/sidebar/SidebarLayout';
 
 interface CommunityPageProps {
     params: CommunityParams;
@@ -73,11 +75,13 @@ const CommunityPage: NextPage<CommunityPageProps> = async ({ params, searchParam
     const defaultParams = { ...searchParams, page, category, order };
 
     return (
-        <CommunityController params={params} searchParams={defaultParams}>
-            <QuerySuspenseErrorBoundary suspenseFallback={<CommunityPageLoading />}>
-                <CommunityServer params={params} searchParams={defaultParams} />
-            </QuerySuspenseErrorBoundary>
-        </CommunityController>
+        <SidebarLayout type="library">
+            <CommunityController params={params} searchParams={defaultParams}>
+                <QuerySuspenseErrorBoundary suspenseFallback={<CommunityPageLoading />}>
+                    <CommunityServer params={params} searchParams={defaultParams} />
+                </QuerySuspenseErrorBoundary>
+            </CommunityController>
+        </SidebarLayout>
     );
 };
 

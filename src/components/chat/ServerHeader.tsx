@@ -19,7 +19,7 @@ export const ServerHeader = ({ data }: ServerHeaderProps) => {
     const queryCache = useQueryClient();
 
     return (
-        <div className="flex h-12 w-full items-center border-b border-solid border-b-primary-darker px-2">
+        <div className="z-10 flex h-12 w-full items-center border-b border-solid border-b-primary-darker px-2">
             <span>{name}</span>
         </div>
     );

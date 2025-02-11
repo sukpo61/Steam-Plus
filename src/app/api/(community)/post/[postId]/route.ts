@@ -101,18 +101,18 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
             return new NextResponse('Unauthorized', { status: 401 });
         }
 
-        const post = await db.post.findUnique({
+        const postRecord = await db.post.findUnique({
             where: {
                 id: postId,
             },
             select: { userId: true },
         });
 
-        if (userId !== post?.userId) {
+        if (userId !== postRecord?.userId) {
             return new NextResponse('Invalid user', { status: 401 });
         }
 
-        if (images > IMAGE_UPLOAD_LIMIT) {
+        if (images.length > IMAGE_UPLOAD_LIMIT) {
             return new NextResponse('Image upload exceeded', { status: 403 });
         }
 
@@ -157,12 +157,12 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
             );
         }
 
-        const server = await db.post.findUnique({
+        const post = await db.post.findUnique({
             where: { id: postId },
             include: { images: true },
         });
 
-        return NextResponse.json(server);
+        return NextResponse.json(post);
     } catch (error) {
         console.error('CHANNELS_POST', error);
         return new NextResponse('Internal Error', { status: 500 });

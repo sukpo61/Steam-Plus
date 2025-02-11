@@ -1,8 +1,6 @@
 'use client';
 
-import { DMParams, DMSearchParams } from 'types/params/dm';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { ServerParams, ServerSearchParams } from 'types/params/server';
 
 import { ImageInputValue } from '@/components/ui/ImageInput';
 import { getImageUrl } from '@/actions/image/getImageUrl';
@@ -13,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 interface ChatControllerProps {
     params: any;
     children: React.ReactNode;
+    onSubmit?: () => void;
 }
 
 export const MAX_CONTENT_LENGTH = 3000;
@@ -22,7 +21,11 @@ export interface ChatControllerValue {
     images: ImageInputValue[];
 }
 
-const ChatController = ({ params, children }: ChatControllerProps) => {
+export const ChatController = ({
+    params,
+    children,
+    onSubmit: onSubmitAction,
+}: ChatControllerProps) => {
     const { channelId, userId } = params || {};
     const { socket } = useSocket();
 
@@ -59,17 +62,17 @@ const ChatController = ({ params, children }: ChatControllerProps) => {
                       url: 'images',
                   })
                 : [];
-
             if (userId) {
                 socket.emit('dmMessage', { content, images: imagesUrl, userId });
             } else {
                 socket.emit('message', { content, images: imagesUrl, channelId });
             }
+            onSubmitAction?.();
+            reset();
         } catch (error) {
             console.error(error);
             return Promise.reject(error);
         }
-        reset();
     };
 
     const onSubmitError = (errors: Object) => {
@@ -87,5 +90,3 @@ const ChatController = ({ params, children }: ChatControllerProps) => {
         </FormProvider>
     );
 };
-
-export default ChatController;

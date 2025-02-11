@@ -1,31 +1,32 @@
 'use client';
 
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { ServerParams, ServerSearchParams } from 'types/params/server';
 
-import { ImageInputValue } from '@/components/ui/ImageInput';
+import { CommentRequest } from 'types/community/comment';
 import { getImageUrl } from '@/actions/image/getImageUrl';
 import { useSocket } from '@/provider/SocketProvider';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-interface ChatControllerProps {
-    params: ServerParams;
-    searchParams: ServerSearchParams;
+interface EditInputProps {
+    item?: any;
+    isDM?: boolean;
     children: React.ReactNode;
-    isDM: boolean;
+    onClose: () => void;
+}
+
+export interface ChatFormValue extends CommentRequest {
+    deleteId: string | null;
 }
 
 export const MAX_CONTENT_LENGTH = 3000;
 export const MAX_IMAGES_LENGTH = 3;
-export interface ChatControllerValue {
-    content: string;
-    images: ImageInputValue[];
-}
 
-const ChatController = ({ params, searchParams, children }: ChatControllerProps) => {
-    const { serverId } = params;
-    const { channelId } = searchParams;
+export const MessageController = ({ children, item, onClose, isDM }: EditInputProps) => {
+    const { id, content, images } = item;
+
+    const defaultValues = { content, images };
+
     const { socket } = useSocket();
 
     const formSchema = z
@@ -42,19 +43,18 @@ const ChatController = ({ params, searchParams, children }: ChatControllerProps)
             path: ['content'],
         });
 
-    const form = useForm<ChatControllerValue>({
+    const form = useForm<ChatFormValue>({
         resolver: zodResolver(formSchema),
-        values: {
+        defaultValues: defaultValues || {
             content: '',
             images: [],
         },
     });
 
-    const { handleSubmit, reset } = form;
+    const { handleSubmit } = form;
 
-    const onSubmit: SubmitHandler<ChatControllerValue> = async (data) => {
+    const onSubmit: SubmitHandler<ChatFormValue> = async (data) => {
         const { content, images } = data;
-
         try {
             const imagesUrl = images
                 ? await getImageUrl({
@@ -62,13 +62,12 @@ const ChatController = ({ params, searchParams, children }: ChatControllerProps)
                       url: 'images',
                   })
                 : [];
-            socket.emit('message', { content, channelId, serverId, images: imagesUrl });
+            socket.emit(isDM ? 'dmEdit' : 'edit', { id, content, images: imagesUrl });
+            onClose();
         } catch (error) {
             console.error(error);
             return Promise.reject(error);
         }
-
-        reset();
     };
 
     const onSubmitError = (errors: Object) => {
@@ -80,11 +79,9 @@ const ChatController = ({ params, searchParams, children }: ChatControllerProps)
 
     return (
         <FormProvider {...form}>
-            <form className="flex h-full w-full" onSubmit={handleSubmit(onSubmit, onSubmitError)}>
+            <form className="flex w-full" onSubmit={handleSubmit(onSubmit, onSubmitError)}>
                 {children}
             </form>
         </FormProvider>
     );
 };
-
-export default ChatController;

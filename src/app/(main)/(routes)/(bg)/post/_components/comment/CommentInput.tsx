@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { API_COMMENT_KEY } from '@/actions/queryKeys';
 import { CommentParams } from 'types/params/community';
 import { CommentRequest } from 'types/community/comment';
-import { TextImageInput } from '@/components/ui/TextImageInput';
+import { Editor } from '@/components/ui/Editor';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -91,9 +91,9 @@ export const CommentInput = ({ id, params, defaultValues, closeInput }: CommentI
     return (
         <FormProvider {...form}>
             <form className="flex w-full" onSubmit={handleSubmit(onSubmit, onSubmitError)}>
-                <TextImageInput
+                <Editor
                     placeholder="댓글을 입력하세요."
-                    cancle={closeInput}
+                    onCancle={closeInput}
                     imageMaxlength={MAX_IMAGES_LENGTH}
                     textMaxHeight={240}
                     textMaxLength={MAX_CONTENT_LENGTH}

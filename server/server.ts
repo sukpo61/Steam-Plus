@@ -2,6 +2,7 @@ import 'tsconfig-paths/register';
 
 import { Socket as InitSocket, Server } from 'socket.io';
 
+import { NextResponse } from 'next/server';
 import { createServer } from 'node:http';
 import { db } from '@/lib/db';
 import jwt from 'jsonwebtoken';
@@ -153,6 +154,57 @@ app.prepare().then(() => {
 
         socket.on('edit', async ({ id, content, images }) => {
             try {
+                const messageRecord = await db.message.findUnique({
+                    where: {
+                        id,
+                    },
+                    select: {
+                        member: {
+                            select: {
+                                userId: true,
+                            },
+                        },
+                    },
+                });
+
+                if (userId !== messageRecord?.member.userId) {
+                    return new NextResponse('Invalid user', { status: 401 });
+                }
+
+                const currentImages = await db.image.findMany({
+                    where: { messageId: id },
+                    select: { id: true },
+                });
+
+                const currentImageIds = currentImages?.map((img) => img.id);
+
+                const newImageIds = images?.map((img: any) => img.id).filter(Boolean);
+
+                const imagesToDelete = currentImageIds.filter((id) => !newImageIds.includes(id));
+
+                if (imagesToDelete.length > 0) {
+                    await db.image.deleteMany({
+                        where: {
+                            id: { in: imagesToDelete },
+                        },
+                    });
+                }
+
+                if (images && images.length > 0) {
+                    await Promise.all(
+                        images.map(async (image: any) => {
+                            if (!image.messageId) {
+                                await db.image.create({
+                                    data: {
+                                        src: image.src,
+                                        messageId: id,
+                                    },
+                                });
+                            }
+                        }),
+                    );
+                }
+
                 const message = await db.message.update({
                     where: {
                         id,
@@ -166,6 +218,7 @@ app.prepare().then(() => {
                                 serverId: true,
                             },
                         },
+                        images: true,
                         member: {
                             include: {
                                 user: true,
@@ -257,8 +310,55 @@ app.prepare().then(() => {
             }
         });
 
-        socket.on('dmEdit', async ({ id, content }) => {
+        socket.on('dmEdit', async ({ id, content, images }) => {
             try {
+                const messageRecord = await db.directMessage.findUnique({
+                    where: {
+                        id,
+                    },
+                    select: {
+                        userId: true,
+                    },
+                });
+
+                if (userId !== messageRecord?.userId) {
+                    return new NextResponse('Invalid user', { status: 401 });
+                }
+
+                const currentImages = await db.image.findMany({
+                    where: { directMessageId: id },
+                    select: { id: true },
+                });
+
+                const currentImageIds = currentImages?.map((img) => img.id);
+
+                const newImageIds = images?.map((img: any) => img.id).filter(Boolean);
+
+                const imagesToDelete = currentImageIds.filter((id) => !newImageIds.includes(id));
+
+                if (imagesToDelete.length > 0) {
+                    await db.image.deleteMany({
+                        where: {
+                            id: { in: imagesToDelete },
+                        },
+                    });
+                }
+
+                if (images && images.length > 0) {
+                    await Promise.all(
+                        images.map(async (image: any) => {
+                            if (!image.directMessageId) {
+                                await db.image.create({
+                                    data: {
+                                        src: image.src,
+                                        directMessageId: id,
+                                    },
+                                });
+                            }
+                        }),
+                    );
+                }
+
                 const message = await db.directMessage.update({
                     where: {
                         id,
@@ -274,6 +374,7 @@ app.prepare().then(() => {
                                 avatar: true,
                             },
                         },
+                        images: true,
                     },
                 });
 

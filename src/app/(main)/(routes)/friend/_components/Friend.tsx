@@ -14,7 +14,6 @@ import { CloseIcon } from '@/components/icons/common/Close.icon';
 import { DropDownIcon } from '@/components/icons/common/DropDown.icon';
 import { Separator } from '@/components/ui/Separator';
 import { UserAvatar } from '@/components/common/UserAvatar';
-import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
 interface FriendProps {
@@ -24,10 +23,10 @@ interface FriendProps {
     onDelete?: MouseEventHandler;
 }
 
-export const Friend = ({ data, onAccept, onCancle, onDelete }: FriendProps) => {
+export const Friend = ({ data, onAccept, onCancle }: FriendProps) => {
     const { push } = useRouter();
 
-    const { id, status, type, user } = data;
+    const { status, type, user } = data;
     const { id: userId, name, avatar } = user;
 
     const isAccept = useMemo(() => status === 'ACCEPTED', [status]);

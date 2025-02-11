@@ -7,14 +7,12 @@ import {
     DropdownMenuPortal,
     DropdownMenuTrigger,
 } from '@/components/ui/DropDown';
-import { MouseEventHandler, useState } from 'react';
 
 import { DeleteIcon } from '@/components/icons/common/Delete.icon';
 import { DropDownIcon } from '@/components/icons/common/DropDown.icon';
-import { EditController } from './EditController';
 import { EditIcon } from '@/components/icons/common/Edit.icon';
 import { Editor } from '../ui/Editor';
-import { MessageImages } from './MessageImages';
+import { MessageImageList } from './MessageImageList';
 import { Separator } from '@/components/ui/Separator';
 import { UserAvatar } from '@/components/common/UserAvatar';
 import { cn } from '@/lib/utils';
@@ -22,15 +20,25 @@ import { cn } from '@/lib/utils';
 interface MessageProps {
     item: any;
     isDM?: boolean;
+    isEdit: boolean;
     isOwned: boolean;
     params: any;
-    onDelete: MouseEventHandler;
+    setEditId: (id: string | null) => void;
+    onDelete: (id: string) => void;
+    onImageDelete: (id: string) => void;
 }
 
-export const Message = ({ item, isDM = false, isOwned, params, onDelete }: MessageProps) => {
-    const [editState, setEditState] = useState(false);
-
-    const { content, user, images } = item;
+export const Message = ({
+    item,
+    isDM = false,
+    isEdit,
+    isOwned,
+    params,
+    setEditId,
+    onDelete,
+    onImageDelete,
+}: MessageProps) => {
+    const { id, content, user, images } = item;
 
     const { name, avatar } = user || {};
 
@@ -40,19 +48,13 @@ export const Message = ({ item, isDM = false, isOwned, params, onDelete }: Messa
             <div className="flex justify-between">
                 <div className="relative flex w-full items-start gap-4 py-3">
                     <UserAvatar className="h-10 w-10" src={avatar} />
-                    {editState ? (
-                        <EditController
-                            item={item}
-                            defaultValues={item}
-                            closeInput={() => setEditState(false)}
-                            isDM={isDM}
-                        >
-                            <Editor
-                                cancle={() => setEditState(false)}
-                                className={cn(isDM && 'bg-primary')}
-                                textMaxHeight={240}
-                            />
-                        </EditController>
+                    {isEdit ? (
+                        <Editor
+                            onCancle={() => setEditId(null)}
+                            className={cn(isDM && 'bg-primary')}
+                            multiple
+                            textMaxHeight={240}
+                        />
                     ) : (
                         <div className="flex flex-1 flex-col">
                             <div className="flex gap-1">
@@ -62,30 +64,28 @@ export const Message = ({ item, isDM = false, isOwned, params, onDelete }: Messa
                                 <span className="pre-wrap">{content}</span>
                             </div>
                             <div className="flex gap-1">
-                                {images?.map((image: any) => (
-                                    <MessageImages
-                                        key={image.id}
-                                        data={image}
-                                        imageOnly={content}
-                                        params={params}
-                                    />
-                                ))}
+                                <MessageImageList
+                                    data={images}
+                                    isOwned={isOwned}
+                                    params={params}
+                                    onDelete={onImageDelete}
+                                />
                             </div>
                         </div>
                     )}
                 </div>
-                {!editState && isOwned && (
+                {!isEdit && isOwned && (
                     <DropdownMenu>
                         <DropdownMenuTrigger>
                             <DropDownIcon />
                         </DropdownMenuTrigger>
                         <DropdownMenuPortal>
                             <DropdownMenuContent align="start" side="top">
-                                <DropdownMenuItem onClick={() => setEditState(true)}>
+                                <DropdownMenuItem onClick={() => setEditId(id)}>
                                     <EditIcon />
                                     <span>수정</span>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={onDelete}>
+                                <DropdownMenuItem onClick={() => onDelete(id)}>
                                     <DeleteIcon />
                                     <span>삭제</span>
                                 </DropdownMenuItem>

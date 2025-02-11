@@ -1,11 +1,11 @@
 'use client';
 
 import { DMParams, DMSearchParams } from 'types/params/dm';
+import { cancleRequest, postFriend } from '@/actions/friend/friend';
 
 import { API_DM_KEY } from '@/actions/queryKeys';
-import ChatController from '@/components/chat/ChatController';
-import { ChatInput } from '@/components/ui/ChatInput';
-import { Message } from '@/components/chat/Message';
+import { ChatController } from '@/components/chat/ChatController';
+import { ChatInput } from '@/components/chat/ChatInput';
 import { MessageList } from '@/components/chat/MessageList';
 import { ObserverTrigger } from '@/components/hoc/ObserverTrigger';
 import { ServerHeader } from '@/components/chat/ServerHeader';
@@ -13,6 +13,8 @@ import { User } from './User';
 import { getDMMessages } from '@/actions/dm/messages';
 import { useChatSocket } from '@/hooks/useChatSocket';
 import { useEffect } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSidebarStore } from '@/store/useSidebarStore';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
@@ -27,11 +29,13 @@ export interface SearchFormValue {
     content: string;
 }
 
-export const DMClient = ({ params, searchParams }: ServerProps) => {
+export const DMClient = ({ params }: ServerProps) => {
     const { setType } = useSidebarStore();
+    const queryCaches = useQueryClient();
+    const queryKey = [API_DM_KEY, params];
 
     const { fetchNextPage, hasNextPage, data, refetch, isPending } = useSuspenseInfiniteQuery({
-        queryKey: [API_DM_KEY, params],
+        queryKey,
         queryFn: ({ pageParam: cursor }) => getDMMessages({ params, cursor }),
         initialPageParam: null,
         getNextPageParam: ({ nextCursor }) => {
@@ -40,21 +44,35 @@ export const DMClient = ({ params, searchParams }: ServerProps) => {
     });
 
     const conversationId = data.pages[0].conversationId;
+    const messagesData = data.pages;
+    const user = data.pages[0].user;
     const addKey = `messages/${conversationId}/add`;
     const updateKey = `messages/${conversationId}/update`;
     const deleteKey = `messages/${conversationId}/delete`;
 
-    useChatSocket({ queryKey: [API_DM_KEY, params], addKey, updateKey, deleteKey });
+    useChatSocket({ queryKey, addKey, updateKey, deleteKey });
 
     const onObserve = () => {
         hasNextPage && fetchNextPage();
     };
 
-    const messagesData = data.pages;
+    const onSuccess = async () => {
+        await queryCaches.invalidateQueries({ queryKey });
+    };
+
+    const { mutate: postFriendMutate } = useMutation({
+        mutationFn: postFriend,
+        onSuccess,
+    });
+
+    const { mutate: cancleMutate } = useMutation({
+        mutationFn: cancleRequest,
+        onSuccess,
+    });
 
     useEffect(() => {
         setType('friend');
-    }, []);
+    }, [setType]);
 
     return (
         <div className="flex h-full w-full flex-col">
@@ -72,8 +90,14 @@ export const DMClient = ({ params, searchParams }: ServerProps) => {
                         </ChatController>
                     </div>
                 </div>
-                <div className="flex h-full w-[240px] flex-col gap-2 px-2 pt-4">
-                    <User />
+                <div className="flex h-full w-[320px] flex-col">
+                    <User
+                        data={user}
+                        postFriend={() => postFriendMutate({ params: { friendId: user.id } })}
+                        deleteFriend={() =>
+                            cancleMutate({ params: { requestId: user.friendShipId } })
+                        }
+                    />
                 </div>
             </div>
         </div>

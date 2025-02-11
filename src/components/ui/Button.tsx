@@ -2,6 +2,7 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 import { cn } from 'src/lib/utils';
+import { useState } from 'react';
 
 const buttonVariants = cva(
     'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
@@ -25,6 +26,7 @@ const buttonVariants = cva(
                 icon: 'h-10 w-10',
                 iconround: 'h-10 w-10 rounded-full',
                 iconlg: 'h-12 w-12 rounded-full',
+                menu: 'flex  w-full justify-start rounded-md px-0 py-1',
             },
             selected: {
                 true: '',
@@ -79,17 +81,28 @@ export interface ButtonProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement>,
         VariantProps<typeof buttonVariants> {
     asChild?: boolean;
+    nameTag?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant, size, selected, asChild = false, ...props }, ref) => {
+    ({ className, variant, size, selected, nameTag, asChild = false, ...props }, ref) => {
+        const [isOver, setIsOver] = useState(false);
         const Comp = asChild ? Slot : 'button';
         return (
-            <Comp
-                className={cn(buttonVariants({ variant, size, selected, className }))}
-                ref={ref}
-                {...props}
-            />
+            <div className="relative z-50 flex">
+                <Comp
+                    className={cn(buttonVariants({ variant, size, selected, className }))}
+                    onMouseEnter={() => setIsOver(true)}
+                    onMouseLeave={() => setIsOver(false)}
+                    ref={ref}
+                    {...props}
+                />
+                {nameTag && isOver && (
+                    <span className="absolute -top-8 rounded-sm bg-primary-dark p-1 text-xs">
+                        {nameTag}
+                    </span>
+                )}
+            </div>
         );
     },
 );

@@ -8,12 +8,12 @@ import { ImagePreview } from './ImagePreview';
 import { LoaderIcon } from '../icons/common/Loader.icon';
 import { TextArea } from './TextArea';
 import { cn } from '@/lib/utils';
-import { useCallback } from 'react';
+import { MouseEventHandler, useCallback } from 'react';
 import { useUserStore } from '@/store/useUserStore';
 import { type ClassValue } from 'clsx';
 
 export interface EditorProps {
-    cancle?: () => void;
+    onCancle?: MouseEventHandler;
     placeholder?: string;
     multiple?: boolean;
     imageMaxlength?: number;
@@ -29,7 +29,7 @@ export interface TextImageFormValue {
 }
 
 export const Editor = ({
-    cancle,
+    onCancle,
     placeholder,
     multiple,
     imageMaxlength = 3,
@@ -114,7 +114,7 @@ export const Editor = ({
                     replaceable
                 />
                 <div className="flex gap-4">
-                    {cancle && <Button onClick={cancle}>취소</Button>}
+                    {onCancle && <Button onClick={onCancle}>취소</Button>}
                     <Button disabled={isSubmitting || isNoContents} variant={'trans'}>
                         {isSubmitting && prevImages.length !== 0 ? <LoaderIcon /> : '등록'}
                     </Button>
