@@ -1,36 +1,36 @@
 import { NextResponse } from 'next/server';
 import { db } from 'src/lib/db';
 
-export async function PATCH(req: Request, { params }: { params: { postId: string } }) {
+export async function PATCH(req: Request, { params }: { params: { commentId: string } }) {
     try {
         const userId = req.headers.get('User-Id');
-        const { postId } = params;
+        const { commentId } = params;
 
         if (!userId) {
             return new NextResponse('Unauthorized', { status: 401 });
         }
 
-        const postLike = await db.postLike.findUnique({
+        const commentLike = await db.commentLike.findUnique({
             where: {
-                postId_userId: {
-                    postId,
+                commentId_userId: {
+                    commentId,
                     userId,
                 },
             },
         });
 
-        let result;
+        console.log('commentLike', commentLike);
 
-        if (postLike) {
-            await db.postLike.delete({
+        if (commentLike) {
+            await db.commentLike.delete({
                 where: {
-                    id: postLike.id,
+                    id: commentLike.id,
                 },
             });
         } else {
-            await db.postLike.create({
+            await db.commentLike.create({
                 data: {
-                    postId,
+                    commentId,
                     userId,
                 },
             });

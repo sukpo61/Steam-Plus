@@ -28,7 +28,7 @@ export async function GET(req: Request, { params }: { params: { steamId: string 
 
         if (appIdList && appIdList.length > 0) {
             const appPromises = appIdList?.map(async (appId) => {
-                const appData = (await getAppDetails(appId)) as any;
+                const appData = (await getAppDetails(appId)) as any;                
 
                 await db.app.upsert({
                     where: { id: appId },

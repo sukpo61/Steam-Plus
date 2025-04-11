@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from 'src/lib/db';
 import { getAppDetails } from '@/app/api/actions/steam';
-
+4;
 const IMAGE_UPLOAD_LIMIT = 5;
 
 export async function GET(req: Request, { params }: { params: { postId: string } }) {

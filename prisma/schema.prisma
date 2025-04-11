@@ -22,7 +22,8 @@ model User {
 
   posts Post[]
   comments Comment[]
-  likes Like[]
+  postlikes PostLike[]
+  commentlikes CommentLike[]
   servers Server[]
   members Member[]
   channels Channel[]
@@ -131,6 +132,7 @@ model App {
   content_descriptors  Json?
   ratings              Json?
   demos                Json?
+  fullgame             Json?
 
   servers Server[]
   librarys Library[]
@@ -275,7 +277,7 @@ model Post {
 
   images    Image[] 
   comments  Comment[] 
-  likes Like[]
+  likes PostLike[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -318,6 +320,7 @@ model Comment {
   parentId  String?
   parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   replies   Comment[] @relation("CommentReplies")
+  likes CommentLike[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -337,7 +340,7 @@ model RefreshToken {
   expiresAt DateTime 
 }
 
-model Like {
+model PostLike {
   id String @id @default(uuid())
 
   userId  String 
@@ -348,6 +351,18 @@ model Like {
 
   assignedAt DateTime @default(now())
 
-  @@index([userId])
-  @@index([postId])
+  @@unique([postId, userId])
+}
+model CommentLike {
+  id String @id @default(uuid())
+
+  userId  String 
+  user    User @relation(fields: [userId], references: [id])
+
+  commentId     String 
+  comment       Comment     @relation(fields: [commentId], references: [id])
+
+  assignedAt DateTime @default(now())
+
+  @@unique([commentId, userId])
 }

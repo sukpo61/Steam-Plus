@@ -38,7 +38,7 @@ export const AppBlock = ({ data }: ServerBlockProps) => {
                     {getFirstSentence(short_description)}
                 </span>
                 <div className="relative left-[-2px] flex w-full items-start gap-1">
-                    {genres.slice(0, 2).map(({ id, description }: any) => (
+                    {genres?.slice(0, 2).map(({ id, description }: any) => (
                         <span className="rounded-sm bg-primary-bright px-1 py-0.5 text-xs" key={id}>
                             {description}
                         </span>

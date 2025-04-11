@@ -89,6 +89,11 @@ export async function GET(req: Request, { params }: { params: { postId: string }
                             src: true,
                         },
                     },
+                    likes: {
+                        select: {
+                            userId: true,
+                        },
+                    },
                 },
             });
         } else {
@@ -119,6 +124,11 @@ export async function GET(req: Request, { params }: { params: { postId: string }
                             src: true,
                         },
                     },
+                    likes: {
+                        select: {
+                            userId: true,
+                        },
+                    },
                 },
             });
         }
@@ -133,7 +143,11 @@ export async function GET(req: Request, { params }: { params: { postId: string }
             comments.map(async (comment) => {
                 const isOwned = userId && comment.user?.id === userId;
                 return {
-                    comment: { ...comment, isOwned },
+                    comment: {
+                        ...comment,
+                        likes: comment.likes.map((item) => item.userId),
+                        isOwned,
+                    },
                     replysCount: await db.comment.count({
                         where: {
                             postId,

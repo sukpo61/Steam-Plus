@@ -1,6 +1,6 @@
 'use client';
 
-import { deleteComment, patchComment } from '@/actions/community/comment';
+import { deleteComment, submitLike } from '@/actions/community/comment';
 import { API_COMMENT_KEY } from '@/actions/queryKeys';
 import { UserAvatar } from '@/components/common/UserAvatar';
 import { DeleteIcon } from '@/components/icons/common/Delete.icon';
@@ -21,6 +21,9 @@ import { useState } from 'react';
 import { CommentResponse } from 'types/community/comment';
 import { CommentParams } from 'types/params/community';
 import { CommentInput } from './CommentInput';
+import { LikeButton, UnLikeButton } from '@/components/ui/LikeButton';
+import { useUserStore } from '@/store/useUserStore';
+import { debounce } from 'lodash';
 
 export interface CommentProps {
     params: CommentParams;
@@ -29,22 +32,77 @@ export interface CommentProps {
 
 export const Comment = ({ item, params }: CommentProps) => {
     const { postId } = params;
-    const { id, content, user, createdAt, images, isOwned } = item;
+    const queryKey = [API_COMMENT_KEY, { postId }];
+    const { id, content, user, createdAt, images, isOwned, likes } = item;
     const { name: userName, avatar } = user;
     const [isReplyInput, setIsReplyInput] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-    const queryCache = useQueryClient();
+    const queryCaches = useQueryClient();
+    const {
+        data: { id: myUserId },
+    } = useUserStore();
+
+    const toggleLikeDebounced = debounce((callback) => callback(), 500);
 
     const { mutate: deleteMutate } = useMutation({
         mutationFn: deleteComment,
     });
 
-    const { mutate: patchLike } = useMutation({
-        mutationFn: patchComment,
+    const { mutate: submitLikeMutate } = useMutation({
+        mutationFn: submitLike,
+        onMutate: async () => {
+            await queryCaches.cancelQueries({ queryKey });
+
+            let prevData;
+
+            await queryCaches.setQueryData(queryKey, (prevData: any) => {
+                if (!prevData || !prevData.pages || prevData.pages.length === 0) {
+                    return prevData;
+                }
+
+                prevData = prevData;
+
+                const newData = prevData.pages.map((page: any, index: number) => ({
+                    ...page,
+                    data: page.data.map((item: any) => {
+                        const { comment } = item;
+                        if (comment.id === id) {
+                            const { likes } = comment;
+                            if (likes.includes(myUserId)) {
+                                return {
+                                    ...item,
+                                    comment: {
+                                        ...comment,
+                                        likes: likes.filter((id: any) => id !== myUserId),
+                                    },
+                                };
+                            }
+                            return {
+                                ...item,
+                                comment: { ...comment, likes: [...likes, myUserId] },
+                            };
+                        }
+                        return item;
+                    }),
+                }));
+                return {
+                    ...prevData,
+                    pages: newData,
+                };
+            });
+
+            return { prevData };
+        },
+        onError: (err, newArray, context) => {
+            queryCaches.setQueryData(queryKey, context?.prevData);
+        },
+        onSettled: () => {
+            queryCaches.invalidateQueries({ queryKey });
+        },
     });
 
     const onSuccess = async () => {
-        await queryCache.invalidateQueries({
+        await queryCaches.invalidateQueries({
             queryKey: [API_COMMENT_KEY, { postId }],
         });
     };
@@ -108,6 +166,15 @@ export const Comment = ({ item, params }: CommentProps) => {
                                     >
                                         답글쓰기
                                     </span>
+                                    <LikeButton
+                                        onClick={() => submitLikeMutate({ params })}
+                                        submited={likes.includes(myUserId)}
+                                    />
+                                    <span>{likes.length}</span>
+                                    {/* <UnLikeButton
+                                        onClick={() => submitLikeMutate({ params })}
+                                        submited={true}
+                                    /> */}
                                 </div>
                             </div>
                         </div>

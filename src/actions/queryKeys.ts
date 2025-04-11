@@ -2,8 +2,10 @@ const API_MAIN_KEY = '/api/main';
 const API_LIBRARY_KEY = '/api/library';
 
 const API_POST_KEY = '/api/post/{{postId}}';
+const API_POST_LIKE_KEY = '/api/post/{{postId}}/like';
 const API_COMMUNITY_KEY = '/api/community/{{appId}}';
 const API_COMMENT_KEY = '/api/comment/{{postId}}/{{commentId}}';
+const API_COMMENT_LIKE_KEY = '/api/comment/{{postId}}/{{commentId}}/like';
 
 const API_USER_KEY = '/api/user';
 
@@ -27,11 +29,13 @@ export {
     API_APP_KEY,
     API_SEARCH_KEY,
     API_COMMENT_KEY,
+    API_COMMENT_LIKE_KEY,
     API_COMMUNITY_KEY,
     API_USER_KEY,
     API_LIBRARY_KEY,
     API_MAIN_KEY,
     API_POST_KEY,
+    API_POST_LIKE_KEY,
     API_SERVER_KEY,
     API_MEMBER_KEY,
     API_MESSAGE_KEY,

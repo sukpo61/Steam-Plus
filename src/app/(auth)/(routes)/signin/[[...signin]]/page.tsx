@@ -15,6 +15,9 @@ const SignInPage: NextPage<CommunityPageParameter> = async ({ searchParams }) =>
 
     const steamId = steamIdUrl.toString().split('/').pop() as string;
 
+    console.log("steamId", steamId);
+    
+
     return <RedirectScreen steamId={steamId} searchParams={searchParams} />;
 };
 

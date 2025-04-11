@@ -14,6 +14,7 @@ export interface CommentResponse extends CommentRequest {
         name: string;
         avatar: string;
     };
+    likes: string[];
     createdAt: Date;
     updatedAt: Date;
 }

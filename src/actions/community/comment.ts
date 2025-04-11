@@ -1,4 +1,4 @@
-import { API_COMMENT_KEY } from '@/actions/queryKeys';
+import { API_COMMENT_KEY, API_COMMENT_LIKE_KEY } from '@/actions/queryKeys';
 import { CommentParams } from 'types/params/community';
 import { CommentRequest } from 'types/community/comment';
 import api from '@/lib/api';
@@ -67,6 +67,15 @@ const patchComment = async ({
     }
 };
 
+const submitLike = async ({ params }: { params: CommentParams }): Promise<void> => {
+    await api.patch(variableAssignment(API_COMMENT_LIKE_KEY, params));
+    try {
+    } catch (error) {
+        console.error(error);
+        return Promise.reject(error);
+    }
+};
+
 const deleteComment = async ({ params }: { params: CommentParams }): Promise<void> => {
     try {
         await api.delete(variableAssignment(API_COMMENT_KEY, params), {});
@@ -76,4 +85,4 @@ const deleteComment = async ({ params }: { params: CommentParams }): Promise<voi
     }
 };
 
-export { deleteComment, getCommentList, patchComment, postComment };
+export { deleteComment, getCommentList, patchComment, postComment, submitLike };
