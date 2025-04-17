@@ -3,6 +3,7 @@ import { db } from 'src/lib/db';
 
 export async function PATCH(req: Request, { params }: { params: { commentId: string } }) {
     try {
+        const { isSubmitted } = await req.json();
         const userId = req.headers.get('User-Id');
         const { commentId } = params;
 
@@ -21,19 +22,21 @@ export async function PATCH(req: Request, { params }: { params: { commentId: str
 
         console.log('commentLike', commentLike);
 
-        if (commentLike) {
-            await db.commentLike.delete({
-                where: {
-                    id: commentLike.id,
-                },
-            });
+        if (isSubmitted) {
+            commentLike &&
+                (await db.commentLike.delete({
+                    where: {
+                        id: commentLike.id,
+                    },
+                }));
         } else {
-            await db.commentLike.create({
-                data: {
-                    commentId,
-                    userId,
-                },
-            });
+            !commentLike &&
+                (await db.commentLike.create({
+                    data: {
+                        commentId,
+                        userId,
+                    },
+                }));
         }
 
         return NextResponse.json({});

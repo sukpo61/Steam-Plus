@@ -67,8 +67,14 @@ const patchComment = async ({
     }
 };
 
-const submitLike = async ({ params }: { params: CommentParams }): Promise<void> => {
-    await api.patch(variableAssignment(API_COMMENT_LIKE_KEY, params));
+const submitLike = async ({
+    params,
+    isSubmitted,
+}: {
+    params: CommentParams;
+    isSubmitted: boolean;
+}): Promise<void> => {
+    await api.patch(variableAssignment(API_COMMENT_LIKE_KEY, params), { isSubmitted });
     try {
     } catch (error) {
         console.error(error);

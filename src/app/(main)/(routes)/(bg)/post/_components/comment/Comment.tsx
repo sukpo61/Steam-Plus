@@ -24,6 +24,8 @@ import { CommentInput } from './CommentInput';
 import { LikeButton, UnLikeButton } from '@/components/ui/LikeButton';
 import { useUserStore } from '@/store/useUserStore';
 import { debounce } from 'lodash';
+import { useMemo, useRef } from 'react';
+import { useEffect } from 'react';
 
 export interface CommentProps {
     params: CommentParams;
@@ -42,14 +44,38 @@ export const Comment = ({ item, params }: CommentProps) => {
         data: { id: myUserId },
     } = useUserStore();
 
-    const toggleLikeDebounced = debounce((callback) => callback(), 500);
-
     const { mutate: deleteMutate } = useMutation({
         mutationFn: deleteComment,
     });
 
+    const isSubmitted = likes.includes(myUserId);
+    const firstIsSubmittedRef = useRef<boolean | null>(null);
+    const lastIsSubmittedRef = useRef<boolean | null>(null);
+
+    const submitLikeDebounce = useMemo(
+        () =>
+            debounce(
+                ({ params, isSubmitted }: any) => {
+                    if (firstIsSubmittedRef.current !== lastIsSubmittedRef.current) {
+                        submitLike({ params, isSubmitted });
+                    }
+                    firstIsSubmittedRef.current = null;
+                    lastIsSubmittedRef.current = null;
+                },
+                500,
+                { leading: false, trailing: true },
+            ),
+        [],
+    );
+
     const { mutate: submitLikeMutate } = useMutation({
-        mutationFn: submitLike,
+        mutationFn: async ({ params, isSubmitted }: any) => {
+            if (firstIsSubmittedRef.current === null) {
+                firstIsSubmittedRef.current = isSubmitted;
+            }
+            lastIsSubmittedRef.current = !isSubmitted;
+            submitLikeDebounce({ params, isSubmitted });
+        },
         onMutate: async () => {
             await queryCaches.cancelQueries({ queryKey });
 
@@ -96,8 +122,8 @@ export const Comment = ({ item, params }: CommentProps) => {
         onError: (err, newArray, context) => {
             queryCaches.setQueryData(queryKey, context?.prevData);
         },
-        onSettled: () => {
-            queryCaches.invalidateQueries({ queryKey });
+        onSuccess: () => {
+            // queryCaches.invalidateQueries({ queryKey });
         },
     });
 
@@ -167,8 +193,13 @@ export const Comment = ({ item, params }: CommentProps) => {
                                         답글쓰기
                                     </span>
                                     <LikeButton
-                                        onClick={() => submitLikeMutate({ params })}
-                                        submited={likes.includes(myUserId)}
+                                        onClick={() => {
+                                            submitLikeMutate({
+                                                params,
+                                                isSubmitted,
+                                            });
+                                        }}
+                                        isSubmitted={isSubmitted}
                                     />
                                     <span>{likes.length}</span>
                                     {/* <UnLikeButton

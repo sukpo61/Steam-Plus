@@ -3,7 +3,11 @@ const nextConfig = {
     reactStrictMode: true,
     swcMinify: true,
     images: {
-        domains: ['firebasestorage.googleapis.com', 'shared.akamai.steamstatic.com'],
+        domains: [
+            'firebasestorage.googleapis.com',
+            'shared.akamai.steamstatic.com',
+            'steamplus.s3.ap-northeast-2.amazonaws.com',
+        ],
     },
     async rewrites() {
         return [
