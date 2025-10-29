@@ -1,8 +1,9 @@
+import { CommunityParams, CommunitySearchParams } from 'types/params/community';
+
 import { API_COMMUNITY_KEY } from '@/actions/queryKeys';
+import { CommunityResponse } from 'types/community/post';
 import api from '@/lib/api';
 import { variableAssignment } from '@/utils/variableAssignment';
-import { CommunityResponse } from 'types/community/post';
-import { CommunityParams, CommunitySearchParams } from 'types/params/community';
 
 interface getCommunityParameter {
     params: CommunityParams;

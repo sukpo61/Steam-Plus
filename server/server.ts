@@ -2,7 +2,6 @@ import 'tsconfig-paths/register';
 
 import { Socket as InitSocket, Server } from 'socket.io';
 
-import { NextResponse } from 'next/server';
 import { createServer } from 'node:http';
 import { db } from '@/lib/db';
 import jwt from 'jsonwebtoken';
@@ -168,7 +167,8 @@ app.prepare().then(() => {
                 });
 
                 if (userId !== messageRecord?.member.userId) {
-                    return new NextResponse('Invalid user', { status: 401 });
+                    console.error(`Unauthorized attempt to edit message by userId: ${userId}`);
+                    return;
                 }
 
                 const currentImages = await db.image.findMany({
@@ -322,7 +322,8 @@ app.prepare().then(() => {
                 });
 
                 if (userId !== messageRecord?.userId) {
-                    return new NextResponse('Invalid user', { status: 401 });
+                    console.error(`Unauthorized attempt to edit DM by userId: ${userId}`);
+                    return;
                 }
 
                 const currentImages = await db.image.findMany({

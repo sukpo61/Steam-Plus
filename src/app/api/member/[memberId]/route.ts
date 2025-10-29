@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { db } from 'src/lib/db';
 
-export async function DELETE(req: Request, { params }: { params: { memberId: string } }) {
+export async function DELETE(req: Request, props: { params: Promise<{ memberId: string }> }) {
+    const params = await props.params;
     try {
         const { memberId } = params;
         const userId = req.headers.get('User-Id');

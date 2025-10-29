@@ -1,6 +1,6 @@
-import { getAppDetails } from '@/app/api/actions/steam';
 import { NextResponse } from 'next/server';
 import { db } from 'src/lib/db';
+import { getAppDetails } from '@/app/api/actions/steam';
 
 export async function POST(req: Request, { params }: { params: { appId: string } }) {
     try {
@@ -45,17 +45,20 @@ export async function POST(req: Request, { params }: { params: { appId: string }
     }
 }
 
-export async function GET(req: Request, { params }: { params: { appId: string } }) {
+export async function GET(req: Request, props: { params: Promise<{ appId: string }> }) {
+    const params = await props.params;
     try {
         const appId = parseInt(params.appId);
         const { searchParams } = new URL(req.url);
 
         const term = searchParams.get('term');
         const order = searchParams.get('order');
+        const category = searchParams.get('category');
 
         const page = parseInt(searchParams.get('page') || '1', 10);
         const pageSize = parseInt(searchParams.get('pagesize') || '10', 10);
         const offset = (page - 1) * pageSize;
+
         const totalCount = await db.post.count({
             where: {
                 appId: appId,

@@ -15,7 +15,9 @@ const ServerPageLoading = () => {
     return <></>;
 };
 
-const ServerPage: NextPage<ServerPageProps> = async ({ params, searchParams }) => {
+const ServerPage: NextPage<ServerPageProps> = async props => {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
     return (
         <SidebarLayout type="server">
             <div className="flex h-full w-full flex-col backdrop-blur-3xl">

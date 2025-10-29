@@ -28,7 +28,8 @@ const ProfilePageLoading = () => {
     );
 };
 
-const ProfilePage: NextPage<ProfilePageProps> = async ({ params, searchParams }) => {
+const ProfilePage: NextPage<ProfilePageProps> = async props => {
+    const searchParams = await props.searchParams;
     return (
         <MainController searchParams={searchParams}>
             <SidebarLayout type="library">

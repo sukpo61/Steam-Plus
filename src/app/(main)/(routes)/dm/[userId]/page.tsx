@@ -14,7 +14,9 @@ const DirectMessagePageLoading = () => {
     return <></>;
 };
 
-const DirectMessagePage: NextPage<DirectMessagePageProps> = async ({ params, searchParams }) => {
+const DirectMessagePage: NextPage<DirectMessagePageProps> = async props => {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
     return (
         <div className="flex h-full w-full flex-col backdrop-blur-3xl">
             <SocketProvider>

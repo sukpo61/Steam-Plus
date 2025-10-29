@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { db } from 'src/lib/db';
 
-export async function POST(req: Request, { params }: { params: { requestId: string } }) {
+export async function POST(req: Request, props: { params: Promise<{ requestId: string }> }) {
+    const params = await props.params;
     try {
         const { requestId } = params;
         const userId = req.headers.get('User-Id');
@@ -24,7 +25,8 @@ export async function POST(req: Request, { params }: { params: { requestId: stri
     }
 }
 
-export async function DELETE(req: Request, { params }: { params: { requestId: string } }) {
+export async function DELETE(req: Request, props: { params: Promise<{ requestId: string }> }) {
+    const params = await props.params;
     try {
         const { requestId } = params;
         const userId = req.headers.get('User-Id');

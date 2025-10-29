@@ -84,28 +84,34 @@ export interface ButtonProps
     nameTag?: string;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant, size, selected, nameTag, asChild = false, ...props }, ref) => {
-        const [isOver, setIsOver] = useState(false);
-        const Comp = asChild ? Slot : 'button';
-        return (
-            <div className="relative z-50 flex">
-                <Comp
-                    className={cn(buttonVariants({ variant, size, selected, className }))}
-                    onMouseEnter={() => setIsOver(true)}
-                    onMouseLeave={() => setIsOver(false)}
-                    ref={ref}
-                    {...props}
-                />
-                {nameTag && isOver && (
-                    <span className="absolute -top-8 rounded-sm bg-primary-dark p-1 text-xs">
-                        {nameTag}
-                    </span>
-                )}
-            </div>
-        );
-    },
-);
+const Button = ({
+    className,
+    variant,
+    size,
+    selected,
+    nameTag,
+    asChild = false,
+    ...props
+}: ButtonProps) => {
+    const [isOver, setIsOver] = useState(false);
+    const Comp = asChild ? Slot : 'button';
+    return (
+        <div className="relative z-50 flex">
+            <Comp
+                className={cn(buttonVariants({ variant, size, selected, className }))}
+                onMouseEnter={() => setIsOver(true)}
+                onMouseLeave={() => setIsOver(false)}
+                {...props}
+            />
+            {nameTag && isOver && (
+                <span className="absolute -top-8 rounded-sm bg-primary-dark p-1 text-xs">
+                    {nameTag}
+                </span>
+            )}
+        </div>
+    );
+};
+
 Button.displayName = 'Button';
 
 export { Button, buttonVariants };

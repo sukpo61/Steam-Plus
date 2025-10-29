@@ -1,12 +1,13 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useCallback } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { SearchParams } from 'types/params/search';
+
+import { MainSearchParams } from 'types/params/main';
+import { useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface MainControllerProps {
-    searchParams: SearchParams;
+    searchParams: MainSearchParams;
     children: React.ReactNode;
 }
 

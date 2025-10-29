@@ -1,13 +1,13 @@
-import { getMain } from '@/actions/main/main';
+import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
+
 import { API_MAIN_KEY } from '@/actions/queryKeys';
-import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import { MainClient } from './MainClient';
+import { getCommunity } from '@/actions/community/community';
+import { getMain } from '@/actions/main/main';
 
-interface MainServerProps {
-    searchParams: any;
-}
+interface MainServerProps {}
 
-export const MainServer = async ({ searchParams }: MainServerProps) => {
+export const MainServer = async ({}: MainServerProps) => {
     const queryClient = new QueryClient();
 
     await queryClient.prefetchQuery({

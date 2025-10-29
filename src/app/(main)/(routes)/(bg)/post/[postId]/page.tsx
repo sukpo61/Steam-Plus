@@ -17,7 +17,9 @@ const PostPageLoading = () => {
     );
 };
 
-const PostPage: NextPage<PostPageProps> = async ({ searchParams, params }) => {
+const PostPage: NextPage<PostPageProps> = async props => {
+    const params = await props.params;
+    const searchParams = await props.searchParams;
     const { page = '1' } = searchParams;
     const defaultParams = { ...searchParams, page };
 

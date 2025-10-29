@@ -32,6 +32,10 @@ export const MessageList = ({ data, params, searchParams, isDM }: MessageListPro
         const userConfirm = window.confirm('정말 삭제하시겠습니까?');
         userConfirm && socket.emit(isDM ? 'dmDelete' : 'delete', { id });
     };
+    // const deleteImage = async (id: string) => {
+    //     const userConfirm = window.confirm('정말 삭제하시겠습니까?');
+    //     userConfirm && socket.emit(isDM ? 'dmDelete' : 'delete', { id });
+    // };
 
     const { mutate: deleteMutate } = useMutation({
         mutationFn: deleteMessage,

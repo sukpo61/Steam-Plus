@@ -20,11 +20,7 @@ export const MainClient = ({}: MainClientProps) => {
             {data.length === 0 ? (
                 <div className="flex h-[320px] w-full animate-pulse rounded-lg bg-primary" />
             ) : (
-                <>
-                    {data.map((app: any) => (
-                        <AppBlock key={app.id} data={app} />
-                    ))}
-                </>
+                <>{data?.map((app: any) => <AppBlock key={app.id} data={app} />)}</>
             )}
         </>
     );

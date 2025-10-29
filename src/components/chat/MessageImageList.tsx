@@ -13,7 +13,7 @@ interface MessageImagesProps {
     onChange?: any;
 }
 
-export const MessageImageList = ({ data, isOwned }: MessageImagesProps) => {
+export const MessageImageList = ({ data, isOwned, onDelete }: MessageImagesProps) => {
     const {
         setValue,
         formState: { isSubmitting },
@@ -21,17 +21,17 @@ export const MessageImageList = ({ data, isOwned }: MessageImagesProps) => {
 
     const buttonRef = useRef<HTMLButtonElement>(null);
 
-    const deleteHandler = (id: string) => {
-        const result = data.filter((image: any) => image.id !== id);
-        setValue('images', result);
-        buttonRef.current?.click();
-    };
+    // const deleteHandler = (id: string) => {
+    //     const result = data.filter((image: any) => image.id !== id);
+    //     setValue('images', result);
+    //     buttonRef.current?.click();
+    // };
 
     return (
         <div className="flex gap-1">
             <button className="hidden" ref={buttonRef} />
             {data?.map((image: any) => (
-                <MessageImage data={image} isOwned={isOwned} onChange={deleteHandler} />
+                <MessageImage data={image} isOwned={isOwned} onChange={onDelete} />
             ))}
         </div>
     );

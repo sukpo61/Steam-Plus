@@ -10,21 +10,17 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
     isSubmitted?: boolean;
 }
 
-export const LikeButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, isSubmitted, ...props }, ref) => {
-        return (
-            <Button variant={'trans'} className="p-1" ref={ref} {...props}>
-                {isSubmitted ? <LikedIcon /> : <LikeIcon />}
-            </Button>
-        );
-    },
-);
-export const UnLikeButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, isSubmitted, ...props }, ref) => {
-        return (
-            <Button variant={'trans'} className="p-1" ref={ref} {...props}>
-                {isSubmitted ? <UnLikedIcon /> : <UnLikeIcon />}
-            </Button>
-        );
-    },
-);
+export const LikeButton = ({ className, isSubmitted, ...props }: ButtonProps) => {
+    return (
+        <Button variant={'trans'} className="p-1" {...props}>
+            {isSubmitted ? <LikedIcon /> : <LikeIcon />}
+        </Button>
+    );
+};
+export const UnLikeButton = ({ className, isSubmitted, ...props }: ButtonProps) => {
+    return (
+        <Button variant={'trans'} className="p-1" {...props}>
+            {isSubmitted ? <UnLikedIcon /> : <UnLikeIcon />}
+        </Button>
+    );
+};

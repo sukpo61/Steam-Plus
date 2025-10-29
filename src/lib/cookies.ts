@@ -1,18 +1,18 @@
 'use server';
 
 import { cookieString } from '@/utils/cookieString';
-import { cookies } from 'next/headers';
+import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 
-export const createCookie = (data: any) => {
-    const cookieStore = cookies();
+export const createCookie = async (data: any) => {
+    const cookieStore = await cookies();
     cookieStore.set(data);
 };
 export const getCookie = async (key: string) => {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     return cookieStore.get(key)?.value;
 };
-export const getAllCookie = () => {
-    const cookieStore = cookies();
+export const getAllCookie = async () => {
+    const cookieStore = cookies() as unknown as UnsafeUnwrappedCookies;
     const result = cookieString(cookieStore.getAll());
     return result;
 };

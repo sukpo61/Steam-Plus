@@ -2,7 +2,8 @@ import { MemberRole } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import { db } from 'src/lib/db';
 
-export async function POST(req: Request, { params }: { params: { serverId: string } }) {
+export async function POST(req: Request, props: { params: Promise<{ serverId: string }> }) {
+    const params = await props.params;
     try {
         const { serverId } = params;
         const userId = req.headers.get('User-Id');
@@ -24,7 +25,8 @@ export async function POST(req: Request, { params }: { params: { serverId: strin
         return new NextResponse('Internal Error', { status: 500 });
     }
 }
-export async function DELETE(req: Request, { params }: { params: { serverId: string } }) {
+export async function DELETE(req: Request, props: { params: Promise<{ serverId: string }> }) {
+    const params = await props.params;
     try {
         const { serverId } = params;
         const userId = req.headers.get('User-Id');

@@ -4,7 +4,8 @@ import { getAppDetails } from '@/app/api/actions/steam';
 4;
 const IMAGE_UPLOAD_LIMIT = 5;
 
-export async function GET(req: Request, { params }: { params: { postId: string } }) {
+export async function GET(req: Request, props: { params: Promise<{ postId: string }> }) {
+    const params = await props.params;
     try {
         const { postId } = params;
         const userId = req.headers.get('User-Id');
@@ -53,7 +54,8 @@ export async function GET(req: Request, { params }: { params: { postId: string }
     }
 }
 
-export async function DELETE(req: Request, { params }: { params: { postId: string } }) {
+export async function DELETE(req: Request, props: { params: Promise<{ postId: string }> }) {
+    const params = await props.params;
     try {
         const { postId } = params;
         const userId = req.headers.get('User-Id');
@@ -91,7 +93,8 @@ export async function DELETE(req: Request, { params }: { params: { postId: strin
     }
 }
 
-export async function PATCH(req: Request, { params }: { params: { postId: string } }) {
+export async function PATCH(req: Request, props: { params: Promise<{ postId: string }> }) {
+    const params = await props.params;
     try {
         const { images, ...postData } = await req.json();
         const { postId } = params;

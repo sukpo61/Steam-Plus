@@ -66,6 +66,7 @@ export const MemberList = ({ params, data }: MemberListProps) => {
                 const onDMSubmit = () => push(`/dm/${userId}`);
                 return (
                     <Member
+                        key={memberId}
                         data={member}
                         hasPermission={hasPermission}
                         isMe={userId === myUserId}

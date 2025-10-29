@@ -4,7 +4,8 @@ import { log } from 'node:console';
 
 const DM_MESSAGES_BATCH = 10;
 
-export async function GET(req: Request, { params }: { params: { userId: string } }) {
+export async function GET(req: Request, props: { params: Promise<{ userId: string }> }) {
+    const params = await props.params;
     try {
         const { searchParams } = new URL(req.url);
         const userId = req.headers.get('User-Id');
@@ -125,7 +126,8 @@ export async function GET(req: Request, { params }: { params: { userId: string }
     }
 }
 
-export async function DELETE(req: Request, { params }: { params: { channelId: string } }) {
+export async function DELETE(req: Request, props: { params: Promise<{ channelId: string }> }) {
+    const params = await props.params;
     try {
         const { channelId } = params;
         const userId = req.headers.get('User-Id');
@@ -147,7 +149,8 @@ export async function DELETE(req: Request, { params }: { params: { channelId: st
     }
 }
 
-export async function PATCH(req: Request, { params }: { params: { channelId: string } }) {
+export async function PATCH(req: Request, props: { params: Promise<{ channelId: string }> }) {
+    const params = await props.params;
     try {
         const data = await req.json();
         const { channelId } = params;

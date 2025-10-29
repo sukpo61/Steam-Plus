@@ -8,7 +8,8 @@ interface SearchResultPageProps {
     };
 }
 
-const SearchResultPage: NextPage<SearchResultPageProps> = async ({ searchParams }) => {
+const SearchResultPage: NextPage<SearchResultPageProps> = async props => {
+    const searchParams = await props.searchParams;
     return (
         <SidebarLayout type="library">
             <SearchPageController searchParams={searchParams} />;

@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 interface BgState {
     appId?: string | number;
@@ -8,8 +8,7 @@ interface BgState {
 
 export const useBgStore = create<BgState>((set) => ({
     appId: undefined,
-    background:
-        'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1621690/page_bg_generated_v6b.jpg?t=1725299065',
+    background: '',
     setBackground: ({ appId, background }) => {
         set((state) => {
             const { appId: prevId } = state;

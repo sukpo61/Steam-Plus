@@ -22,7 +22,7 @@ export async function refreshTokenValidate(refreshToken?: string) {
 
 export async function GET(req: Request) {
     try {
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
 
         const refreshToken = cookieStore.get('refreshToken')?.value;
 

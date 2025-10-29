@@ -7,7 +7,7 @@ export const Sidebar = async ({ params }: any) => {
     //     queryKey: [API_USER_KEY],
     //     queryFn: getUserInfo,
     // });
-    const headersList = headers();
+    const headersList = await headers();
     // read the custom x-url header
     const header_url = headersList.get('x-url') || '';
 

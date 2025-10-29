@@ -1,9 +1,9 @@
 'use client';
 
-import styled from '@emotion/styled';
-import { Text } from '@/components/ui/Text';
 import { ReactNode } from 'react';
+import { Text } from '@/components/ui/Text';
 import { Typo } from 'styles/Typography';
+import styled from '@emotion/styled';
 
 export interface CommentDropDownProps {
     data: {

@@ -15,7 +15,9 @@ const FrinedPageLoading = () => {
     return <div></div>;
 };
 
-const FrinedPage: NextPage<FrinedPageProps> = ({ params, searchParams }) => {
+const FrinedPage: NextPage<FrinedPageProps> = async props => {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
     const { type = 'all' } = searchParams;
     const defaultParams = { ...searchParams, type };
     return (

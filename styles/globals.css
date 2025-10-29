@@ -77,6 +77,9 @@
         --secondary: var(--sky-400);
         --secondary-dark: var(--sky-800);
 
+        --third: var(--third-color);
+        --third-dark: var(--blue-950);
+
         --destructive-foreground: var(--red-100);
         --destructive: var(--red-500);
 
@@ -93,6 +96,9 @@
 
 /* color pallat */
 :root {
+    /* Slate */
+    --third-color: 204, 49%, 20%;
+
     /* Slate */
     --slate-50: 210 40% 98%;
     --slate-100: 210 40% 96.1%;

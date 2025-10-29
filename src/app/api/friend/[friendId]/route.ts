@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { db } from 'src/lib/db';
 
-export async function POST(req: Request, { params }: { params: { friendId: string } }) {
+export async function POST(req: Request, props: { params: Promise<{ friendId: string }> }) {
+    const params = await props.params;
     try {
         const { friendId } = params;
         const userId = req.headers.get('User-Id');
@@ -24,7 +25,8 @@ export async function POST(req: Request, { params }: { params: { friendId: strin
     }
 }
 
-export async function DELETE(req: Request, { params }: { params: { friendId: string } }) {
+export async function DELETE(req: Request, props: { params: Promise<{ friendId: string }> }) {
+    const params = await props.params;
     try {
         const { friendId } = params;
         const userId = req.headers.get('User-Id');

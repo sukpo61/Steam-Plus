@@ -1,0 +1,102 @@
+import { createCookie, getAllCookie, getCookie } from '@/lib/cookies';
+
+import axios from 'axios';
+
+const isServer = typeof window === 'undefined';
+const baseURL = isServer ? process.env.API_BASE_URL : '';
+
+let refreshToken = '';
+
+const api = axios.create({
+    baseURL,
+    headers: {
+        // 'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+});
+
+api.interceptors.request.use(
+    async function (config) {
+        if (isServer) {
+            const cookie = await getAllCookie();
+            api.defaults.headers.Cookie = cookie;
+        }
+
+        // let accessToken = api.defaults.headers.common['Authorization'];
+        // let accessToken = config.headers['Authorization'];
+
+        if (config.headers['Authorization']) {
+            return config;
+        }
+
+        refreshToken = (await getCookie('refreshToken')) || '';
+
+        if (!refreshToken) {
+            return config;
+        }
+
+        // if (!accessToken) {
+        try {
+            const response = await axios.get(`${baseURL}/api/auth/renew-token`, {
+                headers: {
+                    Cookie: `refreshToken=${refreshToken}`,
+                },
+            });
+            const accessToken = response.headers['authorization'];
+            // api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+            config.headers['Authorization'] = `Bearer ${accessToken}`;
+        } catch (error: any) {
+            if (error.response?.status === 403) {
+                return config;
+            }
+            if (error.response?.status === 401) {
+                if (!isServer) {
+                    window.location.href = '/auth/signin';
+                }
+            }
+            return Promise.reject(error);
+        }
+        // }
+        return config;
+    },
+    async function (error) {
+        return Promise.reject(error);
+    },
+);
+
+api.interceptors.response.use(
+    async function (response) {
+        return response;
+    },
+    async function (error) {
+        if (error.response && error.response.status === 401) {
+            try {
+                const response = await axios.get(`${baseURL}/api/auth/renew-token`, {
+                    headers: {
+                        Cookie: `refreshToken=${refreshToken}`,
+                    },
+                });
+                const accessToken = response.headers['authorization'];
+                api.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
+
+                const config = {
+                    ...error.config,
+                    headers: {
+                        ...error.config.headers,
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                };
+
+                return api.request(config);
+            } catch (refreshError) {
+                if (!isServer) {
+                    window.location.href = '/auth/signin';
+                }
+                return Promise.reject(refreshError);
+            }
+        }
+        return Promise.reject(error);
+    },
+);
+
+export default api;

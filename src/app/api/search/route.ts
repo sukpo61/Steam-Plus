@@ -4,7 +4,7 @@ import { getChannelSearch } from '../actions/steam';
 
 export async function GET(req: Request) {
     try {
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
         const cookie = cookieStore.getAll();
 
         const { searchParams } = new URL(req.url);

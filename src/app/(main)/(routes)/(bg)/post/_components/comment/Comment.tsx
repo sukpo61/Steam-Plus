@@ -1,12 +1,5 @@
 'use client';
 
-import { deleteComment, submitLike } from '@/actions/community/comment';
-import { API_COMMENT_KEY } from '@/actions/queryKeys';
-import { UserAvatar } from '@/components/common/UserAvatar';
-import { DeleteIcon } from '@/components/icons/common/Delete.icon';
-import { DropDownIcon } from '@/components/icons/common/DropDown.icon';
-import { EditIcon } from '@/components/icons/common/Edit.icon';
-import { Button } from '@/components/ui/Button';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,18 +7,25 @@ import {
     DropdownMenuPortal,
     DropdownMenuTrigger,
 } from '@/components/ui/DropDown';
-import { timeFormat } from '@/utils/timeFormat';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import Image from 'next/image';
-import { useState } from 'react';
-import { CommentResponse } from 'types/community/comment';
-import { CommentParams } from 'types/params/community';
-import { CommentInput } from './CommentInput';
 import { LikeButton, UnLikeButton } from '@/components/ui/LikeButton';
-import { useUserStore } from '@/store/useUserStore';
-import { debounce } from 'lodash';
+import { deleteComment, submitLike } from '@/actions/community/comment';
 import { useMemo, useRef } from 'react';
-import { useEffect } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { API_COMMENT_KEY } from '@/actions/queryKeys';
+import { Button } from '@/components/ui/Button';
+import { CommentInput } from './CommentInput';
+import { CommentParams } from 'types/params/community';
+import { CommentResponse } from 'types/community/comment';
+import { DeleteIcon } from '@/components/icons/common/Delete.icon';
+import { DropDownIcon } from '@/components/icons/common/DropDown.icon';
+import { EditIcon } from '@/components/icons/common/Edit.icon';
+import Image from 'next/image';
+import { UserAvatar } from '@/components/common/UserAvatar';
+import { debounce } from 'lodash';
+import { timeFormat } from '@/utils/timeFormat';
+import { useState } from 'react';
+import { useUserStore } from '@/store/useUserStore';
 
 export interface CommentProps {
     params: CommentParams;
@@ -48,7 +48,7 @@ export const Comment = ({ item, params }: CommentProps) => {
         mutationFn: deleteComment,
     });
 
-    const isSubmitted = likes.includes(myUserId);
+    const isSubmitted = likes?.includes(myUserId);
     const firstIsSubmittedRef = useRef<boolean | null>(null);
     const lastIsSubmittedRef = useRef<boolean | null>(null);
 
@@ -201,7 +201,7 @@ export const Comment = ({ item, params }: CommentProps) => {
                                         }}
                                         isSubmitted={isSubmitted}
                                     />
-                                    <span>{likes.length}</span>
+                                    <span>{likes?.length}</span>
                                     {/* <UnLikeButton
                                         onClick={() => submitLikeMutate({ params })}
                                         submited={true}

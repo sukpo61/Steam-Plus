@@ -6,8 +6,17 @@ import jwt from 'jsonwebtoken';
 
 const EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-export async function GET(req: Request, { params }: { params: { steamId: string } }) {
-    const { steamId } = params;
+export async function GET(req: Request) {
+    const { searchParams } = new URL(req.url);
+
+    const steamIdUrl = searchParams.get('openid.claimed_id');
+
+    if (!steamIdUrl) {
+        NextResponse.redirect('http://localhost:3000/auth/signin');
+        return;
+    }
+
+    const steamId = steamIdUrl.toString().split('/').pop() as string;
 
     try {
         const userSummary = await getPlayerSummaries(steamId);
@@ -28,7 +37,7 @@ export async function GET(req: Request, { params }: { params: { steamId: string 
 
         if (appIdList && appIdList.length > 0) {
             const appPromises = appIdList?.map(async (appId) => {
-                const appData = (await getAppDetails(appId)) as any;                
+                const appData = (await getAppDetails(appId)) as any;
 
                 await db.app.upsert({
                     where: { id: appId },
@@ -73,12 +82,11 @@ export async function GET(req: Request, { params }: { params: { steamId: string 
             },
         });
 
-        const token = {
-            accessToken,
-            refreshToken,
-        };
+        const redirectUrl = new URL('http://localhost:3000/auth/callback');
+        redirectUrl.searchParams.set('accessToken', accessToken);
+        redirectUrl.searchParams.set('refreshToken', refreshToken);
 
-        return NextResponse.json(token);
+        return NextResponse.redirect(redirectUrl.toString());
     } catch (error) {
         console.log('Error:', error);
         return new NextResponse('Internal Error', { status: 500 });

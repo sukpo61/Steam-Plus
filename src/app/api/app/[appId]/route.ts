@@ -4,7 +4,8 @@ import { getAppDetails } from '../../actions/steam';
 
 const SERVERS_BATCH = 18;
 
-export async function GET(req: Request, { params }: { params: { appId: string } }) {
+export async function GET(req: Request, props: { params: Promise<{ appId: string }> }) {
+    const params = await props.params;
     try {
         const appId = parseInt(params.appId);
         const { searchParams } = new URL(req.url);

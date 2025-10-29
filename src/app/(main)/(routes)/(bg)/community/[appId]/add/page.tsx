@@ -7,7 +7,8 @@ interface PostAddPageParameter {
     params: PostParams & CommunityParams;
 }
 
-const PostAddPage: NextPage<PostAddPageParameter> = async ({ params }) => {
+const PostAddPage: NextPage<PostAddPageParameter> = async props => {
+    const params = await props.params;
     return (
         <PostAddController params={params}>
             <PostAddClient params={params} />

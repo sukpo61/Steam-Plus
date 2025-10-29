@@ -54,6 +54,8 @@ export const MessageController = ({ children, item, onClose, isDM }: EditInputPr
     const { handleSubmit } = form;
 
     const onSubmit: SubmitHandler<ChatFormValue> = async (data) => {
+        console.log('imageedit');
+
         const { content, images } = data;
         try {
             const imagesUrl = images

@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { db } from 'src/lib/db';
 
-export async function PATCH(req: Request, { params }: { params: { postId: string } }) {
+export async function PATCH(req: Request, props: { params: Promise<{ postId: string }> }) {
+    const params = await props.params;
     try {
         const userId = req.headers.get('User-Id');
         const { postId } = params;

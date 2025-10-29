@@ -66,7 +66,7 @@ export const ServerSidebar = () => {
                         (channel) =>
                             channel.type === 'TEXT' && (
                                 <Channel
-                                    key={id}
+                                    key={channel.id}
                                     data={channel}
                                     isSelected={channel.id === channelId}
                                     onClick={() => updateParams({ channelId: channel.id })}

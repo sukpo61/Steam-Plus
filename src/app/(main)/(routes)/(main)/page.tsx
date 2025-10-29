@@ -1,31 +1,32 @@
+// /app/page.tsx (또는 해당 파일 경로)
+
+import { MainParams, MainSearchParams } from 'types/params/main';
+
 import { BgLayout } from '@/components/layout/main/BgLayout';
-import { Fragment } from 'react';
 import { MainController } from './_components/MainController';
 import { MainServer } from './_components/MainServer';
-import { NextPage } from 'next';
+import type { PageProps } from 'types/common/type';
 import { QuerySuspenseErrorBoundary } from '@/components/hoc/QuerySuspenseErrorBoundary';
 import { SearchInput } from '@/components/common/SearchInput';
 import { SidebarLayout } from '@/components/layout/sidebar/SidebarLayout';
 
-interface MainPageProps {
-    searchParams: any;
-}
+interface MainPageProps extends PageProps<MainParams, MainSearchParams> {}
 
 const MainPageLoading = () => {
-    const LoadingBlock = () => {
-        return <div className="flex h-[320px] w-full animate-pulse rounded-lg bg-primary" />;
-    };
-    const LoadingList = Array(12).fill(<LoadingBlock />);
     return (
         <>
-            {LoadingList.map((item, index) => (
-                <Fragment key={index}>{item}</Fragment>
+            {Array.from({ length: 12 }).map((_, i) => (
+                <div
+                    key={i}
+                    className="flex h-[320px] w-full animate-pulse rounded-lg bg-primary"
+                />
             ))}
         </>
     );
 };
 
-const MainPage: NextPage<MainPageProps> = async ({ searchParams }) => {
+const MainPage = async (props: MainPageProps) => {
+    const searchParams = (await props.searchParams) ?? {};
     const { term } = searchParams;
 
     return (
@@ -49,7 +50,7 @@ const MainPage: NextPage<MainPageProps> = async ({ searchParams }) => {
                             <span className="text-xl">추천 앱</span>
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6">
                                 <QuerySuspenseErrorBoundary suspenseFallback={<MainPageLoading />}>
-                                    <MainServer searchParams={searchParams} />
+                                    <MainServer />
                                 </QuerySuspenseErrorBoundary>
                             </div>
                         </div>

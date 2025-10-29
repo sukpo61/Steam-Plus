@@ -4,7 +4,8 @@ import { db } from 'src/lib/db';
 const COMMENTS_BATCH = 3;
 const IMAGE_UPLOAD_LIMIT = 1;
 
-export async function POST(req: Request, { params }: { params: { postId: string } }) {
+export async function POST(req: Request, props: { params: Promise<{ postId: string }> }) {
+    const params = await props.params;
     try {
         const { postId } = params;
         const { images, ...commentsData } = await req.json();
@@ -50,7 +51,8 @@ export async function POST(req: Request, { params }: { params: { postId: string 
     }
 }
 
-export async function GET(req: Request, { params }: { params: { postId: string } }) {
+export async function GET(req: Request, props: { params: Promise<{ postId: string }> }) {
+    const params = await props.params;
     try {
         const { postId } = params;
         const { searchParams } = new URL(req.url);

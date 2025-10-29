@@ -33,7 +33,8 @@ const FriendPageLoading = () => {
     );
 };
 
-const FriendPage: NextPage<FriendPageProps> = ({ params }) => {
+const FriendPage: NextPage<FriendPageProps> = async props => {
+    const params = await props.params;
     const { appId } = params;
 
     return (

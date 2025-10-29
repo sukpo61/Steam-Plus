@@ -1,7 +1,8 @@
-'use client';
+//'use client';
 
-import { CommunityFormValue } from '@/app/(main)/(routes)/(bg)/community/_components/CommunityPageController';
 import { useFormContext, useWatch } from 'react-hook-form';
+
+import { CommunityFormValue } from '@/app/(main)/(routes)/(bg)/community/_components/CommunityController';
 import ReactJsPagePagination from 'react-js-pagination';
 
 export const Pagination = (props: any) => {

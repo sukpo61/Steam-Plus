@@ -1,4 +1,4 @@
-const API_IMAGE_KEY = '/api/image/';
+const API_IMAGE_KEY = '/api/image/{{imageId}}';
 
 const API_MAIN_KEY = '/api/main';
 const API_LIBRARY_KEY = '/api/library';

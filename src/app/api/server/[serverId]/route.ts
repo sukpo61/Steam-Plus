@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
-export async function GET(req: Request, { params }: { params: { serverId: string } }) {
+export async function GET(req: Request, props: { params: Promise<{ serverId: string }> }) {
+    const params = await props.params;
     try {
         const { serverId } = params;
         const userId = req.headers.get('User-Id');
@@ -90,7 +91,8 @@ export async function GET(req: Request, { params }: { params: { serverId: string
     }
 }
 
-export async function DELETE(req: Request, { params }: { params: { serverId: string } }) {
+export async function DELETE(req: Request, props: { params: Promise<{ serverId: string }> }) {
+    const params = await props.params;
     try {
         const { serverId } = params;
         const userId = req.headers.get('User-Id');
@@ -112,7 +114,8 @@ export async function DELETE(req: Request, { params }: { params: { serverId: str
     }
 }
 
-export async function PATCH(req: Request, { params }: { params: { serverId: string } }) {
+export async function PATCH(req: Request, props: { params: Promise<{ serverId: string }> }) {
+    const params = await props.params;
     try {
         const data = await req.json();
         const { serverId } = params;

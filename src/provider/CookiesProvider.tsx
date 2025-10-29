@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 
 const EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-export const CookiesProvider = ({ children }: { children: React.ReactNode }) => {
+export const CookiesProvider = () => {
     useEffect(() => {
         createCookie({
             name: 'Steam_Language',
@@ -15,5 +15,5 @@ export const CookiesProvider = ({ children }: { children: React.ReactNode }) => 
             path: '/',
         });
     }, []);
-    return <>{children}</>;
+    return <></>;
 };

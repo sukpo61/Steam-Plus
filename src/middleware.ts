@@ -31,6 +31,7 @@ export async function middleware(request: NextRequest) {
             });
         } catch (error) {
             console.error('Invalid token:', error);
+            console.log('Invalid token:');
             return NextResponse.next({
                 request: {
                     headers: requestHeaders,

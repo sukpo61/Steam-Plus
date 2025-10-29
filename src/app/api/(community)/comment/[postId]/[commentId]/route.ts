@@ -6,8 +6,9 @@ const IMAGE_UPLOAD_LIMIT = 1;
 
 export async function POST(
     req: Request,
-    { params }: { params: { postId: string; commentId: string } },
+    props: { params: Promise<{ postId: string; commentId: string }> }
 ) {
+    const params = await props.params;
     try {
         const { postId, commentId } = params;
         const { images, ...commentsData } = await req.json();
@@ -56,8 +57,9 @@ export async function POST(
 
 export async function GET(
     req: Request,
-    { params }: { params: { postId: string; commentId: string } },
+    props: { params: Promise<{ postId: string; commentId: string }> }
 ) {
+    const params = await props.params;
     try {
         const { postId, commentId } = params;
         const { searchParams } = new URL(req.url);
@@ -156,7 +158,8 @@ export async function GET(
     }
 }
 
-export async function DELETE(req: Request, { params }: { params: { commentId: string } }) {
+export async function DELETE(req: Request, props: { params: Promise<{ commentId: string }> }) {
+    const params = await props.params;
     try {
         const { commentId } = params;
         const userId = req.headers.get('User-Id');
@@ -191,7 +194,8 @@ export async function DELETE(req: Request, { params }: { params: { commentId: st
     }
 }
 
-export async function PATCH(req: Request, { params }: { params: { commentId: string } }) {
+export async function PATCH(req: Request, props: { params: Promise<{ commentId: string }> }) {
+    const params = await props.params;
     try {
         const { images, ...commentData } = await req.json();
         const { commentId } = params;
